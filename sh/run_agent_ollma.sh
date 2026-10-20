@@ -58,7 +58,7 @@ done
 
 # ── 2) 이전 실행 정리 ──────────────────────────────────────────────────
 lsof -ti:8100 | xargs kill -9 2>/dev/null || true
-rm -f session.db
+rm -f var/session.db
 
 cleanup() {
     echo

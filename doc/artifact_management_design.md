@@ -1,12 +1,23 @@
-# 산출물 관리 및 폴더 구조 설계 (v0.2)
+# 산출물 관리 및 폴더 구조 설계 (v0.3)
 
 - 대상: `skala-references/w15-ai-service-mini/all_total_vue_student`
-- 상태: **P0·P3 실행 완료 (2026-10-20)**. P1(이미지 이동)·P2(`session.db` → `var/`)는 미실행.
-- 실행 결과: `artifacts/`·`var/`·`tests/`·`doc/reports/` 생성, `eval/run_eval.py`·`eval/metrics.py`·`eval/make_before_after.py` 추가, 테스트 50개(`tests/`), 근거 대조표(`doc/reports/evidence/`). 현재 경로는 루트 `AGENTS.md` "폴더 구조" 표 기준.
+- 상태: **P0~P3 실행 완료 (2026-10-20)**.
+- 실행 결과: `artifacts/`·`var/`·`tests/`·`doc/reports/` 생성, `eval/run_eval.py`·`eval/metrics.py`·`eval/make_before_after.py` 추가,
+  테스트 50개(`tests/`), 근거 대조표(`doc/reports/evidence/`), 제출 산출물(보고서·발표자료·아키텍처).
+  현재 경로는 루트 `AGENTS.md` "폴더 구조" 표 기준.
+- **P1 실행 방식**: `doc/image_usecase*`를 `doc/assets/`로 **이동하지 않고** 같은 경로에서 PNG→JPEG로 압축했다
+  (5.2MB → 1.6MB). 이유: `doc/README.md`가 강사 제공 매뉴얼이라 그 안의 디렉터리 트리를 건드리지 않기 위해서다.
+  매뉴얼 2개가 참조하는 이미지 링크 12곳만 `.png` → `.jpg`로 바꿨다.
+- **P2 실행 방식**: `agent/session_store.py`의 `DB_PATH` → `var/session.db`(디렉터리는 자동 생성),
+  `sh/run_agent_*.sh`의 `rm -f session.db` → `rm -f var/session.db`,
+  `sh/make_student_zip.sh`에 `artifacts`·`var`·`.archify`·`.pytest_cache`·`.git` 제외 규칙 추가.
+- **정리(2026-10-20)**: `.archify/`(3.0M)·`__pycache__`·`.pytest_cache`·`artifacts/captures/`(원본 캡처는
+  `doc/reports/images/`에 압축본 커밋)·`artifacts/exports/`의 중복 PDF·`data/runbook_index.json`(캐시) 삭제.
+  `/tmp`의 Chrome 프로필 잔여물도 정리했다.
 - 근거
   - `../AI 서비스 Mini-Project.pdf`: Git 주소 등록, 결과 보고서(Google Spread), 개인별 발표
   - 같은 PDF 평가표: 기능 구현 30 · Before/After 실측 10(보너스) · 기술 요소 30 · 한계/트레이드오프 20 · 발표 20
-  - 현재 트리와 파일 크기(`doc` 5.2MB, `.archify` 2.9MB, `session.db` 8KB)
+  - 기준선 크기(`doc` 8.3M, `.archify` 3.0M, `session.db` 128K) → 정리 후 `doc` 4.7M
 
 ---
 
@@ -242,25 +253,25 @@ data/runbook_index.json
 
 ## 9. 이행 단계 (각 단계는 검증 후 다음으로)
 
-### P0 — 구조만 추가 (코드 변경 0)
+### P0 — 구조만 추가 (코드 변경 0)  ← 실행 완료(2026-10-20)
 1. `artifacts/{runs,eval,captures,traces,exports,tmp}`, `var/logs`, `doc/{design,reports/evidence/assets}`, `tests/{unit,integration}` 생성
 2. `artifacts/README.md`, `doc/reports/evidence/index.md` 골격 작성
 3. `.gitignore`에 8장 추가
 - 검증: `bash sh/run_agent_ollma.sh` 기동, `:8100/version` 응답, `git status`에 `artifacts/`·`var/` 미표시
 
-### P1 — 문서·이미지 정리 (참조 수정 필요)
+### P1 — 문서·이미지 정리 (참조 수정 필요)  ← 실행 완료(압축 방식, 2026-10-20)
 1. `doc/image_usecase*` → `doc/assets/manual-*` 이동
 2. `manual_ollma.md`·`manual_openai.md` 이미지 경로 수정
 3. `.archify/.../all-total-architecture.html` → `doc/design/architecture.html`
 - 검증: `grep -rn "image_usecase" doc/` 결과 0건, 두 매뉴얼 미리보기에서 이미지 표시
 
-### P2 — 런타임 상태 분리
+### P2 — 런타임 상태 분리  ← 실행 완료(2026-10-20)
 1. `agent/session_store.py`의 `DB_PATH` → `var/session.db`
 2. `sh/run_agent_*.sh`의 `rm -f session.db` → `rm -f var/session.db`
 3. `sh/make_student_zip.sh` 제외 목록에 `artifacts`, `var`, `.archify` 추가
 - 검증: 서버 재시작 후 이름 기억 시나리오 통과, `session.db`가 루트에 생기지 않음
 
-### P3 — 평가·테스트 표준화
+### P3 — 평가·테스트 표준화  ← 실행 완료(2026-10-20)
 1. `eval/` 결과 출력을 `artifacts/eval/`로 변경(기준선 파일은 유지)
 2. `tests/` 작성, `requirements-dev.txt` 추가
 3. Before/After 2회 실행 → `doc/reports/evidence/before_after.md`

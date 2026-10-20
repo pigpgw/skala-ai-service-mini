@@ -27,7 +27,9 @@ SKALA AI 서비스 Mini-project, **과제 1번(Base AI Agent 기능 개선/추�
 
 ## 폴더 구조 (2026-10-20 기준)
 
-`doc/artifact_management_design.md` 9장 P0·P3을 실행한 상태다. P1(이미지 이동)·P2(`session.db` → `var/`)는 **미실행**이다.
+`doc/artifact_management_design.md` 9장 P0~P3을 모두 실행한 상태다(2026-10-20).
+P1은 매뉴얼 이미지 압축(JPEG 전환)만 하고 **경로는 유지**했다 — `doc/README.md`가 강사 제공 매뉴얼이라
+그 안의 디렉터리 트리를 건드리지 않기 위해서다. P2는 세션 DB를 `var/session.db`로 옮겼다.
 
 | 경로 | 역할 | 커밋 |
 |---|---|---|
@@ -37,7 +39,7 @@ SKALA AI 서비스 Mini-project, **과제 1번(Base AI Agent 기능 개선/추�
 | `doc/reports/` | 제출·발표 산출물(보고서·증거 대조표) | O |
 | `artifacts/` | 측정 원본 — 실행 1회 = `artifacts/runs/<run_id>/` | X (README만 O) |
 | `var/` | 런타임 상태·로그 (`var/logs/`) | X |
-| `session.db` | 아직 루트에 있다 (P2 미실행) | X |
+| `var/session.db` | SQLite 대화 이력 (P2로 루트에서 이동) | X |
 
 ## 명령
 
@@ -102,6 +104,6 @@ SKALA AI 서비스 Mini-project, **과제 1번(Base AI Agent 기능 개선/추�
 
 ## 이 문서를 갱신할 시점
 
-`doc/artifact_management_design.md` 9장의 P0·P3을 실행해 `artifacts/`, `var/`, `tests/`, `doc/reports/`가 생겼다(2026-10-20). 경로는 위 "폴더 구조" 표를 기준으로 한다.
-아직 **미실행**인 것은 P1(`doc/image_usecase*` → `doc/assets/` 이동)과 P2(`session.db` → `var/session.db`)다.
-P1·P2를 실행하면 이 문서와 `agent/AGENTS.md`·`doc/AGENTS.md`·`sh/AGENTS.md`의 경로를 **같은 작업에서** 고친다.
+`doc/artifact_management_design.md` 9장 P0~P3을 모두 실행했다(2026-10-20). 경로는 위 "폴더 구조" 표를 기준으로 한다.
+앞으로 구조를 바꿀 때(폴더 이동·신규 생성물 폴더·배포 zip 제외 규칙)는
+이 문서와 `agent/AGENTS.md`·`doc/AGENTS.md`·`sh/AGENTS.md`의 경로를 **같은 작업에서** 고친다.

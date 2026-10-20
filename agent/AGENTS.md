@@ -61,7 +61,7 @@
 
 ## 세션
 
-- `SqliteSessionStore.DB_PATH`는 현재 `session.db`(repo 루트)다. 경로를 바꾸면 `sh/run_agent_*.sh`의 `rm -f session.db` 대상도 함께 바꾼다.
+- `SqliteSessionStore.DB_PATH`는 `var/session.db`다(설계 P2, 2026-10-20 이동). 경로를 바꾸면 `sh/run_agent_*.sh`의 `rm -f var/session.db` 대상도 함께 바꾼다.
 - 세션 이력은 LLM 프롬프트에 들어간다. 이력 길이를 바꾸는 개선(요약 압축 등)은 토큰·지연 지표로 측정한다.
 
 ## 재시도

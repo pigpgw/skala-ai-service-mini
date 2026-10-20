@@ -8,7 +8,7 @@
 |---|---|---|
 | `README.md` | 메인 매뉴얼 — 구조·실행·아키텍처 | 배포판 원본. 내 판단을 섞지 않는다 |
 | `evaluation-checklist.md` | 평가 항목 진행 추적 | 갱신 대상. 상태와 증거 경로를 함께 적는다 |
-| `artifact_management_design.md` | 폴더·산출물 구조 설계안 | 설계. P0·P3 실행, P1·P2 미실행 |
+| `artifact_management_design.md` | 폴더·산출물 구조 설계안 | 설계 + 실행 기록. P0~P3 실행 완료 |
 | `manual_ollma.md`, `manual_openai.md` | 백엔드별 사용법 + 실행 캡처 | 참고 |
 | `regression_test_queries.md` | Before/After 공통 입력(고정 질의 세트) | 측정 기준선 |
 | `rag_design.md` | E1 RAG 설계·임계값·측정 결과 | 설계 + 측정 결과 |
@@ -23,7 +23,7 @@
 | `tools/md2html.py` | Markdown → HTML (보고서 PDF 생성) | 도구 |
 | `tools/build_pptx.py` | 발표 HTML → PPTX | 도구 |
 | `tools/capture_ui.mjs` | 실제 브라우저로 시연 화면 캡처 | 도구 |
-| `image_usecase/`, `image_usecase_openai/` | 매뉴얼 캡처 이미지 | P1에서 `doc/assets/`로 이동 예정 |
+| `image_usecase/`, `image_usecase_openai/` | 매뉴얼 캡처 이미지(JPEG, 2026-10-20 압축) | 경로 유지 — `doc/README.md` 트리를 건드리지 않기 위해 |
 
 `README.md`는 강사 제공 매뉴얼이라 내용을 임의로 바꾸지 않는다. 내 판단·실측은 `evaluation-checklist.md`와 별도 보고서에 쓴다. 매뉴얼과 내 문서가 충돌하면 **코드와 실행 결과를 우선**하고, 차이를 체크리스트에 남긴다.
 
