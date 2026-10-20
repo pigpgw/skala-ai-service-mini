@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "stage": "발표·보고서 수치 일치 검사",
-  "generated_at": "2026-10-20T20:56:46+09:00",
+  "generated_at": "2026-10-20T20:58:48+09:00",
   "checked_documents": [
     "README",
     "보고서",
