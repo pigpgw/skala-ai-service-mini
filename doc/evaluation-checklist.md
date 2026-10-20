@@ -132,6 +132,7 @@ PDF 11–12쪽에 제시된 개선 예시(채택 여부 미정, 후보 풀):
 | 정확도(확장) | 13/40 = 0.3250 | 34/40 = 0.8500 | +0.5250 | 40문항 동결, `DATA_PROFILE=extended`, 10문서 인덱스 `bfdc27ec…` (`eval/ablation.json`) |
 | macro-F1(40문항) | 0.2836 | 0.8521 | +0.5685 | 하네스 4단계, `artifacts/runs/20261020-152756_fake_{before,after}-rag/metrics.json` |
 | 조사 커버리지 | unknown 18.75% (base 6) | unknown 0% (extended 12) | −18.75%p | 같은 40문항이 조회한 80회 기준 (`eval/ablation.json` coverage) |
+| 폴백률(keyword로 내려간 비율) | 100.00% | 15.00% | −85.00%p | 하네스 4단계, 동일 40문항 (`metrics.json`의 `fallback`) |
 | 분류 지연 p50 | 0.0ms (keyword — 0.01ms 미만이라 반올림 0) | 32.43ms (RAG 임베딩 1회) | +32.43ms | 하네스 4단계, 동일 40문항 (`metrics.json`의 `latency`) |
 | E2E 요청 지연 p50 | 750.76ms | 819.73ms | +68.97ms | 실서버 :8100, `fake`, E2E 5문항 (`metrics.json`의 `latency`) |
 | 비용(호출·토큰) | $0.000000 (로컬 fake·ollama) | $0.000000 (로컬 fake·ollama) | 0 | E2E 응답의 `cost_usd` 합계. 실 API 비용은 `LLM_BACKEND=openai` 실행 때만 발생 |
@@ -168,7 +169,9 @@ PDF 11–12쪽에 제시된 개선 예시(채택 여부 미정, 후보 풀):
 - [x] 한계와 추가 개선 사항 — 슬라이드 8·9, 보고서 5절
 - [x] 코드 설명 준비 — 슬라이드 4·5·6에 파일·함수 위치 표시 (`agent/rag/*`, `agent/graph.py::_select_incident_type`, `agent/data_profile.py`, `eval/run_eval.py`)
 - [x] PPT/PDF 백업 — `doc/reports/presentation.pptx`·`.pdf`, `skala-tasks/w14-ai-agent/`에 사본
-- [ ] Zoom 발표 리허설 1회 — 절차·체크리스트는 `doc/reports/presentation_outline.md` '리허설 체크리스트'
+- [~] Zoom 발표 리허설 — **기계가 확인 가능한 부분 완료**: 수치 일치 검사 13/13(`eval/check_reported_numbers.py`),
+  시연 4단계 실측(총 3초·결과 확인), 발표물 파일 점검. 기록은 `doc/reports/rehearsal_log.md`.
+  남은 건 **말하기 리허설 1회**(사람) — 절차는 `doc/reports/presentation_outline.md` '리허설 체크리스트'
 
 ---
 
@@ -178,7 +181,7 @@ PDF 11–12쪽에 제시된 개선 예시(채택 여부 미정, 후보 풀):
 |---|---|---|---|
 | G1 | Git 주소 등록(S5) | `https://github.com/pigpgw/skala-ai-service-mini` — `origin` 설정, `main` = `origin/main` (2026-10-20 확인) | [x] |
 | G2 | 제출 코드가 현재 작업 트리와 일치 | 2026-10-20 커밋·푸시 완료(0~4단계 + 산출물 + 정리), `main` = `origin/main`, 작업 트리 clean | [x] |
-| G3 | 결과 보고서(Google Spread) | 보고서 `doc/reports/result_report.md`(+PDF), **스프레드시트 입력용 본문 `doc/reports/spreadsheet_input.md`**, 발표자료 PDF·PPTX·구성안(리허설 체크리스트 포함), 아키텍처 `doc/design/architecture.html`, 시연 캡처 3장. 제출 폴더 `skala-tasks/w14-ai-agent/`에 사본. **스프레드시트 붙여넣기·주소 등록만 남음** | [~] |
+| G3 | 결과 보고서(Google Spread) | 보고서 `doc/reports/result_report.md`(+PDF), **스프레드시트 입력용 본문 `doc/reports/spreadsheet_input.md`**, 발표자료 PDF·PPTX·구성안, 아키텍처 `doc/design/architecture.html`, 시연 캡처 3장, 리허설 기록 `doc/reports/rehearsal_log.md`. 제출 폴더 `skala-tasks/w14-ai-agent/`에 사본. **스프레드시트 붙여넣기·주소 등록은 사용자 몫(구글 시트에는 접근하지 않음)** | [~] |
 | G4 | `.env`·`.venv`·`session.db` 미커밋 | `.gitignore`에 포함됨 | [x] |
 | G5 | 생성물(원본 측정·런타임 상태) 미커밋 | `artifacts/`·`var/` 제외됨, `artifacts/README.md`만 예외 커밋 | [x] |
 
@@ -200,3 +203,4 @@ PDF 11–12쪽에 제시된 개선 예시(채택 여부 미정, 후보 풀):
 | 2026-10-20 | **제출 산출물 작성** — 결과 보고서(MD+PDF), 발표자료(슬라이드 10장 HTML·PDF·PPTX + 구성안), 아키텍처 다이어그램, 시연 캡처 3장. 스프레드시트 입력용으로 `skala-tasks/w14-ai-agent/`에 복사 | `doc/reports/{result_report.md,result_report.pdf,presentation*,images/}`, `doc/design/architecture.html`, `doc/tools/{md2html.py,build_pptx.py,capture_ui.mjs}`, `skala-tasks/w14-ai-agent/` | 스프레드시트에 보고서 본문·주소 입력 → 발표 리허설 |
 | 2026-10-20 | **산출물·디렉토리 정리** — 조사 후 일괄 정리: 생성물 삭제(`.archify` 3.0M·`__pycache__`·`.pytest_cache`·`artifacts/captures`·중복 PDF·인덱스 캐시), 매뉴얼 이미지 PNG→JPEG 압축(5.2MB→1.6MB), 세션 DB를 `var/session.db`로 이동(P2), 배포 zip 제외 규칙 보강·재생성(5.2MB→1.9MB), 아키텍처 영수증 `artifacts/design/` 분리 | `doc/artifact_management_design.md` v0.3, `git status`, `unzip -l all_total_vue_student.zip`, 세션 저장소 재오픈 이력 확인, pytest 50개 통과 | 스프레드시트에 보고서 본문·주소 입력 → 발표 리허설 |
 | 2026-10-20 | **최종 보완·마무리** — 루트 README를 개선 내용 기준으로 전면 개편, `sh/AGENTS.md`에 세션 DB 경로·zip 제외 규칙 기록, 스프레드시트 입력용 본문(`doc/reports/spreadsheet_input.md`)과 발표 리허설 체크리스트 추가, 제출 폴더 7개 파일 동기화. 정리 후 전 기능 재검증: 테스트 50개 통과·프로파일 검증 3건 PASS·E2E 5개 체크 PASS·분류 측정 동일 수치 재현(0.3250→0.8500, 재현성 identical) | `README.md`, `sh/AGENTS.md`, `doc/reports/spreadsheet_input.md`, `doc/reports/presentation_outline.md`, `eval/e2e_probe_final.json` | 스프레드시트 붙여넣기·주소 등록 → 발표 리허설 |
+| 2026-10-20 | **발표 리허설 검증(기계 가능 범위)** — `eval/check_reported_numbers.py`로 슬라이드·보고서·README·체크리스트에 적힌 수치 13개가 측정 원본과 일치하는지 대조(13/13 PASS). 검사 중 **원본 매핑 오류 1건**(extended coverage를 base 실행에서 읽음) 발견·수정, 폴백률 15.00% 표기 추가. 시연 4단계 실측(총 3초: high-latency·queue-backlog·billing-service 폴백) | `eval/check_reported_numbers.py`, `eval/reported_numbers_check.json`, `doc/reports/rehearsal_log.md`, `doc/reports/presentation.html`(슬라이드 8 수정) | 스프레드시트 붙여넣기·주소 등록 → 말하기 리허설 1회 |
