@@ -18,14 +18,20 @@ Day1 = 2026-10-20, Day3 = 2026-10-22. 등록처는 Google Spread `https://shortu
 | # | 기한 | 할 일 | 등록/제출처 | 상태 |
 |---|---|---|---|---|
 | S1 | Day1 10/20 09–10시 | Base AI Agent 프로그램·과제 설명 | – | [x] 참석 |
-| S2 | Day1 10/20 ~17:00 | 과제 선택(1번/2번 중 택1) 등록 | Google Spread | [ ] |
-| S3 | Day1 10/20 ~17:00 | 진행 계획(초안) 등록 — 진행 중 수정 가능 | Google Spread | [ ] |
-| S4 | Day3 10/22 ~14:00 | 계획을 반영한 구현 | – | [ ] |
-| S5 | Day3 10/22 ~14:00 | Git 주소 등록 | Google Spread | [ ] |
+| S2 | Day1 10/20 ~17:00 | 과제 선택(1번/2번 중 택1) 등록 | Google Spread | [x] 2026-10-20 등록 |
+| S3 | Day1 10/20 ~17:00 | 진행 계획(초안) 등록 — 진행 중 수정 가능 | Google Spread | [x] 2026-10-20 등록 |
+| S4 | Day3 10/22 ~14:00 | 계획을 반영한 구현 | – | [x] 0~4단계 구현 완료 |
+| S5 | Day3 10/22 ~14:00 | Git 주소 등록 | Google Spread | [x] `https://github.com/pigpgw/skala-ai-service-mini` |
 | S6 | Day3 10/22 ~14:00 | 결과 보고서 작성 + 보고서 주소 등록 | Google Spread | [ ] |
 | S7 | Day3 10/22 17:30 | 개인별 결과 보고서 발표 (Zoom, 반별 자율 진행) | Zoom | [ ] |
 
-- S3이 오늘 마감이다. 개선안이 확정되지 않아도 "후보 + 측정 방법" 수준으로 먼저 등록하고, 진행 중 수정한다(PDF 3쪽: 진행 계획은 진행 중 수정 가능).
+- **S2·S3 등록 완료 (2026-10-20, 사용자 보고)**: 소원 `G079 박건우`, 과제 `1`,
+  등록 문구 "RAG 기반 RunBook 선택 · 데이터 확장 · 평가 하네스 구축".
+  3절의 진행 계획 초안이 이 문구에 대응한다. (등록 캡처 이미지는 미첨부 — 스프레드시트 확인 필요)
+- **S5 Git 주소**: `https://github.com/pigpgw/skala-ai-service-mini`.
+  2026-10-20 확인 — `origin`이 이 주소로 설정돼 있고 `main`이 `origin/main`과 동일한 커밋에 있다.
+  0~4단계 변경은 아직 커밋 전이다(§8 참고).
+- S3은 진행 중 수정이 가능하다(PDF 3쪽). 4단계까지 구현했으므로 3절 표를 실제 수치로 갱신해 재등록하면 된다.
 
 ---
 
@@ -46,17 +52,19 @@ PDF 11–12쪽 양식: `순번 | 영역 | 무엇을 바꾸나 | 추가설명`
 
 | 순번 | 영역 | 무엇을 바꾸나 | 추가설명 | 측정 지표 | 상태 |
 |---|---|---|---|---|---|
-| 1 |  |  |  |  | [ ] |
+| 1 | RAG | RunBook 선택을 키워드 첫 매칭 → runbook 임베딩 의미 검색으로 교체 | 입력 = 질문+시스템+상태+알림. top1 score·margin 미달 시 기존 keyword로 폴백. `RAG_ENABLED`로 같은 코드에서 A/B. **1·2단계 완료** — `agent/rag/` + `deps.rag` + `/health`·metadata·SSE 노출 | Top-1 정확도, macro-F1, fallback rate, 분류 p50/p95 | [x] |
+| 2 | 데이터 보강 | 시스템 6→12, runbook 6→10, 신규 incident_type 4종 | 신규 타입: `connection-pool`, `cert-expiry`, `replication-lag`, `queue-backlog`. `data/monitoring.json` 보존 + `monitoring_extended.json` 신규, `DATA_PROFILE=base|extended` | 12시스템 조회 성공, 신규 4타입 top-1 선택 | [x] |
+| 3 | 평가 | 평가 하네스 + 단위·통합 테스트 | `eval/run_eval.py` 통합(실행 1회 = `artifacts/runs/<run_id>/`, manifest·metrics·jsonl), `eval/metrics.py`(macro-F1·혼동행렬), `tests/` 50개(unit·integration), `doc/reports/evidence/` 대조표 | accuracy, macro-F1, 지연 p50/p95, retry, cost_usd | [x] |
 
-확정 전에 채워야 하는 칸:
+확정된 설계 값:
 
 | # | 정할 것 | 내용 |
 |---|---|---|
-| P1 | 현재 병목(코드 근거) |  |
-| P2 | 개선안 한 문장 |  |
-| P3 | 비교 지표와 측정 방법 | 지연시간·비용(호출·토큰)·분류 정확도·retry 횟수 중 선택 |
-| P4 | 동일 입력 데이터셋 | `doc/regression_test_queries.md` (PDF 9쪽 안내 문서) |
-| P5 | 성공 판정 기준(수치) |  |
+| P1 | 현재 병목(코드 근거) | `agent/graph.py:192-202` 키워드 **첫 매칭** — 규칙 순서(latency→pool→cpu→memory→timeout→network→disk)가 증상 우선순위와 무관. `graph.py:206-209`는 질의문을 보지 않고 collected만 읽음. `graph.py:213` 매칭 실패 시 무조건 `db-down`. → 기준선 12문항 **8/12 = 0.6667**, 오분류 `B07·B09·B10·B11` (`eval/baseline_keyword.json`) |
+| P2 | 개선안 한 문장 | `replan_check_node`의 runbook 선택을 runbook 임베딩 의미 검색으로 교체하고, score/margin 미달 시 기존 keyword로 폴백 |
+| P3 | 비교 지표와 측정 방법 | Top-1 정확도·macro-F1(40문항), fallback rate, 분류 p50/p95, E2E 지연·retry·cost_usd. Before/After는 `RAG_ENABLED`만 다르게 2회 |
+| P4 | 동일 입력 데이터셋 | `doc/regression_test_queries.md` 10개(E2E) + `eval/baseline_labels.json` 12문항(분류, 동결) + 확장 40문항 |
+| P5 | 성공 판정 기준(수치) | 12문항 정확도 0.6667 초과, 40문항에서 keyword 대비 accuracy·macro-F1 모두 개선, 폴백률·지연은 원본 기록 |
 
 PDF 11–12쪽에 제시된 개선 예시(채택 여부 미정, 후보 풀):
 
@@ -94,7 +102,7 @@ PDF 11–12쪽에 제시된 개선 예시(채택 여부 미정, 후보 풀):
 | 의존성 주입 | `agent/deps.py`, `server.py:63` lifespan에서 번들 1회 생성 | [x] 코드 있음 |
 | 모듈화 | `agent/` 하위 llm·graph·mcp·retry 분리 | [x] 코드 있음 |
 | LangSmith | `.env.example`의 `LANGCHAIN_TRACING_V2`·`LANGCHAIN_PROJECT` | [~] 실제 trace 캡처 필요 |
-| RAG |  | [ ] 확인 필요 |
+| RAG | `agent/rag/` — `embedder.py`(Ollama/Hashing), `index.py`(JSON 캐시·무효화), `classifier.py`(5분기+폴백). `deps.rag`로 주입, `graph.py::_select_incident_type`에서 호출 | [x] 2단계 E2E 검증 (`eval/e2e_probe.json`) |
 | 단위 테스트 | `tests/` 없음, pytest 미설치 | [ ] 미착수 |
 
 ---
@@ -105,15 +113,31 @@ PDF 11–12쪽에 제시된 개선 예시(채택 여부 미정, 후보 풀):
 
 | 구분 | 실행 일시 | 백엔드 | 입력 | 결과 경로 | 지표 요약 |
 |---|---|---|---|---|---|
-| before |  |  | 회귀 질의 세트 |  |  |
-| after |  |  | 회귀 질의 세트 |  |  |
+| before | 2026-10-20 | `fake` | 분류 12문항 (`eval/baseline_labels.json`) | `eval/baseline_keyword.json` | 8/12 = 0.6667 |
+| after | 2026-10-20 | `fake` + `ollama:qwen3-embedding:0.6b` | 분류 12문항 (동일) | `eval/rag_probe.json` | 12/12 = 1.0000 (RAG 10, 폴백 2) |
+| E2E before | 2026-10-20 | `fake`, `RAG_ENABLED=false` | E2E 3문항 (`eval/run_e2e_probe.py`) | `eval/e2e_probe_rag_off.json` | 1/3 (E01·E02 오분류) |
+| E2E after | 2026-10-20 | `fake`, `RAG_ENABLED=true` | E2E 3문항 (동일) | `eval/e2e_probe.json` | 3/3, SSE ReplanCheck에 근거 노출 |
+| 40문항 before | 2026-10-20 | `fake`, `DATA_PROFILE=extended` | 분류 40문항 (`eval/labels_extended.json`) | `eval/baseline_extended_keyword.json` | 13/40 = 0.3250 |
+| 40문항 after | 2026-10-20 | `fake` + qwen3-embedding, `DATA_PROFILE=extended` | 분류 40문항 (동일) | `eval/rag_probe_extended.json` | 34/40 = 0.8500 |
+| ablation | 2026-10-20 | 위 3군 + base | 40문항 (동일) | `eval/ablation.json` | RAG +0.5250, 데이터 확장 정확도 0 / coverage 18.75%→0% |
+| E2E 확장 | 2026-10-20 | `fake`, `DATA_PROFILE=extended` | E2E 4문항 (신규 시스템 포함) | `eval/e2e_probe_extended.json` | 4/4, `search-service` unknown 0 |
+| 하네스 before | 2026-10-20 15:28 | `fake`, `DATA_PROFILE=extended` | 분류 40문항 (`eval/run_eval.py --variant before-rag`) | `artifacts/runs/20261020-152756_fake_before-rag/` | 13/40 = 0.3250, macro-F1 0.2836 |
+| 하네스 after | 2026-10-20 15:28 | `fake` + qwen3-embedding, `DATA_PROFILE=extended` | 분류 40문항 (동일, `--repeat 2`) | `artifacts/runs/20261020-152756_fake_after-rag/` | 34/40 = 0.8500, macro-F1 0.8521, 재현성 identical |
+| 하네스 E2E before | 2026-10-20 15:32 | `fake`, `RAG_ENABLED=false` | E2E 5문항 (`--mode e2e`) | `artifacts/runs/20261020-153204_fake_before-rag/` | 1/5 = 0.2000, p50 750.76ms |
+| 하네스 E2E after | 2026-10-20 15:32 | `fake`, `RAG_ENABLED=true` | E2E 5문항 (동일) | `artifacts/runs/20261020-153211_fake_after-rag/` | 5/5 = 1.0000, p50 819.73ms |
 
 | 지표 | before | after | 차이 | 측정 조건 |
 |---|---|---|---|---|
-| 지연시간 |  |  |  |  |
-| 비용(호출·토큰) |  |  |  |  |
-| 정확도 |  |  |  |  |
-| retry 횟수 |  |  |  |  |
+| 정확도 | 8/12 = 0.6667 | 12/12 = 1.0000 (RAG 10/12, 폴백 2/12) | +0.3333 | 12문항 동결, `RAG_MIN_SCORE=0.50`, `RAG_MIN_MARGIN=0.03`, `ollama:qwen3-embedding:0.6b` (`eval/rag_probe.json`) |
+| 정확도(확장) | 13/40 = 0.3250 | 34/40 = 0.8500 | +0.5250 | 40문항 동결, `DATA_PROFILE=extended`, 10문서 인덱스 `bfdc27ec…` (`eval/ablation.json`) |
+| macro-F1(40문항) | 0.2836 | 0.8521 | +0.5685 | 하네스 4단계, `artifacts/runs/20261020-152756_fake_{before,after}-rag/metrics.json` |
+| 조사 커버리지 | unknown 18.75% (base 6) | unknown 0% (extended 12) | −18.75%p | 같은 40문항이 조회한 80회 기준 (`eval/ablation.json` coverage) |
+| 분류 지연 p50 | 0.0ms (keyword — 0.01ms 미만이라 반올림 0) | 32.43ms (RAG 임베딩 1회) | +32.43ms | 하네스 4단계, 동일 40문항 (`metrics.json`의 `latency`) |
+| E2E 요청 지연 p50 | 750.76ms | 819.73ms | +68.97ms | 실서버 :8100, `fake`, E2E 5문항 (`metrics.json`의 `latency`) |
+| 비용(호출·토큰) | $0.000000 (로컬 fake·ollama) | $0.000000 (로컬 fake·ollama) | 0 | E2E 응답의 `cost_usd` 합계. 실 API 비용은 `LLM_BACKEND=openai` 실행 때만 발생 |
+| retry 횟수 | 1 (MCP 최초 호출 지연 시뮬레이션) | 1 (동일) | 0 | `agent/mcp_client.py`의 Wave 9 첫 호출 실패 → 재시도 1회 |
+| 재현성 | — | 동일 조건 2회 반복 결과 동일 (`identical=true`) | — | `--repeat 2`, `metrics.json`의 `reproducibility` |
+| 자동 테스트 | — | 50개 통과 (unit·integration) | — | `.venv/bin/python -m pytest` (2026-10-20) |
 
 - 실행 순서(PDF 5쪽): `bash sh/setup_venv.sh` → `bash sh/setup_ollama.sh` → `bash sh/run_agent_ollma.sh` → `bash sh/run_frontend.sh`. 개발 정리 후 `run_agent_openai.sh`(과금)로 실제 API 테스트.
 - 세션 기억 질의(#10)는 서버 재시작 여부까지 조건에 적는다.
@@ -126,7 +150,13 @@ PDF 11–12쪽에 제시된 개선 예시(채택 여부 미정, 후보 풀):
 
 | 개선 | 새로 생긴 약점 | 근거(수치·코드) | 완화책 |
 |---|---|---|---|
-|  |  |  |  |
+| RAG 분류 도입 | 질의 1회 임베딩이 분류 단계에 추가된다 | `eval/rag_probe.json` items `elapsed_ms` (B01 616ms 최초 호출, 이후 32~55ms) | 인덱스는 기동 시 1회, 질의 임베딩만 요청당 1회. p50/p95는 4단계에서 정식 측정 |
+| RAG 분류 도입 | 작은 코퍼스(6~10종)라 top1·top2 차이가 좁아 margin 판정이 흔들린다 | `eval/rag_threshold_sweep.json` — margin 0.01~0.03 구간에서 RAG 판정 11→10건으로 바뀜 | margin 미달 시 keyword 폴백, 폴백률을 지표로 감시 |
+| RAG 분류 도입 | 임베딩 모델이 없으면 `HashingEmbedder`로 떨어져 품질이 급락한다 | `agent/rag/embedder.py::build_embedder` — auto 모드에서 조용히 대체 | `/health.rag.embedder`·인덱스 `embedder.name`에 실제 사용값 기록, 폴백 시 `offline` 표시 |
+| RAG 분류 도입 | 12문항 100%는 개발셋 수치다 | `eval/rag_probe.json` — 라벨을 먼저 동결한 뒤 meta를 작성했지만 표본이 작다 | 확장 40문항(3단계)으로 재측정, 일반화 주장 금지 |
+| 데이터 확장 | 확장이 **분류 정확도는 올리지 못했다** | `eval/ablation.json` B=C=34/40 (문항 단위 동일). RAG가 질의 텍스트로 증상을 읽기 때문에 시스템 알림이 중복 신호였다 | 효과를 coverage(unknown 18.75%→0%)와 신규 4유형 지원으로 서술. "확장으로 정확도 상승"이라고 쓰지 않는다 |
+| margin 게이트 | 보수적 폴백 비용 2문항 (40문항 기준 34 vs 36) | `eval/rag_threshold_sweep_extended.json` — margin 0.00에서 X24·X32가 RAG로 넘어가 정답. 두 문항 차이는 0.0155·0.0000 | 게이트를 없애면 1단계 B01형 오답이 재발. 0.03 유지하고 비용을 기록 |
+| 40문항 라벨 | 20/40이 ambiguous·no_system = 질의 텍스트 의존 | `eval/labels_extended.json` design_notes — 두 카테고리의 정답은 "사용자 신고 증상" 기준 | 카테고리별 정확도를 따로 보고, 전체 수치로 일반화하지 않는다 |
 
 ---
 
@@ -145,10 +175,11 @@ PDF 11–12쪽에 제시된 개선 예시(채택 여부 미정, 후보 풀):
 
 | # | 요건 | 현재 상태 | 상태 |
 |---|---|---|---|
-| G1 | Git 주소 등록(S5) | `main` 브랜치, 커밋 1건(`e546487`), **원격 없음**(`git remote -v` 결과 없음) | [ ] 원격 저장소 필요 |
-| G2 | 제출 코드가 현재 작업 트리와 일치 | 기준선 커밋 이후 변경분 미커밋(`doc/evaluation-checklist.md` 등) | [ ] |
-| G3 | 결과 보고서(Google Spread) |  | [ ] |
+| G1 | Git 주소 등록(S5) | `https://github.com/pigpgw/skala-ai-service-mini` — `origin` 설정됨, `main` = `origin/main` = `923514e` (2026-10-20 확인) | [x] |
+| G2 | 제출 코드가 현재 작업 트리와 일치 | 원격에는 기준선 커밋 3건(`e546487`, `e2a1ef3`, `923514e`)까지만 있음. **0~4단계 변경분은 아직 미커밋** | [ ] 커밋·푸시 필요 |
+| G3 | 결과 보고서(Google Spread) | 근거 대조표 `doc/reports/evidence/index.md`, Before/After 표는 준비됨. 보고서 본문 미작성 | [ ] |
 | G4 | `.env`·`.venv`·`session.db` 미커밋 | `.gitignore`에 포함됨 | [x] |
+| G5 | 생성물(원본 측정·런타임 상태) 미커밋 | `artifacts/`·`var/` 제외됨, `artifacts/README.md`만 예외 커밋 | [x] |
 
 ---
 
@@ -158,3 +189,9 @@ PDF 11–12쪽에 제시된 개선 예시(채택 여부 미정, 후보 풀):
 |---|---|---|---|
 | 2026-10-20 | PDF 14쪽 재확인, 평가표·일정·제출 요건을 체크리스트로 통합 | PDF 3쪽 일정, 11–12쪽 계획 양식, `tests/`·`eval/`·`artifacts/` 없음, 원격 없음 | P1 병목 확정 → S2·S3 등록(17:00) |
 | 2026-10-20 | 계층별 작업 규칙·문서 세팅 (루트 + `agent`·`sh`·`doc`·`data`) | `AGENTS.md` 5개, `README.md` 5개(루트·agent·sh·data 신규, `doc/README.md`는 기존 매뉴얼 유지) | 저장소 푸시 후 P1 병목 확정 |
+| 2026-10-20 | **0단계 완료** — 과제 범위 확정(RAG + 데이터 보강 + 평가 하네스), 12문항 라벨 동결, keyword 기준선 측정 | `eval/common.py`, `eval/baseline_labels.json`, `eval/run_baseline.py`, `eval/baseline_keyword.json`(8/12), `eval/baseline_keyword.run2.json`(2회 실행 동일) | 1단계 RAG 부품(`agent/rag/embedder.py`→`index.py`→`classifier.py`) |
+| 2026-10-20 | **1단계 완료** — RAG 부품 3종 + `meta.json` 6종. 12문항 8/12 → **12/12**(RAG 10, 폴백 2). 임계값 확정 0.50/0.03 | `agent/rag/{embedder,index,classifier}.py`, `data/runbooks/meta.json`(신규, 기존 파일 무변경), `eval/run_rag_probe.py`, `eval/rag_probe.json`, `eval/rag_probe.run2.json`, `eval/rag_threshold_sweep.json`, `doc/rag_design.md` §6.1·§9.1 | 2단계 `agent/graph.py`·`server.py` 연결 |
+| 2026-10-20 | **2단계 완료** — `deps.rag` 주입, `_select_incident_type` 연결, `/health.rag`·`/chat` metadata·SSE `ReplanCheck`에 근거 노출. E2E 3/3, RAG off 시 1/3로 기준선 재현 | `agent/deps.py`, `agent/graph.py`, `server.py`, `eval/run_e2e_probe.py`, `eval/e2e_probe.json`, `eval/e2e_probe_rag_off.json`, `doc/rag_design.md` §9.2 | 3단계 데이터 확장(12시스템·10런북·신규 4타입) |
+| 2026-10-20 | **3단계 완료** — 시스템 6→12, 런북 6→10, `DATA_PROFILE` 일원화(5곳 하드코딩 제거), 40문항 동결·측정. keyword 13/40 → RAG 34/40. 데이터 확장은 정확도 0·coverage 18.75%→0% | `agent/data_profile.py`, `data/monitoring_extended.json`, `data/runbooks/{connection-pool,cert-expiry,replication-lag,queue-backlog}.md`, `eval/labels_extended.json`, `eval/{baseline_extended_keyword,rag_probe_extended,rag_probe_extended_on_base,ablation,profile_probe}.json`, `doc/rag_design.md` §9.3 | 4단계 평가 하네스 정식화(`eval/run_eval.py`, macro-F1, 지연 p50/p95, 재현성) |
+| 2026-10-20 | **4단계 완료** — 통합 하네스(`eval/run_eval.py`: manifest·metrics·requests/responses jsonl, 실행 1회=`artifacts/runs/<run_id>/`), 지표 모듈(`eval/metrics.py`), 테스트 50개(`tests/`), Before/After 표 자동 생성(`eval/make_before_after.py`) → `doc/reports/evidence/`. 40문항 0.3250→0.8500, macro-F1 0.2836→0.8521, E2E 1/5→5/5, 재현성 identical, 분류 지연 +32.43ms | `eval/run_eval.py`, `eval/metrics.py`, `eval/make_before_after.py`, `eval/e2e_cases.json`, `tests/{unit,integration}/`, `pytest.ini`, `requirements-dev.txt`, `artifacts/runs/20261020-1527*`, `artifacts/runs/20261020-1532*`, `doc/reports/evidence/{index.md,before_after.md,metrics/}`, `doc/rag_design.md` §9.4 | 0~4단계 변경 커밋·푸시 → S6 보고서 작성 |
+| 2026-10-20 | **S2·S3·S5 확인** — 소원 G079 박건우, 과제 1번, 등록 문구 "RAG 기반 RunBook 선택 · 데이터 확장 · 평가 하네스 구축", Git 주소 `https://github.com/pigpgw/skala-ai-service-mini` | 사용자 등록 보고, `git remote -v`·`git ls-remote` 확인(origin = 해당 주소, main = origin/main = `923514e`) | 0~4단계 변경 커밋·푸시 → S6 보고서 |

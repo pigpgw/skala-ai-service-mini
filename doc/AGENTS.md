@@ -8,9 +8,13 @@
 |---|---|---|
 | `README.md` | 메인 매뉴얼 — 구조·실행·아키텍처 | 배포판 원본. 내 판단을 섞지 않는다 |
 | `evaluation-checklist.md` | 평가 항목 진행 추적 | 갱신 대상. 상태와 증거 경로를 함께 적는다 |
-| `artifact_management_design.md` | 폴더·산출물 구조 설계안 | 설계. 실행 결과가 아니다 |
+| `artifact_management_design.md` | 폴더·산출물 구조 설계안 | 설계. P0·P3 실행, P1·P2 미실행 |
 | `manual_ollma.md`, `manual_openai.md` | 백엔드별 사용법 + 실행 캡처 | 참고 |
 | `regression_test_queries.md` | Before/After 공통 입력(고정 질의 세트) | 측정 기준선 |
+| `rag_design.md` | E1 RAG 설계·임계값·측정 결과 | 설계 + 측정 결과 |
+| `reports/evidence/index.md` | 주장 ↔ 증거 ↔ 재현 명령 대조표 | 제출용 근거 |
+| `reports/evidence/before_after.md` | Before/After 표 (원본에서 자동 생성) | 제출용 근거 |
+| `reports/evidence/metrics/*.json` | 원본에서 잘라낸 요약 수치 | 커밋 대상(원본은 `artifacts/`) |
 | `image_usecase/`, `image_usecase_openai/` | 매뉴얼 캡처 이미지 | P1에서 `doc/assets/`로 이동 예정 |
 
 `README.md`는 강사 제공 매뉴얼이라 내용을 임의로 바꾸지 않는다. 내 판단·실측은 `evaluation-checklist.md`와 별도 보고서에 쓴다. 매뉴얼과 내 문서가 충돌하면 **코드와 실행 결과를 우선**하고, 차이를 체크리스트에 남긴다.

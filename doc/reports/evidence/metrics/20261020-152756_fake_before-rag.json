@@ -1,0 +1,317 @@
+{
+  "run_id": "20261020-152756_fake_before-rag",
+  "variant": "before-rag",
+  "mode": "classify",
+  "data_profile": "extended",
+  "backend": "fake",
+  "dataset": "eval/labels_extended.json",
+  "dataset_sha256": "994775da26ee45a06ec00feed8001c7f74dc6d3dd9482f87002d1b1df1757129",
+  "monitoring_sha256": "a1a55a239361d9070b78ac1a815db29a2f5330df6ef689e8b306712f47004606",
+  "env": {
+    "LLM_BACKEND": "fake",
+    "RAG_ENABLED": "true",
+    "RAG_MIN_SCORE": "0.50",
+    "RAG_MIN_MARGIN": "0.03"
+  },
+  "git_commit": "923514e",
+  "git_dirty": true,
+  "started_at": "2026-10-20T15:27:56+09:00",
+  "accuracy": {
+    "correct": 13,
+    "total": 40,
+    "accuracy": 0.325
+  },
+  "macro_f1": 0.2836,
+  "per_category": {
+    "single": {
+      "correct": 6,
+      "total": 10,
+      "accuracy": 0.6
+    },
+    "multi": {
+      "correct": 6,
+      "total": 10,
+      "accuracy": 0.6
+    },
+    "ambiguous": {
+      "correct": 0,
+      "total": 10,
+      "accuracy": 0.0
+    },
+    "no_system": {
+      "correct": 1,
+      "total": 10,
+      "accuracy": 0.1
+    }
+  },
+  "fallback": {
+    "total": 40,
+    "fallback": 40,
+    "fallback_rate": 1.0
+  },
+  "coverage": {
+    "system_lookups": 80,
+    "unknown_lookups": 0,
+    "unknown_rate": 0.0,
+    "unknown_systems": []
+  },
+  "latency": {
+    "count": 40,
+    "p50_ms": 0.0,
+    "p95_ms": 0.0,
+    "mean_ms": 0.0,
+    "max_ms": 0.0
+  },
+  "cost": null,
+  "retry": null,
+  "reproducibility": {
+    "repeats": 1,
+    "identical": true,
+    "diffs": []
+  },
+  "errors": [
+    {
+      "id": "X07",
+      "expected_type": "queue-backlog",
+      "predicted_type": "db-down",
+      "source": "keyword",
+      "reason": "keyword_rule",
+      "score": null,
+      "margin": null
+    },
+    {
+      "id": "X08",
+      "expected_type": "cert-expiry",
+      "predicted_type": "db-down",
+      "source": "keyword",
+      "reason": "keyword_rule",
+      "score": null,
+      "margin": null
+    },
+    {
+      "id": "X09",
+      "expected_type": "connection-pool",
+      "predicted_type": "high-latency",
+      "source": "keyword",
+      "reason": "keyword_rule",
+      "score": null,
+      "margin": null
+    },
+    {
+      "id": "X10",
+      "expected_type": "replication-lag",
+      "predicted_type": "db-down",
+      "source": "keyword",
+      "reason": "keyword_rule",
+      "score": null,
+      "margin": null
+    },
+    {
+      "id": "X17",
+      "expected_type": "queue-backlog",
+      "predicted_type": "db-down",
+      "source": "keyword",
+      "reason": "keyword_rule",
+      "score": null,
+      "margin": null
+    },
+    {
+      "id": "X18",
+      "expected_type": "cert-expiry",
+      "predicted_type": "db-down",
+      "source": "keyword",
+      "reason": "keyword_rule",
+      "score": null,
+      "margin": null
+    },
+    {
+      "id": "X19",
+      "expected_type": "connection-pool",
+      "predicted_type": "high-latency",
+      "source": "keyword",
+      "reason": "keyword_rule",
+      "score": null,
+      "margin": null
+    },
+    {
+      "id": "X20",
+      "expected_type": "replication-lag",
+      "predicted_type": "db-down",
+      "source": "keyword",
+      "reason": "keyword_rule",
+      "score": null,
+      "margin": null
+    },
+    {
+      "id": "X21",
+      "expected_type": "high-latency",
+      "predicted_type": "db-down",
+      "source": "keyword",
+      "reason": "keyword_rule",
+      "score": null,
+      "margin": null
+    },
+    {
+      "id": "X22",
+      "expected_type": "cpu-spike",
+      "predicted_type": "db-down",
+      "source": "keyword",
+      "reason": "keyword_rule",
+      "score": null,
+      "margin": null
+    },
+    {
+      "id": "X23",
+      "expected_type": "memory-leak",
+      "predicted_type": "db-down",
+      "source": "keyword",
+      "reason": "keyword_rule",
+      "score": null,
+      "margin": null
+    },
+    {
+      "id": "X24",
+      "expected_type": "network-timeout",
+      "predicted_type": "db-down",
+      "source": "keyword",
+      "reason": "keyword_rule",
+      "score": null,
+      "margin": null
+    },
+    {
+      "id": "X25",
+      "expected_type": "disk-full",
+      "predicted_type": "high-latency",
+      "source": "keyword",
+      "reason": "keyword_rule",
+      "score": null,
+      "margin": null
+    },
+    {
+      "id": "X26",
+      "expected_type": "db-down",
+      "predicted_type": "memory-leak",
+      "source": "keyword",
+      "reason": "keyword_rule",
+      "score": null,
+      "margin": null
+    },
+    {
+      "id": "X27",
+      "expected_type": "queue-backlog",
+      "predicted_type": "network-timeout",
+      "source": "keyword",
+      "reason": "keyword_rule",
+      "score": null,
+      "margin": null
+    },
+    {
+      "id": "X28",
+      "expected_type": "cert-expiry",
+      "predicted_type": "disk-full",
+      "source": "keyword",
+      "reason": "keyword_rule",
+      "score": null,
+      "margin": null
+    },
+    {
+      "id": "X29",
+      "expected_type": "connection-pool",
+      "predicted_type": "cpu-spike",
+      "source": "keyword",
+      "reason": "keyword_rule",
+      "score": null,
+      "margin": null
+    },
+    {
+      "id": "X30",
+      "expected_type": "replication-lag",
+      "predicted_type": "high-latency",
+      "source": "keyword",
+      "reason": "keyword_rule",
+      "score": null,
+      "margin": null
+    },
+    {
+      "id": "X32",
+      "expected_type": "cpu-spike",
+      "predicted_type": "high-latency",
+      "source": "keyword",
+      "reason": "keyword_rule",
+      "score": null,
+      "margin": null
+    },
+    {
+      "id": "X33",
+      "expected_type": "memory-leak",
+      "predicted_type": "high-latency",
+      "source": "keyword",
+      "reason": "keyword_rule",
+      "score": null,
+      "margin": null
+    },
+    {
+      "id": "X34",
+      "expected_type": "network-timeout",
+      "predicted_type": "high-latency",
+      "source": "keyword",
+      "reason": "keyword_rule",
+      "score": null,
+      "margin": null
+    },
+    {
+      "id": "X35",
+      "expected_type": "disk-full",
+      "predicted_type": "high-latency",
+      "source": "keyword",
+      "reason": "keyword_rule",
+      "score": null,
+      "margin": null
+    },
+    {
+      "id": "X36",
+      "expected_type": "db-down",
+      "predicted_type": "high-latency",
+      "source": "keyword",
+      "reason": "keyword_rule",
+      "score": null,
+      "margin": null
+    },
+    {
+      "id": "X37",
+      "expected_type": "queue-backlog",
+      "predicted_type": "high-latency",
+      "source": "keyword",
+      "reason": "keyword_rule",
+      "score": null,
+      "margin": null
+    },
+    {
+      "id": "X38",
+      "expected_type": "cert-expiry",
+      "predicted_type": "high-latency",
+      "source": "keyword",
+      "reason": "keyword_rule",
+      "score": null,
+      "margin": null
+    },
+    {
+      "id": "X39",
+      "expected_type": "connection-pool",
+      "predicted_type": "high-latency",
+      "source": "keyword",
+      "reason": "keyword_rule",
+      "score": null,
+      "margin": null
+    },
+    {
+      "id": "X40",
+      "expected_type": "replication-lag",
+      "predicted_type": "high-latency",
+      "source": "keyword",
+      "reason": "keyword_rule",
+      "score": null,
+      "margin": null
+    }
+  ]
+}

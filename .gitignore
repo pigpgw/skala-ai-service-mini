@@ -11,5 +11,15 @@ __pycache__/
 # 런타임 상태
 /var/
 
+# RAG 인덱스 생성물 (data/AGENTS.md: 생성물은 .gitignore 먼저)
+/data/runbook_index.json
+
 # 도구 작업 디렉토리
 .archify/
+
+# 테스트 도구 캐시
+.pytest_cache/
+
+# 설계 P1·P2에서 옮길 대상 (아직 실행 안 함 — 옮기면 ignore 규칙도 함께 고친다)
+# session.db → var/session.db
+# doc/image_usecase* → doc/assets/

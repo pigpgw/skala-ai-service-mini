@@ -16,6 +16,8 @@
 | `mcp_client.py` | MCP stdio 클라이언트 (Tool·Resource·Prompt, ops/docs 세션) |
 | `session_store.py` | SQLite 세션 저장소 (재시작 후에도 대화 유지) |
 | `retry.py` | `with_retry` — 일시적 오류만 exponential backoff |
+| `data_profile.py` | `DATA_PROFILE=base|extended` 단일 결정 지점 — monitoring 파일·known systems. 경로 하드코딩 금지 |
+| `rag/` | E1 RunBook 선택 — `embedder.py`(Ollama/Hashing), `index.py`(JSON 캐시·무효화, `RAG_INDEX_PATH`로 경로 교체 가능), `classifier.py`(판정 5분기+keyword 폴백). 설계 `doc/rag_design.md` |
 
 ## 노드 계약
 
@@ -31,6 +33,7 @@
 | `collected`, `replan_rounds`, `retry_count` | 수집 결과와 재계획·재시도 횟수 (측정 지표) |
 | `draft`, `validation_attempts`, `validation_feedback` | 작성·검증 반복 |
 | `final`, `last_prompt`, `events` | 최종 응답, 사용한 프롬프트, SSE 이벤트 |
+| `incident_type`, `classifier_source`, `classifier_reason`, `rag_score`, `rag_margin` | E1 — 선택된 runbook과 그 근거(RAG/keyword, 폴백 사유, 유사도) |
 
 ### 새 노드·엣지를 추가할 때
 
@@ -69,5 +72,5 @@
 
 - 노드 안에서 blocking 호출로 이벤트 루프를 막는 코드
 - API 키·토큰·프롬프트 원문 전체를 로그나 응답에 출력
-- `tests/` 없이 로직을 바꾸고 "동작 확인"만 주장하기 (설계 P3에서 테스트 도입 예정)
+- 테스트 없이 로직을 바꾸고 "동작 확인"만 주장하기 (`tests/`가 있다. 바꿀 때마다 `.venv/bin/python -m pytest` 실행)
 - 측정용 분기를 코드에 하드코딩 (측정은 환경변수·variant 이름으로 구분)

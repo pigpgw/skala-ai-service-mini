@@ -13,11 +13,16 @@
 | 경로 | 내용 |
 |---|---|
 | `monitoring.json` | 시스템 6종 상태 (`status`, `cpu_base`, `memory_base`, `alerts`) — `get_monitoring_status` Tool의 응답 원본 |
-| `runbooks/*.md` | 런북 6종 — MCP Resource `runbook://incident-response/{type}`의 본문 |
+| `monitoring_extended.json` | 시스템 12종 확장본(2026-10-20 신규). `DATA_PROFILE=extended`(기본)에서 사용. base 6종은 `monitoring.json`과 동일 값 |
+| `runbooks/*.md` | 런북 10종 — MCP Resource `runbook://incident-response/{type}`의 본문 |
+| `runbooks/meta.json` | 런북 10종의 `title`·`symptoms`·`keywords`·`aliases`·관련 `systems`. RAG 인덱스 텍스트 보강용 **추가** 메타(2026-10-20 신규, 기존 파일 무변경) |
 
-- 시스템: `auth-service`, `web-01`, `payments-service`, `cache-service`, `gateway-service`, `log-service`
-- 런북: `cpu-spike`, `db-down`, `disk-full`, `high-latency`, `memory-leak`, `network-timeout`
+- 시스템(base 6): `auth-service`, `web-01`, `payments-service`, `cache-service`, `gateway-service`, `log-service`
+- 시스템(extended 추가 6): `search-service`, `notify-service`, `session-service`, `media-service`, `inventory-service`, `report-service`
+- `billing-service`는 **넣지 않는다** — 회귀 질의 #8("목록에 없는 시스템명")의 검증 대상이다.
+- 런북: `cpu-spike`, `db-down`, `disk-full`, `high-latency`, `memory-leak`, `network-timeout`, `queue-backlog`, `cert-expiry`, `connection-pool`, `replication-lag`
 - 런북 파일명이 `incident_type` 문자열과 매칭된다. 임베딩·검색 개선(E1)을 하면 이 대응 관계가 Meta 정보가 되므로, 매핑 표를 문서에 남긴다.
+- 파일 선택은 `agent/data_profile.py` 한 곳에서만 결정한다(`DATA_PROFILE=base|extended`, 기본 `extended`). 코드에 경로를 다시 하드코딩하지 않는다.
 
 ## 금지
 

@@ -1,7 +1,8 @@
-# 산출물 관리 및 폴더 구조 설계 (v0.1)
+# 산출물 관리 및 폴더 구조 설계 (v0.2)
 
 - 대상: `skala-references/w15-ai-service-mini/all_total_vue_student`
-- 상태: **설계안**. 이 문서 단계에서는 파일 이동·코드 수정을 하지 않는다.
+- 상태: **P0·P3 실행 완료 (2026-10-20)**. P1(이미지 이동)·P2(`session.db` → `var/`)는 미실행.
+- 실행 결과: `artifacts/`·`var/`·`tests/`·`doc/reports/` 생성, `eval/run_eval.py`·`eval/metrics.py`·`eval/make_before_after.py` 추가, 테스트 50개(`tests/`), 근거 대조표(`doc/reports/evidence/`). 현재 경로는 루트 `AGENTS.md` "폴더 구조" 표 기준.
 - 근거
   - `../AI 서비스 Mini-Project.pdf`: Git 주소 등록, 결과 보고서(Google Spread), 개인별 발표
   - 같은 PDF 평가표: 기능 구현 30 · Before/After 실측 10(보너스) · 기술 요소 30 · 한계/트레이드오프 20 · 발표 20
