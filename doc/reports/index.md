@@ -36,9 +36,10 @@
 | `agent/session_store.py` | 세션 저장소 (`var/session.db`) |
 | `eval/run_eval.py` | 통합 하네스 — 실행 1회 = `artifacts/runs/<run_id>/` |
 | `eval/metrics.py` | accuracy·macro-F1·혼동행렬·지연 percentile |
-| `eval/check_reported_numbers.py` | **문서에 적힌 수치 ↔ 측정 원본** 일치 검사 |
+| `eval/check_reported_numbers.py` | **문서에 적힌 수치 ↔ 측정 원본** 일치 검사 (15개 주장) |
+| `eval/run_regression_queries.py` | 회귀 질의 10개 실행(서버 재시작 포함) — PDF 9쪽 요구 수행 |
 | `eval/make_before_after.py` | Before/After 표·요약 JSON 자동 생성 |
-| `tests/` | unit 5종 + integration 2종 (50개) |
+| `tests/` | unit 6종 + integration 2종 (65개) |
 | `doc/tools/{md2html,build_pptx,capture_ui}` | 보고서 PDF·PPTX·브라우저 캡처 도구 |
 
 ## 3. 재현 명령 (같은 수치가 나오는지 확인)
@@ -57,9 +58,12 @@ LANGCHAIN_TRACING_V2=false LLM_BACKEND=fake DATA_PROFILE=extended \
 .venv/bin/python eval/run_e2e_probe.py --tag final --out eval/e2e_probe_final.json
 
 # 4) 문서 수치 ↔ 원본 일치 검사
-.venv/bin/python eval/check_reported_numbers.py               # 13/13 PASS
+.venv/bin/python eval/check_reported_numbers.py               # 15/15 PASS
 
-# 5) 비교표 재생성
+# 5) 회귀 질의 10개 (PDF 9쪽 요구)
+.venv/bin/python eval/run_regression_queries.py --rag on     # 10/10
+
+# 6) 비교표 재생성
 .venv/bin/python eval/make_before_after.py \
   --pair artifacts/runs/<before> artifacts/runs/<after>
 ```

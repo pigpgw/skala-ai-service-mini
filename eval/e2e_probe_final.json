@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "stage": "2단계 E2E (graph·server 연결)",
-  "tag": "final",
-  "generated_at": "2026-10-20T16:51:03+09:00",
+  "tag": "final-routed",
+  "generated_at": "2026-10-20T20:55:35+09:00",
   "base_url": "http://127.0.0.1:8100",
   "health": {
     "llm_backend": "fake",

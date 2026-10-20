@@ -118,6 +118,8 @@ tr.up td{color:var(--good);font-weight:600}
     <li><strong>B07</strong> — gateway(타임아웃) + payments(CPU)를 함께 조회하면 CPU가 먼저 잡힘</li>
     <li><strong>B09</strong> — memory 규칙이 disk 규칙보다 앞에 있음</li>
     <li><strong>B10·B11</strong> — 질의 텍스트를 읽지 않아서 생긴 오분류</li>
+    <li><strong>라우팅 공백</strong> — PDF 9쪽 예시 질의 10개를 돌리니 7개가 chat으로 떨어졌다<br>
+      <span style="font-size:16px;color:var(--muted)">결정론 백엔드의 라우팅 정규식이 7개 키워드뿐이었다 → 3/10 → 수정 후 <strong>10/10</strong></span></li>
   </ul>
   <div class="foot"><span>근거 — eval/baseline_keyword.json</span><span>3</span></div>
 </section>
@@ -218,6 +220,7 @@ tr.up td{color:var(--good);font-weight:600}
       <tr><td>분류 지연 p50</td><td class="num">0.0ms</td><td class="num">32.43ms</td><td class="num">+32.43ms</td></tr>
       <tr><td>E2E 요청 지연 p50</td><td class="num">750.76ms</td><td class="num">819.73ms</td><td class="num">+68.97ms</td></tr>
       <tr><td>비용</td><td class="num">$0.000000</td><td class="num">$0.000000</td><td class="num">0 (로컬)</td></tr>
+      <tr class="up"><td>회귀 질의 10문항 (PDF 9쪽)</td><td class="num">3/10</td><td class="num">10/10</td><td class="num">+0.7000</td></tr>
     </tbody>
   </table>
   <p style="font-size:16px;color:var(--muted);margin-top:14px">

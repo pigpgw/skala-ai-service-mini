@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "stage": "발표·보고서 수치 일치 검사",
-  "generated_at": "2026-10-20T17:12:39+09:00",
+  "generated_at": "2026-10-20T20:56:46+09:00",
   "checked_documents": [
     "README",
     "보고서",
@@ -9,8 +9,8 @@
     "슬라이드",
     "체크리스트"
   ],
-  "total": 13,
-  "passed": 13,
+  "total": 15,
+  "passed": 15,
   "failed": 0,
   "skipped": 0,
   "rows": [
@@ -116,6 +116,22 @@
       "source_run": "20261020-152756_fake_after-rag",
       "source_path": "reproducibility.identical",
       "value": "identical",
+      "missing_in": []
+    },
+    {
+      "claim": "회귀 질의 통과 (라우팅 수정 후)",
+      "status": "PASS",
+      "source_run": "regression_queries",
+      "source_path": "passed+total",
+      "value": "10/10",
+      "missing_in": []
+    },
+    {
+      "claim": "회귀 질의 통과 (라우팅 수정 전)",
+      "status": "PASS",
+      "source_run": "regression_queries_before",
+      "source_path": "passed+total",
+      "value": "3/10",
       "missing_in": []
     }
   ]

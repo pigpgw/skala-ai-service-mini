@@ -17,10 +17,11 @@
 |---|---|
 | 구현 | 0~4단계 완료 — RAG RunBook 선택 · 데이터 확장(12시스템/10런북) · 평가 하네스 |
 | 코드 | `main` = `origin/main`, 작업 트리 clean, 커밋 파일 141개 / 5.5MB |
-| 측정 | 40문항 0.3250 → 0.8500, macro-F1 0.2836 → 0.8521, E2E 1/5 → 5/5, 재현성 identical |
-| 검증 | 테스트 50개 통과 · 수치 일치 검사 13/13 · E2E 5건 PASS · 프로파일 3건 PASS |
+| 측정 | 40문항 0.3250 → 0.8500, macro-F1 0.2836 → 0.8521, E2E 1/5 → 5/5, 회귀 질의 3/10 → 10/10, 재현성 identical |
+| 검증 | 테스트 65개 통과 · 수치 일치 검사 13/13 · E2E 5건 PASS · 프로파일 3건 PASS · 회귀 10/10 PASS |
 | 산출물 | 보고서(MD·PDF) · 발표자료(HTML·PDF·PPTX·구성안) · 스프레드시트 본문 · 아키텍처 · 리허설 기록 (색인: `doc/reports/index.md`) |
 | 남은 일 (사용자 몫) | ① 스프레드시트 붙여넣기 + 보고서 주소 등록 ② 말하기 리허설 1회 |
+| 회귀 질의 | PDF 9쪽 예시 10개 — **3/10 → 10/10** (라우팅 정규식 확대, `eval/run_regression_queries.py`) |
 
 ---
 
@@ -67,6 +68,7 @@ PDF 11–12쪽 양식: `순번 | 영역 | 무엇을 바꾸나 | 추가설명`
 |---|---|---|---|---|---|
 | 1 | RAG | RunBook 선택을 키워드 첫 매칭 → runbook 임베딩 의미 검색으로 교체 | 입력 = 질문+시스템+상태+알림. top1 score·margin 미달 시 기존 keyword로 폴백. `RAG_ENABLED`로 같은 코드에서 A/B. **1·2단계 완료** — `agent/rag/` + `deps.rag` + `/health`·metadata·SSE 노출 | Top-1 정확도, macro-F1, fallback rate, 분류 p50/p95 | [x] |
 | 2 | 데이터 보강 | 시스템 6→12, runbook 6→10, 신규 incident_type 4종 | 신규 타입: `connection-pool`, `cert-expiry`, `replication-lag`, `queue-backlog`. `data/monitoring.json` 보존 + `monitoring_extended.json` 신규, `DATA_PROFILE=base|extended` | 12시스템 조회 성공, 신규 4타입 top-1 선택 | [x] |
+| 4 | 라우팅 기준 확대 | 결정론 백엔드(`agent/fake_llm.py`)의 라우팅 정규식이 `장애\|진단\|다운\|지연\|급증\|incident\|티켓` 7개짜리라 PDF 9쪽 예시 질의 7개가 `chat`으로 떨어짐(장애 파이프라인 미실행). 실제 LLM 백엔드와 같은 운영 어휘로 넓히고, 시스템명 언급 시 incident. 잡담·세션 기억은 chat 유지 | 회귀 질의 10개 통과율, 잡담 라우팅 유지 | [x] 3/10 → 10/10 (`eval/run_regression_queries.py`) |
 | 3 | 평가 | 평가 하네스 + 단위·통합 테스트 | `eval/run_eval.py` 통합(실행 1회 = `artifacts/runs/<run_id>/`, manifest·metrics·jsonl), `eval/metrics.py`(macro-F1·혼동행렬), `tests/` 50개(unit·integration), `doc/reports/evidence/` 대조표 | accuracy, macro-F1, 지연 p50/p95, retry, cost_usd | [x] |
 
 확정된 설계 값:
@@ -116,7 +118,7 @@ PDF 11–12쪽에 제시된 개선 예시(채택 여부 미정, 후보 풀):
 | 모듈화 | `agent/` 하위 llm·graph·mcp·retry 분리 | [x] 코드 있음 |
 | LangSmith | `.env.example`의 `LANGCHAIN_TRACING_V2`·`LANGCHAIN_PROJECT`, `agent/graph.py` 노드에 `@traceable` | [~] 실 API 키 없는 환경이라 trace 캡처는 미수행(연결만 확인) |
 | RAG | `agent/rag/` — `embedder.py`(Ollama/Hashing), `index.py`(JSON 캐시·무효화), `classifier.py`(5분기+폴백). `deps.rag`로 주입, `graph.py::_select_incident_type`에서 호출 | [x] 2단계 E2E 검증 (`eval/e2e_probe.json`) |
-| 단위 테스트 | `tests/unit/` 5종 + `tests/integration/` 2종, `pytest.ini`, `requirements-dev.txt` | [x] 50개 통과 |
+| 단위 테스트 | `tests/unit/` 6종(지표·프로파일·데이터·게이트·keyword·라우터) + `tests/integration/` 2종, `pytest.ini`, `requirements-dev.txt` | [x] 65개 통과 |
 
 ---
 
@@ -138,6 +140,8 @@ PDF 11–12쪽에 제시된 개선 예시(채택 여부 미정, 후보 풀):
 | 하네스 after | 2026-10-20 15:28 | `fake` + qwen3-embedding, `DATA_PROFILE=extended` | 분류 40문항 (동일, `--repeat 2`) | `artifacts/runs/20261020-152756_fake_after-rag/` | 34/40 = 0.8500, macro-F1 0.8521, 재현성 identical |
 | 하네스 E2E before | 2026-10-20 15:32 | `fake`, `RAG_ENABLED=false` | E2E 5문항 (`--mode e2e`) | `artifacts/runs/20261020-153204_fake_before-rag/` | 1/5 = 0.2000, p50 750.76ms |
 | 하네스 E2E after | 2026-10-20 15:32 | `fake`, `RAG_ENABLED=true` | E2E 5문항 (동일) | `artifacts/runs/20261020-153211_fake_after-rag/` | 5/5 = 1.0000, p50 819.73ms |
+| 회귀 before | 2026-10-20 | `fake`, 라우팅 정규식 수정 전 | 회귀 질의 10문항 (`eval/run_regression_queries.py`) | `eval/regression_queries_before.json` | 3/10 |
+| 회귀 after | 2026-10-20 | `fake`, 라우팅 수정 후 | 회귀 질의 10문항 (동일) | `eval/regression_queries.json` | 10/10 (keyword 경로만 9/10) |
 
 | 지표 | before | after | 차이 | 측정 조건 |
 |---|---|---|---|---|
@@ -216,4 +220,5 @@ PDF 11–12쪽에 제시된 개선 예시(채택 여부 미정, 후보 풀):
 | 2026-10-20 | **제출 산출물 작성** — 결과 보고서(MD+PDF), 발표자료(슬라이드 10장 HTML·PDF·PPTX + 구성안), 아키텍처 다이어그램, 시연 캡처 3장. 스프레드시트 입력용으로 `skala-tasks/w14-ai-agent/`에 복사 | `doc/reports/{result_report.md,result_report.pdf,presentation*,images/}`, `doc/design/architecture.html`, `doc/tools/{md2html.py,build_pptx.py,capture_ui.mjs}`, `skala-tasks/w14-ai-agent/` | 스프레드시트에 보고서 본문·주소 입력 → 발표 리허설 |
 | 2026-10-20 | **산출물·디렉토리 정리** — 조사 후 일괄 정리: 생성물 삭제(`.archify` 3.0M·`__pycache__`·`.pytest_cache`·`artifacts/captures`·중복 PDF·인덱스 캐시), 매뉴얼 이미지 PNG→JPEG 압축(5.2MB→1.6MB), 세션 DB를 `var/session.db`로 이동(P2), 배포 zip 제외 규칙 보강·재생성(5.2MB→1.9MB), 아키텍처 영수증 `artifacts/design/` 분리 | `doc/artifact_management_design.md` v0.3, `git status`, `unzip -l all_total_vue_student.zip`, 세션 저장소 재오픈 이력 확인, pytest 50개 통과 | 스프레드시트에 보고서 본문·주소 입력 → 발표 리허설 |
 | 2026-10-20 | **최종 보완·마무리** — 루트 README를 개선 내용 기준으로 전면 개편, `sh/AGENTS.md`에 세션 DB 경로·zip 제외 규칙 기록, 스프레드시트 입력용 본문(`doc/reports/spreadsheet_input.md`)과 발표 리허설 체크리스트 추가, 제출 폴더 7개 파일 동기화. 정리 후 전 기능 재검증: 테스트 50개 통과·프로파일 검증 3건 PASS·E2E 5개 체크 PASS·분류 측정 동일 수치 재현(0.3250→0.8500, 재현성 identical) | `README.md`, `sh/AGENTS.md`, `doc/reports/spreadsheet_input.md`, `doc/reports/presentation_outline.md`, `eval/e2e_probe_final.json` | 스프레드시트 붙여넣기·주소 등록 → 발표 리허설 |
+| 2026-10-20 | **과제 PDF 재확인 → 회귀 질의 발견·수정** — PDF 9쪽 "아래 예시들로 테스트" 요구를 실제 서버로 수행(`eval/run_regression_queries.py`, 서버 재시작 포함). **10개 중 3개만 통과** → 원인은 결정론 백엔드의 라우팅 정규식(7개 키워드)이었다. 실제 LLM 백엔드와 같은 운영 어휘로 넓히고 시스템명 언급 시 incident로 가게 수정. 단위 테스트로 고정(`tests/unit/test_router.py`) | `eval/run_regression_queries.py`, `eval/regression_queries_before.json`(3/10) → `eval/regression_queries.json`(10/10), `eval/regression_queries_rag_off.json`(keyword 9/10), `agent/fake_llm.py`, `doc/regression_test_queries.md` §실행 결과 | 스프레드시트 붙여넣기·주소 등록 → 말하기 리허설 |
 | 2026-10-20 | **발표 리허설 검증(기계 가능 범위)** — `eval/check_reported_numbers.py`로 슬라이드·보고서·README·체크리스트에 적힌 수치 13개가 측정 원본과 일치하는지 대조(13/13 PASS). 검사 중 **원본 매핑 오류 1건**(extended coverage를 base 실행에서 읽음) 발견·수정, 폴백률 15.00% 표기 추가. 시연 4단계 실측(총 3초: high-latency·queue-backlog·billing-service 폴백) | `eval/check_reported_numbers.py`, `eval/reported_numbers_check.json`, `doc/reports/rehearsal_log.md`, `doc/reports/presentation.html`(슬라이드 8 수정) | 스프레드시트 붙여넣기·주소 등록 → 말하기 리허설 1회 |

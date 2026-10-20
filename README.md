@@ -13,7 +13,8 @@ FastAPI(:8100) + LangGraph v2 + MCP 2서버 구조이고, 브라우저 채팅 �
 |---|---|---|
 | 1 | **RAG 기반 RunBook 선택** | 키워드 첫 매칭(`agent/graph.py::_classify_incident_type`) → 런북 임베딩 의미 검색(`agent/rag/`). 확신이 없으면 기존 keyword 경로로 폴백 |
 | 2 | **데이터 확장** | 모니터링 시스템 6→12, 런북 6→10(신규 유형 4종). 파일 선택은 `agent/data_profile.py` 한 곳에서만 |
-| 3 | **평가 하네스** | 실행 1회 = `artifacts/runs/<run_id>/` 폴더 1개(`eval/run_eval.py`), 지표 모듈(`eval/metrics.py`), 테스트 50개(`tests/`) |
+| 3 | **평가 하네스** | 실행 1회 = `artifacts/runs/<run_id>/` 폴더 1개(`eval/run_eval.py`), 지표 모듈(`eval/metrics.py`), 테스트 65개(`tests/`) |
+| 4 | **라우팅 기준 확대** | 회귀 질의를 돌리다 발견: 결정론 백엔드의 라우팅 정규식이 좁아 PDF 9쪽 예시 질의 7개가 `chat`으로 떨어졌다. 기준을 실제 LLM 백엔드와 같은 운영 어휘로 넓힘 |
 
 ### 측정 결과 (같은 입력·같은 백엔드·같은 조건 2회 실행)
 
@@ -22,6 +23,7 @@ FastAPI(:8100) + LangGraph v2 + MCP 2서버 구조이고, 브라우저 채팅 �
 | 40문항 분류 정확도 | 13/40 = 0.3250 | **34/40 = 0.8500** |
 | macro-F1 | 0.2836 | **0.8521** |
 | E2E 5문항(실서버) | 1/5 = 0.2000 | **5/5 = 1.0000** |
+| 회귀 질의 10문항 | 3/10 (라우팅 정규식으로 incident 미진입) | **10/10** |
 | 분류 지연 p50 | 0.0ms | 32.43ms (임베딩 1회) |
 
 원본은 `artifacts/runs/`, 주장↔증거 대조표는 `doc/reports/evidence/index.md`에 있다.
@@ -48,6 +50,7 @@ bash sh/run_frontend.sh    # 채팅 화면 (:8600)
 .venv/bin/python eval/run_eval.py --variant after-rag  --profile extended --repeat 2
 .venv/bin/python eval/make_before_after.py --pair <before> <after>          # 비교표 자동 생성
 .venv/bin/python eval/check_reported_numbers.py                              # 문서 수치 ↔ 원본 일치 검사
+.venv/bin/python eval/run_regression_queries.py --rag on                        # 회귀 질의 10개(서버 재시작 포함)
 ```
 
 측정 조건(백엔드·프로파일·임계값·데이터 해시·git 상태)은 실행마다 `artifacts/runs/<run_id>/manifest.json`에 남는다.

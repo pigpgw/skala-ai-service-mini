@@ -24,7 +24,12 @@
 2. 데이터 확장
    - 모니터링 시스템 6종 → 12종, 런북 6종 → 10종(신규 유형 4종: queue-backlog, cert-expiry, connection-pool, replication-lag)
    - 파일 선택은 agent/data_profile.py 한 곳에서만(DATA_PROFILE=base|extended). 기존 monitoring.json은 기준선으로 보존
-3. 평가 하네스
+3. 라우팅 기준 확대
+   - 회귀 질의(PDF 9쪽) 10개를 돌리다 발견: 결정론 백엔드의 라우팅 정규식이 좁아
+     예시 질의 7개가 chat으로 떨어져 장애 파이프라인이 돌지 않았다. 실제 LLM 백엔드와
+     같은 운영 어휘로 기준을 넓히고, 시스템명이 있으면 incident로 간다
+   - 회귀 통과 3/10 → 10/10 (잡담·세션 기억 질문은 chat 유지)
+4. 평가 하네스
    - 실행 1회 = artifacts/runs/<run_id>/ 폴더 1개(manifest·metrics·requests/responses jsonl)
    - accuracy·macro-F1·혼동행렬·지연 percentile을 eval/metrics.py로 계산, 테스트 50개(unit·integration)
 
@@ -38,6 +43,7 @@ Before와 After는 같은 입력·같은 데이터·같은 임계값에서 실�
 | 40문항 분류 정확도 | 13/40 = 0.3250 | 34/40 = 0.8500 | +0.5250 |
 | macro-F1 | 0.2836 | 0.8521 | +0.5685 |
 | E2E 5문항 (실서버 :8100) | 1/5 = 0.2000 | 5/5 = 1.0000 | +0.8000 |
+| 회귀 질의 10문항 (PDF 9쪽) | 3/10 | 10/10 | +0.7000 |
 | 폴백률(keyword로 내려간 비율) | 100.00% | 15.00% | −85.00%p |
 | 분류 지연 p50 | 0.0ms | 32.43ms | +32.43ms |
 | E2E 요청 지연 p50 | 750.76ms | 819.73ms | +68.97ms |
@@ -68,7 +74,8 @@ artifacts/runs/20261020-153204_fake_before-rag, artifacts/runs/20261020-153211_f
 ## 6. 제출 전 확인한 것
 
 - 문서에 적힌 수치 13개가 측정 원본과 일치함을 기계 대조로 확인 (eval/check_reported_numbers.py, 13/13)
-- 테스트 50개 통과, E2E 5개 항목 PASS, 같은 조건 2회 실행 결과 동일(재현성)
+- 테스트 65개 통과, E2E 5개 항목 PASS, 같은 조건 2회 실행 결과 동일(재현성)
+- 회귀 질의 10개 통과(서버 재시작 후 세션 기억 포함) — eval/regression_queries.json
 - 시연 순서 4단계 실측(총 3초) — 기록: doc/reports/rehearsal_log.md
 
 ## 7. 참고 링크

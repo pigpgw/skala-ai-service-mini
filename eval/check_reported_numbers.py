@@ -80,20 +80,33 @@ CLAIMS = [
      ["슬라이드", "보고서", "스프레드시트본문", "체크리스트"]),
     ("재현성 동일", RUN_AFTER, "reproducibility.identical", "{}",
      ["체크리스트"]),
+    ("회귀 질의 통과 (라우팅 수정 후)", "regression_queries", "passed+total", "{}",
+     ["슬라이드", "보고서", "스프레드시트본문", "README", "체크리스트"]),
+    ("회귀 질의 통과 (라우팅 수정 전)", "regression_queries_before", "passed+total", "{}",
+     ["보고서", "스프레드시트본문", "체크리스트"]),
 ]
 
 
-def _load(run_id: str) -> dict | None:
-    summary = SUMMARY_DIR / f"{run_id}.json"
-    if summary.is_file():
-        return json.loads(summary.read_text(encoding="utf-8"))
-    manifest = RUNS_DIR / run_id / "manifest.json"
-    if manifest.is_file():
-        return json.loads(manifest.read_text(encoding="utf-8"))
+def _load(source: str) -> dict | None:
+    """원본 후보: evidence/metrics/<id>.json → eval/<id>.json → artifacts/runs/<id>/manifest.json"""
+    candidates = [
+        SUMMARY_DIR / f"{source}.json",
+        REPO_ROOT / "eval" / f"{source}.json",
+        RUNS_DIR / source / "manifest.json",
+    ]
+    for candidate in candidates:
+        if candidate.is_file():
+            return json.loads(candidate.read_text(encoding="utf-8"))
     return None
 
 
 def _dig(payload: dict, path: str):
+    """'a.b' → 값, 'a+b' → 두 값을 '/'로 연결(예: passed+total → '10/10')."""
+    if "+" in path:
+        left, right = (_dig(payload, part) for part in path.split("+", 1))
+        if left is None or right is None:
+            return None
+        return f"{left}/{right}"
     node = payload
     for key in path.split("."):
         if not isinstance(node, dict) or key not in node:

@@ -8,6 +8,17 @@ import re
 
 from langsmith import traceable
 
+# 라우팅 기준 — 실제 LLM 백엔드(ollama/openai)의 분류 프롬프트와 같은 운영 어휘를 쓴다.
+# "장애·성능 저하·지연·진단·모니터링·티켓" + 증상 표현(원인·증가·오류·느려 등).
+_INCIDENT_PATTERN = re.compile(
+    r"장애|진단|다운|지연|급증|급락|incident|티켓|원인|저하|증가|올라가|불안정|"
+    r"실패|오류|에러|문제|느려|느려지|멈췄|끊|모니터링|점검|부하|증상|"
+    r"응답|타임아웃|cpu|메모리|디스크|커넥션|conn|pool"
+)
+
+# 조사 대상 시스템명(web-01, payments-service …). 이름이 나오면 장애 문맥이다.
+_SYSTEM_NAME_PATTERN = re.compile(r"[a-z][a-z0-9-]+-(?:service|\d+)")
+
 
 class FakeLLM:
     def __init__(self, name: str, usd_per_1k_tokens: float):
@@ -25,8 +36,18 @@ class FastLLM(FakeLLM):
 
     @traceable(run_type="llm", name="fast_llm.route")
     def route(self, query: str) -> tuple[dict, dict]:
-        """Wave 5 — 쿼리 라우팅. 장애 관련이면 incident 파이프라인, 아니면 chat 직행."""
-        incident = bool(re.search(r"장애|진단|다운|지연|급증|incident|티켓", query))
+        """Wave 5 — 쿼리 라우팅. 장애 관련이면 incident 파이프라인, 아니면 chat 직행.
+
+        라우팅 기준을 넓힌 이유 (2026-10-20, 회귀 질의 세트 실행에서 발견)
+            실제 LLM 백엔드(ollama/openai)는 "장애·성능 저하·지연·진단·모니터링·티켓"을
+            프롬프트로 분류한다. 그런데 결정론 백엔드(fake)는 정규식 7개짜리였고,
+            그 정규식에 걸리지 않는 매뉴얼 9쪽 예시 질의가 **chat으로 바로 가버렸다.**
+            → 매뉴얼이 알려준 질의로 자기 자신을 테스트할 수 없는 상태였다.
+            그래서 LLM 백엔드의 분류 기준과 같은 운영 어휘로 정규식을 넓혔다.
+            여기에 더해 **모니터링 대상 시스템명이 있으면** incident로 간다
+            ("billing-service 응답이 느려요"처럼 목록에 없는 시스템도 물음표로 보는 게 맞다).
+        """
+        incident = bool(_INCIDENT_PATTERN.search(query)) or bool(_SYSTEM_NAME_PATTERN.search(query))
         result = {"route": "incident" if incident else "chat", "needs_analysis": False}
         return result, self._usage(query, str(result))
 

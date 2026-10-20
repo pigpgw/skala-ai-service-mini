@@ -48,6 +48,15 @@
 - 노드에서 `os.environ`을 직접 읽지 않는다. 환경에 따라 달라지는 값은 lifespan에서 한 번 읽어 deps로 넘긴다.
 - LLM 인스턴스는 `server.py::_build_llms`에서만 만든다. 노드·그래프 안에서 새로 만들면 요청마다 비용과 지연이 늘고 "프로세스당 1회 생성"(Wave 1) 검증이 깨진다.
 
+## 라우팅 기준 (2026-10-20 변경)
+
+`fake_llm.py::route`의 incident 판정 기준은 `장애|진단|다운|지연|급증|incident|티켓`에서
+운영 어휘 전체로 넓혔고, **모니터링 대상 시스템명이 있으면** incident로 간다.
+이유는 `doc/regression_test_queries.md`의 회귀 질의를 돌리다 발견한 것 —
+넓히기 전에는 PDF 9쪽 예시 질의 7개가 `chat`으로 떨어져 장애 파이프라인이 돌지 않았다.
+실제 LLM 백엔드(ollama/openai)는 프롬프트로 분류하므로 이 차이가 없다.
+잡담·세션 기억 질문은 계속 `chat`이다. 기준은 `tests/unit/test_router.py`가 고정한다.
+
 ## LLM 백엔드
 
 - `fake`/`ollama`/`openai`는 같은 메서드 집합과 `usd_per_1k_tokens`를 유지한다. 이 계약이 있어야 백엔드를 바꿔도 비용 지표를 같은 기준으로 비교할 수 있다.

@@ -107,7 +107,26 @@ B10·B11 오분류가 "질의를 안 본 것"이었기 때문입니다.
 
 ![확장 데이터로 처음 조사되는 search-service의 큐 적체 대응](./images/02_chat_queue_backlog.png)
 
-### 2.3 평가 하네스
+### 2.3 라우팅 기준 확대 — 회귀 질의를 돌리다 발견한 것
+
+마지막에 과제 PDF 9쪽이 알려준 회귀 질의 10개를 실제로 서버에 던졌다
+(`eval/run_regression_queries.py`). **10개 중 3개만 통과**했다.
+
+원인은 판정이 아니라 입구였다. 결정론 백엔드(`agent/fake_llm.py`)의 라우팅 정규식이
+`장애|진단|다운|지연|급증|incident|티켓` 7개짜리였는데, PDF가 알려준 질의 중
+7개가 그 정규식에 걸리지 않았다. 걸리지 않으면 `chat`으로 떨어져
+**장애 파이프라인이 아예 돌지 않았다.** "안녕하세요! 무엇을 도와드릴까요?"만 답한 것이다.
+
+즉 과제가 알려준 테스트 질의로 자기 자신을 테스트할 수 없는 상태였다.
+실제 LLM 백엔드(ollama/openai)는 "장애·성능 저하·지연·진단·모니터링·티켓"을 프롬프트로
+분류하므로 이 문제가 없는데, 결정론 백엔드만 좁았다.
+
+그래서 라우팅 기준을 LLM 백엔드와 같은 운영 어휘로 넓히고, **모니터링 대상 시스템명이
+있으면** incident로 가게 했다(목록에 없는 `billing-service`도 포함 — 8번 질의의 의도대로).
+잡담("안녕, 너는 누구야?")과 세션 기억 질문은 그대로 chat이다. 동작은
+`tests/unit/test_router.py`로 고정했다.
+
+### 2.4 평가 하네스
 
 앞으로 무엇을 바꾸더라도 "좋아졌다"를 말할 수 있게 측정 기반을 먼저 만들었습니다.
 
@@ -141,6 +160,7 @@ Before와 After는 입력·데이터·임계값을 모두 같게 두고 실행�
 | 증상·데이터 불일치 문항 | 0/10 | 5/10 | +0.5 |
 | 시스템명 없는 문항 | 1/10 | 9/10 | +0.8 |
 | E2E(실서버 5문항) | 1/5 = 0.2000 | 5/5 = 1.0000 | +0.8000 |
+| 회귀 질의 10문항(PDF 9쪽) | 3/10 | 10/10 | +0.7000 |
 | 폴백률(keyword) | 100.00% | 15.00% | −85.00%p |
 | 분류 지연 p50 | 0.0ms | 32.43ms | +32.43ms |
 | E2E 요청 지연 p50 | 750.76ms | 819.73ms | +68.97ms |
@@ -222,7 +242,8 @@ RAG가 확신을 갖지 못해 keyword 경로로 내려갑니다.
 | 그래프 연결 | `agent/graph.py::_select_incident_type()`, `replan_check_node` |
 | 데이터 프로파일 | `agent/data_profile.py`, `data/monitoring_extended.json` |
 | 평가 하네스 | `eval/run_eval.py`, `eval/metrics.py`, `eval/make_before_after.py` |
-| 테스트 | `tests/unit/`, `tests/integration/` (50개) |
+| 테스트 | `tests/unit/`, `tests/integration/` (65개) |
+| 회귀 질의 실행기 | `eval/run_regression_queries.py` (서버 재시작 포함) |
 | 측정 원본 | `artifacts/runs/<run_id>/` (재생성 가능, 커밋 대상 아님) |
 | 근거 대조표 | `doc/reports/evidence/index.md`, `before_after.md` |
 | 설계 문서 | `doc/rag_design.md`, `doc/evaluation-checklist.md` |

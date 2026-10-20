@@ -18,6 +18,7 @@
 | 9 | 논리 변경은 테스트로 고정했다 | 테스트 50개 통과 (`pytest`) | `tests/unit/`, `tests/integration/` | `.venv/bin/python -m pytest` | 2026-10-20 |
 | 10 | 프로파일 값이 MCP subprocess까지 전달된다 | base 6시스템 / extended 12시스템, `billing-service`는 계속 unknown | `eval/profile_probe.json`, `tests/integration/test_mcp_server.py` | `.venv/bin/python eval/run_profile_probe.py` | 2026-10-20 |
 | 11 | 문서에 적힌 수치가 측정 원본과 일치한다 | 13개 주장 13/13 PASS (정확도·macro-F1·E2E·지연·커버리지·폴백률·재현성) | `eval/reported_numbers_check.json`, `doc/reports/rehearsal_log.md` | `.venv/bin/python eval/check_reported_numbers.py` | 2026-10-20 |
+| 13 | 라우팅 정규식 때문에 과제 PDF 9쪽 예시 질의가 incident로 가지 않았다 | 회귀 3/10 → 10/10 (수정 후 keyword 경로는 9/10 — #4는 규칙 순서 결함) | `eval/regression_queries_before.json`, `eval/regression_queries.json`, `doc/regression_test_queries.md` | `.venv/bin/python eval/run_regression_queries.py --rag on` | 2026-10-20 |
 | 12 | 시연 경로가 실제로 동작한다 | health 0.03s · 채팅 3건 1.29s/0.81s/0.80s (high-latency·queue-backlog·billing-service 폴백) | `doc/reports/rehearsal_log.md`, `var/logs/rehearsal.log` | 서버 기동 후 위 4개 명령 실행 | 2026-10-20 |
 
 ## 이전 실행(인용하지 않음)
