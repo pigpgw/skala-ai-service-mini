@@ -135,3 +135,36 @@
 **"폴백이 많아져서 RAG가 안 쓰이는 건 아닌가요?**
 40문항 중 6건(15%)만 keyword로 내려왔고, 나머지 34건은 RAG 판정을 따랐습니다.
 내려간 6건은 1·2위 유사도 차이가 0.0155, 0.0000처럼 사실상 동점이었던 경우입니다.
+
+---
+
+## 리허설 체크리스트 ( 발표 전날 30분 )
+
+### 준비 (5분)
+
+- [ ] `.venv/bin/python -m pytest` — 50개 통과 확인
+- [ ] `bash sh/run_agent_ollma.sh` 기동 → `curl -s localhost:8100/health` 에 `rag.enabled=true`, `docs=10`, `data_profile=extended` 확인
+- [ ] `bash sh/run_frontend.sh` 기동 → 브라우저에서 `http://localhost:8600` 확인
+- [ ] 발표자료 PDF/PPTX 두 벌 열어서 확인 (PDF가 기준, PPTX는 편집용)
+- [ ] `doc/reports/spreadsheet_input.md` 복사해 스프레드시트에 붙여넣기 + 보고서 주소 등록
+
+### 시연 3분 (실제로 세 번 쳐본다)
+
+- [ ] `curl -s localhost:8100/health | grep -A3 rag` — 임베더·인덱스·임계값 보여주기
+- [ ] 채팅 1: "auth-service 로그인 응답이 p95 2.4초로 느려졌어요, 원인 진단해주세요" → high-latency
+- [ ] 채팅 2: "search-service 인덱싱 큐가 1만 2천 건 밀렸어요, 원인 진단해주세요" → queue-backlog (신규 유형)
+- [ ] 채팅 3: "billing-service 장애 긴급합니다" → unknown + keyword 폴백
+- [ ] 채팅 0(잡담): "안녕하세요" → chat 라우트로 빠지는 것도 확인
+
+### 말하기 (10분)
+
+- [ ] 슬라이드 7(결과)을 소리 내어 읽어 숫자 확인: 0.3250 → 0.8500, macro-F1 0.2836 → 0.8521, +32.43ms
+- [ ] 슬라이드 8(해석)에서 **"데이터 확장은 정확도를 올리지 못했다"**를 먼저 말한다 (좋아 보이는 순서로 말하지 않기)
+- [ ] 예상 질문 4개에 한 줄씩 답을 정해 둔다
+- [ ] Git 주소와 근거 파일 경로(`doc/reports/evidence/index.md`)를 한 번 말할 수 있다
+
+### 발표 직전
+
+- [ ] 서버·프론트엔드 정지 (`Ctrl+C`)
+- [ ] 화면 공유 대상이 슬라이드 PDF인지 확인
+- [ ] 제출 폴더(`skala-tasks/w14-ai-agent/`)에 보고서·발표자료가 있는지 확인

@@ -87,11 +87,11 @@ PDF 11–12쪽에 제시된 개선 예시(채택 여부 미정, 후보 풀):
 
 | 평가 항목 | 배점 | 평가 기준 | 완료 판정(증거) | 검증 명령 | 상태 |
 |---|---|---|---|---|---|
-| 기능 구현 완성도 | 30 | 선택한 개선안이 실제로 동작하는가 | 개선 후 실제 요청·응답 기록 1건 이상 | `curl :8100/health`, `curl :8100/version`, `:8600` 채팅 1회 | [ ] |
-| Before/After 실측 비교 | 10 (보너스) | 같은 입력으로 개선 전/후를 돌려 수치로 차이 제시 | before/after 결과 2개 + 비교표 | 두 실행의 결과 파일 대조 | [ ] |
-| 기술 요소 반영 | 30 | Multi-Agent, MCP, RAG, 의존성 주입, LangSmith, 모듈화, 단위 테스트 | 항목별 코드 위치 1줄 + 테스트 실행 결과 | `pytest -q` | [ ] |
-| 한계·트레이드오프 설명 | 20 | 개선이 새로 만든 약점을 스스로 짚었는가 | 부작용 + 그 부작용의 수치 | 보고서 수치 = 측정 원본 | [ ] |
-| 발표 PPT 작성·발표 | 20 | 문제 → 개선 포인트 → Before/After 수치 → 한계·추가 개선 순서 | PPT/PDF 백업 + 리허설 1회 | 파일 열어 순서 확인 | [ ] |
+| 기능 구현 완성도 | 30 | 선택한 개선안이 실제로 동작하는가 | 개선 후 실제 요청·응답 기록 1건 이상 | `curl :8100/health`, `curl :8100/version`, `:8600` 채팅 1회 | [x] `eval/e2e_probe_final.json` 5개 체크 PASS, 시연 캡처 3장 |
+| Before/After 실측 비교 | 10 (보너스) | 같은 입력으로 개선 전/후를 돌려 수치로 차이 제시 | before/after 결과 2개 + 비교표 | 두 실행의 결과 파일 대조 | [x] `artifacts/runs/` 4개(분류 2 + E2E 2), `doc/reports/evidence/before_after.md` |
+| 기술 요소 반영 | 30 | Multi-Agent, MCP, RAG, 의존성 주입, LangSmith, 모듈화, 단위 테스트 | 항목별 코드 위치 1줄 + 테스트 실행 결과 | `pytest -q` | [x] `agent/rag/`, `agent/deps.py`, `agent/graph.py`, `tests/` 50개 통과 |
+| 한계·트레이드오프 설명 | 20 | 개선이 새로 만든 약점을 스스로 짚었는가 | 부작용 + 그 부작용의 수치 | 보고서 수치 = 측정 원본 | [x] 6장 4행(커버리지 비용·margin 2문항·자기평가 라벨 등) |
+| 발표 PPT 작성·발표 | 20 | 문제 → 개선 포인트 → Before/After 수치 → 한계·추가 개선 순서 | PPT/PDF 백업 + 리허설 1회 | 파일 열어 순서 확인 | [~] PPT·PDF·구성안 완성, 리허설만 남음 |
 
 ### 기술 요소 현재 상태 (코드 확인 기준)
 
@@ -162,12 +162,13 @@ PDF 11–12쪽에 제시된 개선 예시(채택 여부 미정, 후보 풀):
 
 ## 7. 발표 (PDF 3쪽, 13쪽)
 
-- [ ] 문제 정의 (개선 전 무엇이 느리거나 틀렸는가)
-- [ ] 개선/추가 포인트 (무엇을 어떻게 바꿨는가)
-- [ ] Before/After 수치 (5장 표 그대로)
-- [ ] 한계와 추가 개선 사항
-- [ ] 코드 설명 준비 (개선 지점마다 파일·함수 위치를 말할 수 있는가)
-- [ ] PPT/PDF 백업, Zoom 발표 리허설 1회
+- [x] 문제 정의 (개선 전 무엇이 틀렸는가) — 슬라이드 2·3, 근거 `eval/baseline_keyword.json` (8/12)
+- [x] 개선/추가 포인트 (무엇을 어떻게 바꿨는가) — 슬라이드 4·5·6, 코드 위치 표는 보고서 2절
+- [x] Before/After 수치 (표 그대로) — 슬라이드 7, 원본 `doc/reports/evidence/before_after.md`
+- [x] 한계와 추가 개선 사항 — 슬라이드 8·9, 보고서 5절
+- [x] 코드 설명 준비 — 슬라이드 4·5·6에 파일·함수 위치 표시 (`agent/rag/*`, `agent/graph.py::_select_incident_type`, `agent/data_profile.py`, `eval/run_eval.py`)
+- [x] PPT/PDF 백업 — `doc/reports/presentation.pptx`·`.pdf`, `skala-tasks/w14-ai-agent/`에 사본
+- [ ] Zoom 발표 리허설 1회 — 절차·체크리스트는 `doc/reports/presentation_outline.md` '리허설 체크리스트'
 
 ---
 
@@ -175,9 +176,9 @@ PDF 11–12쪽에 제시된 개선 예시(채택 여부 미정, 후보 풀):
 
 | # | 요건 | 현재 상태 | 상태 |
 |---|---|---|---|
-| G1 | Git 주소 등록(S5) | `https://github.com/pigpgw/skala-ai-service-mini` — `origin` 설정됨, `main` = `origin/main` = `923514e` (2026-10-20 확인) | [x] |
-| G2 | 제출 코드가 현재 작업 트리와 일치 | 2026-10-20 커밋·푸시 완료 — `923514e..4e7d752` (0~4단계 6커밋), `main` = `origin/main` = `4e7d752`, 작업 트리 clean | [x] |
-| G3 | 결과 보고서(Google Spread) | 보고서 초안 `doc/reports/result_report.md`(+PDF), 발표자료 `doc/reports/presentation.html`·PPTX·구성안, 아키텍처 `doc/design/architecture.html`, 시연 캡처 3장. **스프레드시트 입력·주소 등록은 남음** | [~] |
+| G1 | Git 주소 등록(S5) | `https://github.com/pigpgw/skala-ai-service-mini` — `origin` 설정, `main` = `origin/main` (2026-10-20 확인) | [x] |
+| G2 | 제출 코드가 현재 작업 트리와 일치 | 2026-10-20 커밋·푸시 완료(0~4단계 + 산출물 + 정리), `main` = `origin/main`, 작업 트리 clean | [x] |
+| G3 | 결과 보고서(Google Spread) | 보고서 `doc/reports/result_report.md`(+PDF), **스프레드시트 입력용 본문 `doc/reports/spreadsheet_input.md`**, 발표자료 PDF·PPTX·구성안(리허설 체크리스트 포함), 아키텍처 `doc/design/architecture.html`, 시연 캡처 3장. 제출 폴더 `skala-tasks/w14-ai-agent/`에 사본. **스프레드시트 붙여넣기·주소 등록만 남음** | [~] |
 | G4 | `.env`·`.venv`·`session.db` 미커밋 | `.gitignore`에 포함됨 | [x] |
 | G5 | 생성물(원본 측정·런타임 상태) 미커밋 | `artifacts/`·`var/` 제외됨, `artifacts/README.md`만 예외 커밋 | [x] |
 
@@ -198,3 +199,4 @@ PDF 11–12쪽에 제시된 개선 예시(채택 여부 미정, 후보 풀):
 | 2026-10-20 | **커밋·푸시 완료** — 0~4단계 6커밋(`923514e..4e7d752`), `main` = `origin/main`, 작업 트리 clean. 비밀·상태 파일 미포함 확인(`.env`·`session.db`·`.venv`·`artifacts/`·`var/` 전부 제외, `.env.example`만 존재) | `git push origin main` → `923514e..4e7d752 main -> main`, `git ls-remote origin` = `4e7d752` | S6 결과 보고서 작성(증거 대조표 `doc/reports/evidence/index.md` 인용) |
 | 2026-10-20 | **제출 산출물 작성** — 결과 보고서(MD+PDF), 발표자료(슬라이드 10장 HTML·PDF·PPTX + 구성안), 아키텍처 다이어그램, 시연 캡처 3장. 스프레드시트 입력용으로 `skala-tasks/w14-ai-agent/`에 복사 | `doc/reports/{result_report.md,result_report.pdf,presentation*,images/}`, `doc/design/architecture.html`, `doc/tools/{md2html.py,build_pptx.py,capture_ui.mjs}`, `skala-tasks/w14-ai-agent/` | 스프레드시트에 보고서 본문·주소 입력 → 발표 리허설 |
 | 2026-10-20 | **산출물·디렉토리 정리** — 조사 후 일괄 정리: 생성물 삭제(`.archify` 3.0M·`__pycache__`·`.pytest_cache`·`artifacts/captures`·중복 PDF·인덱스 캐시), 매뉴얼 이미지 PNG→JPEG 압축(5.2MB→1.6MB), 세션 DB를 `var/session.db`로 이동(P2), 배포 zip 제외 규칙 보강·재생성(5.2MB→1.9MB), 아키텍처 영수증 `artifacts/design/` 분리 | `doc/artifact_management_design.md` v0.3, `git status`, `unzip -l all_total_vue_student.zip`, 세션 저장소 재오픈 이력 확인, pytest 50개 통과 | 스프레드시트에 보고서 본문·주소 입력 → 발표 리허설 |
+| 2026-10-20 | **최종 보완·마무리** — 루트 README를 개선 내용 기준으로 전면 개편, `sh/AGENTS.md`에 세션 DB 경로·zip 제외 규칙 기록, 스프레드시트 입력용 본문(`doc/reports/spreadsheet_input.md`)과 발표 리허설 체크리스트 추가, 제출 폴더 7개 파일 동기화. 정리 후 전 기능 재검증: 테스트 50개 통과·프로파일 검증 3건 PASS·E2E 5개 체크 PASS·분류 측정 동일 수치 재현(0.3250→0.8500, 재현성 identical) | `README.md`, `sh/AGENTS.md`, `doc/reports/spreadsheet_input.md`, `doc/reports/presentation_outline.md`, `eval/e2e_probe_final.json` | 스프레드시트 붙여넣기·주소 등록 → 발표 리허설 |

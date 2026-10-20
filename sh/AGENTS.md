@@ -11,7 +11,7 @@
 | `run_agent_ollma.sh` | 백엔드 기동 (`:8100`, `LLM_BACKEND=ollama`) | 없음 |
 | `run_agent_openai.sh` | 백엔드 기동 (`LLM_BACKEND=openai`) | **과금** |
 | `run_frontend.sh` | `web_demo_server.py` 기동 (`:8600`) — 백엔드가 먼저 떠 있어야 함 | 없음 |
-| `make_student_zip.sh` | 배포 zip 생성 (`.env` 제외) | 없음 |
+| `make_student_zip.sh` | 배포 zip 생성 (`.env`·생성물 제외) | 없음 |
 
 ## 작성 규칙
 
@@ -57,6 +57,14 @@ cd "$(dirname "$0")/.."
 - 측정 결과 파일을 스크립트가 덮어쓰기 (측정은 실행별 새 파일로 남긴다)
 - 과금 스크립트에서 y/N 확인 제거
 
-## 갱신 필요 (설계안 9장 P2)
+## 세션 DB 경로 (2026-10-20, 설계 P2)
 
-`make_student_zip.sh`의 제외 목록에 `artifacts`, `var`, `.archify`가 아직 없다. P2에서 폴더가 생기면 함께 추가한다.
+`session.db`는 루트가 아니라 **`var/session.db`**에 있다(런타임 상태는 `var/`에 모은다).
+`run_agent_ollma.sh`·`run_agent_openai.sh`는 기동 전에 `rm -f var/session.db`로 초기화한다.
+경로를 되돌리려면 이 두 스크립트와 `agent/session_store.py`의 `DB_PATH`를 **같은 작업에서** 고친다.
+
+## 배포 zip 제외 규칙 (2026-10-20, 설계 P2)
+
+`make_student_zip.sh`는 `.env`·`.venv`·`__pycache__`·`session.db`·`*.log`에 더해
+`artifacts`(측정 원본)·`var`(런타임 상태)·`.archify`(도구 작업물)·`.pytest_cache`·`.git`·`doc/reports`(제출 산출물)도 제외한다.
+제외 대상을 늘릴 때는 여기를 함께 갱신한다.
