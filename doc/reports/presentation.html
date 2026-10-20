@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>Base AI Agent의 RunBook 선택 개선 — 발표 자료</title>
+<style>
+:root{
+  --ink:#16191d; --muted:#5b6470; --line:#e3e7ee; --soft:#f6f8fb;
+  --accent:#2f5fd0; --accent-soft:#eef3ff; --good:#1f7a4d; --good-soft:#eaf6ef;
+  --warn:#9a5b00; --warn-soft:#fdf3e3;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:#e9edf3; color:var(--ink);
+  font-family:"Pretendard","Apple SD Gothic Neo","Noto Sans KR",-apple-system,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.slide{
+  width:1280px; height:720px; margin:28px auto; background:#fff;
+  padding:56px 64px 46px; position:relative; overflow:hidden;
+  box-shadow:0 8px 30px rgba(20,30,60,.10); border-radius:6px;
+  display:flex; flex-direction:column;
+}
+.kicker{font-size:15px;letter-spacing:.08em;color:var(--accent);font-weight:600;margin-bottom:8px}
+h1{font-size:44px;line-height:1.22;letter-spacing:-.02em;margin-bottom:14px}
+h2{font-size:34px;line-height:1.25;letter-spacing:-.02em;margin-bottom:6px}
+.lead{font-size:19px;color:var(--muted);margin-bottom:26px;line-height:1.55}
+ul{list-style:none;margin-top:6px}
+li{font-size:18.5px;line-height:1.62;margin:11px 0;padding-left:22px;position:relative}
+li::before{content:"";position:absolute;left:2px;top:11px;width:7px;height:7px;border-radius:2px;background:var(--accent)}
+li strong{font-weight:700}
+code{background:var(--soft);border:1px solid var(--line);border-radius:5px;padding:1px 6px;
+     font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:.88em}
+pre{background:#12161c;color:#e6ecf3;border-radius:10px;padding:18px 22px;overflow:hidden;
+    font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:16px;line-height:1.62}
+pre .k{color:#8fb8ff}.pre-c{color:#7f8a99}.pre-s{color:#9ad8a4}
+table{width:100%;border-collapse:collapse;margin-top:14px;font-size:17px}
+th,td{border-bottom:1px solid var(--line);padding:10px 12px;text-align:left}
+th{font-size:14.5px;color:var(--muted);font-weight:600;letter-spacing:.02em;border-bottom:2px solid #cfd6e2}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+tr.up td{color:var(--good);font-weight:600}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.card{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:20px 22px}
+.card h3{font-size:18px;margin-bottom:10px}
+.card.accent{background:var(--accent-soft);border-color:#cddcfb}
+.card.warn{background:var(--warn-soft);border-color:#f0dcb4}
+.metric{display:flex;flex-direction:column;gap:2px}
+.metric .v{font-size:44px;font-weight:700;letter-spacing:-.03em;color:var(--accent)}
+.metric .l{font-size:15px;color:var(--muted)}
+.metric.good .v{color:var(--good)}
+.metric.warn .v{color:var(--warn)}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:18px}
+.foot{position:absolute;left:64px;right:64px;bottom:20px;display:flex;justify-content:space-between;
+      font-size:13px;color:#98a1ad;border-top:1px solid var(--line);padding-top:10px}
+.cover{justify-content:center;background:linear-gradient(160deg,#ffffff 60%,#eef3ff)}
+.cover h1{font-size:56px}
+.cover .sub{font-size:22px;color:var(--muted);margin-bottom:34px}
+.cover .meta{font-size:16px;color:var(--muted);line-height:1.9}
+.badge{display:inline-block;background:var(--accent-soft);color:var(--accent);border:1px solid #cddcfb;
+       border-radius:999px;padding:4px 12px;font-size:14px;margin-right:8px}
+.arrow{color:var(--muted);font-size:16px}
+@media print{
+  body{background:#fff}
+  .slide{box-shadow:none;border-radius:0;margin:0;page-break-after:always;break-after:page}
+  @page{size:1280px 720px;margin:0}
+}
+</style>
+</head>
+<body>
+
+<!-- 1. 표지 -->
+<section class="slide cover">
+  <div class="kicker">AI 서비스 MINI-PROJECT · 과제 1번</div>
+  <h1>Base AI Agent의<br>RunBook 선택 개선</h1>
+  <div class="sub">RAG 기반 RunBook 선택 · 데이터 확장 · 평가 하네스 구축</div>
+  <div class="meta">
+    광주 3반 79번 박건우 · 2026-10-22<br>
+    <span class="badge">FastAPI + LangGraph v2 + MCP</span><span class="badge">all_total_vue_student</span><br>
+    Git: github.com/pigpgw/skala-ai-service-mini
+  </div>
+  <div class="foot"><span>광주 3반 79번 박건우</span><span>1</span></div>
+</section>
+
+<!-- 2. 문제 -->
+<section class="slide">
+  <div class="kicker">문제</div>
+  <h2>장애 유형을 고르는 부분이 틀리고 있었다</h2>
+  <div class="lead">판정 로직이 한 함수에 압축돼 있었고, 규칙 순서가 곧 결과였습니다.</div>
+  <div class="grid2">
+    <div>
+      <pre><span class="pre-c"># agent/graph.py::_classify_incident_type()</span>
+<span class="k">latency</span> → pool → <span class="k">cpu</span> → memory → timeout
+  → network → disk → down
+<span class="pre-c"># 순서대로 보다가 "처음 맞는 것"을 선택</span></pre>
+    </div>
+    <div>
+      <ul>
+        <li><strong>규칙 순서가 증상 우선순위와 무관</strong><br>CPU가 timeout보다 앞에 있어, 타임아웃 질의가 <code>cpu-spike</code>가 됨</li>
+        <li><strong>질의문을 아예 보지 않음</strong><br>"디스크 부족" 신고가 지연 알림에 가려 <code>high-latency</code>가 됨</li>
+        <li><strong>매칭 실패 시 무조건 <code>db-down</code></strong><br>"아무 장애나 db-down 대응을 내놔라"</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>문제 — agent/graph.py::_classify_incident_type</span><span>2</span></div>
+</section>
+
+<!-- 3. 근거 -->
+<section class="slide">
+  <div class="kicker">근거</div>
+  <h2>먼저 고쳐 볼 자리를 찾았다</h2>
+  <div class="lead">고치기 전에, 같은 입력으로 뭐가 틀리는지 고정해서 재기로 했습니다.</div>
+  <div class="metrics">
+    <div class="card metric warn"><span class="v">8/12</span><span class="l">keyword 기준선 정확도 = 0.6667</span></div>
+    <div class="card metric"><span class="v">4개</span><span class="l">오분류 (B07·B09·B10·B11)</span></div>
+    <div class="card metric"><span class="v">0.6667</span><span class="l">eval/baseline_keyword.json</span></div>
+  </div>
+  <ul style="margin-top:22px">
+    <li><strong>B07</strong> — gateway(타임아웃) + payments(CPU)를 함께 조회하면 CPU가 먼저 잡힘</li>
+    <li><strong>B09</strong> — memory 규칙이 disk 규칙보다 앞에 있음</li>
+    <li><strong>B10·B11</strong> — 질의 텍스트를 읽지 않아서 생긴 오분류</li>
+  </ul>
+  <div class="foot"><span>근거 — eval/baseline_keyword.json</span><span>3</span></div>
+</section>
+
+<!-- 4. 개선 1 -->
+<section class="slide">
+  <div class="kicker">개선 1</div>
+  <h2>RunBook 선택을 키워드 규칙 → 임베딩 의미 검색으로</h2>
+  <div class="lead">확신하지 못하면 예전 동작으로 돌아가는 게이트를 두었습니다.</div>
+  <div class="grid2">
+    <div class="card">
+      <h3>판정 5분기 — 실패하면 keyword 폴백</h3>
+      <ul style="font-size:17px">
+        <li>disabled / index_unavailable</li>
+        <li>embed_failed</li>
+        <li>low_score / low_margin</li>
+        <li style="color:var(--accent)"><strong>그 외 → RAG 판정</strong></li>
+      </ul>
+      <p style="font-size:15px;color:var(--muted);margin-top:10px">입력: [사용자 질문][시스템][상태][알림]</p>
+    </div>
+    <div>
+      <ul>
+        <li><code>agent/rag/embedder.py</code> — Ollama qwen3-embedding:0.6b (1024차원)</li>
+        <li><code>agent/rag/index.py</code> — 10문서 인덱스 + JSON 캐시, <code>index_sha256</code> 기록</li>
+        <li><code>agent/rag/classifier.py</code> — 5분기 판정 + 폴백</li>
+        <li><code>agent/graph.py::_select_incident_type()</code> → <code>replan_check_node</code></li>
+        <li>근거 노출: <code>/health.rag</code>, <code>/chat</code> metadata, SSE <code>ReplanCheck</code></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>개선 1 — agent/rag/*, agent/graph.py</span><span>4</span></div>
+</section>
+
+<!-- 5. 개선 2 -->
+<section class="slide">
+  <div class="kicker">개선 2</div>
+  <h2>데이터 확장 — 시스템 6→12, 런북 6→10</h2>
+  <div class="lead">파일 선택을 한 곳으로 모았습니다. 다섯 곳에 흩어져 있었습니다.</div>
+  <div class="grid2">
+    <div>
+      <ul>
+        <li>신규 시스템 6개 — search·notify·session·media·inventory·report-service</li>
+        <li>신규 런북 4개 — <strong>queue-backlog</strong>, <strong>cert-expiry</strong>, <strong>connection-pool</strong>, <strong>replication-lag</strong></li>
+        <li><code>DATA_PROFILE=base|extended</code> — 결정 지점은 <code>agent/data_profile.py</code> 한 곳</li>
+        <li>기존 <code>monitoring.json</code>은 덮어쓰지 않고 기준선으로 보존</li>
+        <li><code>billing-service</code>는 일부러 제외 — 미지 시스템 처리 회귀 검증용</li>
+      </ul>
+    </div>
+    <div class="card accent">
+      <h3>왜 한 곳으로 모았나</h3>
+      <p style="font-size:17px;line-height:1.6">경로가 다섯 곳에 흩어져 있으면 시스템만 늘리고
+      나머지가 6개 목록으로 잘리는 <strong>가짜 확장</strong>이 됩니다.
+      측정이 조용히 틀어지는 경우가 가장 위험하다고 판단했습니다.</p>
+    </div>
+  </div>
+  <div class="foot"><span>개선 2 — agent/data_profile.py, data/monitoring_extended.json</span><span>5</span></div>
+</section>
+
+<!-- 6. 개선 3 -->
+<section class="slide">
+  <div class="kicker">개선 3</div>
+  <h2>평가 하네스 — 실행 1회 = 폴더 1개</h2>
+  <div class="lead">Before/After가 같은 조건인지 확인되려면, 그 조건이 파일로 남아야 했습니다.</div>
+  <div class="grid2">
+    <div>
+      <ul>
+        <li><code>eval/run_eval.py</code> — 실행 1회 = <code>artifacts/runs/&lt;run_id&gt;/</code><br>
+          <span style="font-size:16px;color:var(--muted)">manifest.json(조건·해시·git) · metrics.json · requests/responses jsonl</span></li>
+        <li><code>eval/metrics.py</code> — accuracy · macro-F1 · 혼동행렬 · 지연 percentile</li>
+        <li><code>eval/labels_extended.json</code> — 40문항(10유형 × 4카테고리), <strong>측정 전 동결</strong></li>
+        <li><code>tests/</code> — unit 5종 + integration 2종 = <strong>50개 통과</strong></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>실행 1회의 구조</h3>
+      <pre style="font-size:15px"><span class="k">artifacts/runs/</span>20261020-152756_fake_after-rag/
+  manifest.json   <span class="pre-c">// 조건·해시·git·env</span>
+  metrics.json    <span class="pre-c">// 지표·혼동행렬·오분류</span>
+  requests.jsonl  <span class="pre-c">// 입력 1건 = 1줄</span>
+  responses.jsonl <span class="pre-c">// 출력 1건 = 1줄</span>
+  notes.md        <span class="pre-c">// 관찰 기록</span></pre>
+    </div>
+  </div>
+  <div class="foot"><span>개선 3 — eval/run_eval.py, eval/metrics.py, tests/</span><span>6</span></div>
+</section>
+
+<!-- 7. 결과 -->
+<section class="slide">
+  <div class="kicker">결과</div>
+  <h2>Before / After — 같은 조건, 같은 입력</h2>
+  <div class="lead" style="margin-bottom:8px">fake 백엔드 · DATA_PROFILE=extended · qwen3-embedding:0.6b · 임계값 0.50 / 0.03</div>
+  <table>
+    <thead><tr><th>지표</th><th class="num">Before (keyword)</th><th class="num">After (RAG)</th><th class="num">차이</th></tr></thead>
+    <tbody>
+      <tr class="up"><td>40문항 정확도</td><td class="num">13/40 = 0.3250</td><td class="num">34/40 = 0.8500</td><td class="num">+0.5250</td></tr>
+      <tr class="up"><td>macro-F1</td><td class="num">0.2836</td><td class="num">0.8521</td><td class="num">+0.5685</td></tr>
+      <tr class="up"><td>E2E 5문항 (실서버)</td><td class="num">1/5 = 0.2000</td><td class="num">5/5 = 1.0000</td><td class="num">+0.8000</td></tr>
+      <tr><td>분류 지연 p50</td><td class="num">0.0ms</td><td class="num">32.43ms</td><td class="num">+32.43ms</td></tr>
+      <tr><td>E2E 요청 지연 p50</td><td class="num">750.76ms</td><td class="num">819.73ms</td><td class="num">+68.97ms</td></tr>
+      <tr><td>비용</td><td class="num">$0.000000</td><td class="num">$0.000000</td><td class="num">0 (로컬)</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:16px;color:var(--muted);margin-top:14px">
+    신규 4유형 F1 — queue-backlog 0.000<span class="arrow">→</span><strong>1.000</strong>,
+    cert-expiry 0.000<span class="arrow">→</span><strong>1.000</strong>,
+    connection-pool 0.000<span class="arrow">→</span><strong>1.000</strong>,
+    replication-lag 0.000<span class="arrow">→</span><strong>0.857</strong></p>
+  <div class="foot"><span>결과 — artifacts/runs/20261020-152756_fake_*, doc/reports/evidence/before_after.md</span><span>7</span></div>
+</section>
+
+<!-- 8. 해석 -->
+<section class="slide">
+  <div class="kicker">해석</div>
+  <h2>좋았던 것과, 안 좋았던 것</h2>
+  <div class="grid2">
+    <div class="card warn">
+      <h3>데이터 확장은 정확도를 올리지 못했다</h3>
+      <p style="font-size:17px;line-height:1.6">base 34/40 ≡ extended 34/40 — 문항 단위로 동일.
+      라벨이 질의에 증상을 적어 둬서 RAG가 질의만 읽어도 맞고, 시스템 알림은 중복 신호가 됐습니다.
+      <strong>그래서 "확장으로 정확도 상승"이라고 쓰지 않았습니다.</strong></p>
+      <p style="font-size:16px;color:var(--muted);margin-top:8px">대신 조사 커버리지(unknown) 18.75% → 0%</p>
+    </div>
+    <div class="card warn">
+      <h3>margin 게이트는 2문항을 아꼈다</h3>
+      <p style="font-size:17px;line-height:1.6">임계값을 0.00으로 풀면 36/40이 되지만,
+      그 2문항은 1·2위 유사도 차이가 0.0155·0.0000인 동점입니다.
+      1단계에서 정답이 뒤집힌 사례도 이런 동점이었습니다.</p>
+      <p style="font-size:16px;color:var(--muted);margin-top:8px">0.03 유지 + 비용 2문항 기록</p>
+    </div>
+  </div>
+  <div class="card accent" style="margin-top:18px">
+    <p style="font-size:18px;line-height:1.6"><strong>RAG의 비용은 임베딩 1회 호출입니다.</strong>
+    분류 1건당 +32.43ms, 실서버 요청 전체로는 +68.97ms — 요청 시간의 약 9% 수준이었습니다.</p>
+  </div>
+  <div class="foot"><span>해석 — doc/rag_design.md §9.3·§9.4</span><span>8</span></div>
+</section>
+
+<!-- 9. 한계 -->
+<section class="slide">
+  <div class="kicker">한계</div>
+  <h2>아직 확인하지 않은 것</h2>
+  <div class="grid2">
+    <div>
+      <ul>
+        <li><strong>40문항 라벨을 제가 만들었다</strong> — 자기 평가라서 카테고리별로 나눠서 보고했습니다. 전체 수치로 일반화하지 않습니다</li>
+        <li><strong>keyword 폴백 규칙은 그대로</strong> — 신규 유형마다 함께 갱신해야 합니다</li>
+        <li><strong>비용 0은 로컬 백엔드 때문</strong> — 실 API 비용은 별도 측정 필요</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>다음에 확인할 것</h3>
+      <ul style="font-size:17.5px">
+        <li>실제 장애 티켓·운영 로그로 라벨 세트 재구축</li>
+        <li>동시 요청 부하에서의 지연 측정</li>
+        <li>실 OpenAI 백엔드로 비용·지연 재측정</li>
+        <li>keyword 규칙 우선순위를 데이터 기반으로 재설계할지 판단</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>한계 — doc/evaluation-checklist.md §6</span><span>9</span></div>
+</section>
+
+<!-- 10. 시연·정리 -->
+<section class="slide">
+  <div class="kicker">시연 · 정리</div>
+  <h2>판정을 바꾼 게 아니라,<br>판단의 근거를 남기고 측정할 수 있게 바꾼 것</h2>
+  <div class="grid2" style="margin-top:16px">
+    <div class="card">
+      <h3>라이브 데모 (3분)</h3>
+      <ul style="font-size:17px">
+        <li><code>curl -s localhost:8100/health</code> → rag 블록 · 12시스템</li>
+        <li>채팅: auth-service p95 2.4초 → <strong>high-latency</strong></li>
+        <li>채팅: search-service 큐 1.2만 건 → <strong>queue-backlog</strong> (신규 유형)</li>
+        <li>채팅: billing-service 장애 → <strong>unknown + 폴백</strong></li>
+      </ul>
+    </div>
+    <div class="card accent">
+      <h3>그리면</h3>
+      <p style="font-size:18px;line-height:1.65">RAG 도입으로 40문항 정확도 <strong>0.3250 → 0.8500</strong>,
+      macro-F1 <strong>0.2836 → 0.8521</strong>.<br><br>
+      대신 비용 <strong>+32.43ms</strong>, margin 게이트 비용 <strong>2문항</strong>,
+      데이터 확장의 정확도 효과 <strong>0</strong> — 이 한계를 수치 그대로 남겼습니다.</p>
+    </div>
+  </div>
+  <div class="foot"><span>github.com/pigpgw/skala-ai-service-mini</span><span>10</span></div>
+</section>
+
+</body>
+</html>

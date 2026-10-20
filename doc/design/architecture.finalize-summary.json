@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "architecture",
+  "quality": "showcase",
+  "specification": {
+    "path": "/Users/baggeon-u/Desktop/skala/skala-references/w15-ai-service-mini/all_total_vue_student/.archify/architecture-rag-runbook-20261020-155200/candidate.json",
+    "sha256": "5e141cd67428a098b7fe2892a0e6a7f1b95bbfea074b44e9da9981d54d7d6e6c",
+    "bytes": 6694
+  },
+  "artifact": {
+    "path": "/Users/baggeon-u/Desktop/skala/skala-references/w15-ai-service-mini/all_total_vue_student/doc/design/architecture.html",
+    "sha256": "c8a0ff5d68e8acbe5cbf1035accb7b04cb51875e32315a503bc2baafc9d65250",
+    "bytes": 843283
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "/Users/baggeon-u/Desktop/skala/skala-references/w15-ai-service-mini/all_total_vue_student/doc/design/architecture.finalize.json",
+    "summaryReceipt": "/Users/baggeon-u/Desktop/skala/skala-references/w15-ai-service-mini/all_total_vue_student/doc/design/architecture.finalize-summary.json",
+    "browserCheckReceipt": "/Users/baggeon-u/Desktop/skala/skala-references/w15-ai-service-mini/all_total_vue_student/doc/design/architecture.browser-check.json"
+  },
+  "update": {
+    "status": "current",
+    "installedVersion": "3.2.0",
+    "availableVersion": "3.2.0",
+    "releaseNotes": null,
+    "checkedAt": "2026-10-20T01:39:26.613Z",
+    "source": "cache",
+    "noticeRequired": false,
+    "noticeText": null
+  },
+  "visualReview": "not-requested",
+  "durationMs": 2246,
+  "browserCheck": {
+    "requested": true,
+    "ran": true
+  },
+  "visualReviewRecommendation": {
+    "action": "inspect-route-readability",
+    "signals": {
+      "routesOverSuggestedBends": 2
+    },
+    "reason": "Automated gates passed, but crossings or detours still need perceptual review before claiming visual quality.",
+    "affectedRoutes": {
+      "crossings": [],
+      "detours": [
+        {
+          "relationship": {
+            "id": "mcpserver-runbooks",
+            "from": "mcpserver",
+            "to": "runbooks",
+            "label": "Resource",
+            "collectionIndex": 6,
+            "artifactIndex": 7
+          },
+          "bends": 3,
+          "stretch": 1
+        },
+        {
+          "relationship": {
+            "id": "classifier-index",
+            "from": "classifier",
+            "to": "index",
+            "label": "유사도 검색",
+            "collectionIndex": 10,
+            "artifactIndex": 11
+          },
+          "bends": 3,
+          "stretch": 1
+        }
+      ],
+      "truncated": false
+    },
+    "hints": [
+      "mcpserver → runbooks needs 3 bends: move node mcpserver or runbooks so they share a row or column with matching centers, or sit diagonally with a clear corner.",
+      "classifier → index needs 3 bends: move node classifier or index so they share a row or column with matching centers, or sit diagonally with a clear corner."
+    ],
+    "repair": "Trace these relationships at the desktop viewport. For Architecture, use references/architecture-layout-repair.md: reflow a blocked main path or tangled connected scene, and repair an isolated defect locally only when the surrounding composition is accepted. Preserve all semantic content and user-fixed geometry. Rerun finalize once after the edit."
+  }
+}

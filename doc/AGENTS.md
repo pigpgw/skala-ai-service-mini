@@ -15,6 +15,14 @@
 | `reports/evidence/index.md` | 주장 ↔ 증거 ↔ 재현 명령 대조표 | 제출용 근거 |
 | `reports/evidence/before_after.md` | Before/After 표 (원본에서 자동 생성) | 제출용 근거 |
 | `reports/evidence/metrics/*.json` | 원본에서 잘라낸 요약 수치 | 커밋 대상(원본은 `artifacts/`) |
+| `reports/result_report.md` · `.pdf` | 최종 결과 보고서(제출본) | 제출용. 수치는 `evidence/`에서 인용 |
+| `reports/presentation_outline.md` | 발표 구성안·시간 배분·예상 질문 | 발표 준비 |
+| `reports/presentation.html` · `presentation.pdf` | 발표 슬라이드(16:9, 10장) | 제출용 |
+| `reports/images/*.png` | 보고서에 넣는 시연 캡처 | 커밋 대상(원본은 `artifacts/captures/`) |
+| `design/architecture.html` | 개선 시스템 아키텍처 다이어그램 (archify) | 제출용 |
+| `tools/md2html.py` | Markdown → HTML (보고서 PDF 생성) | 도구 |
+| `tools/build_pptx.py` | 발표 HTML → PPTX | 도구 |
+| `tools/capture_ui.mjs` | 실제 브라우저로 시연 화면 캡처 | 도구 |
 | `image_usecase/`, `image_usecase_openai/` | 매뉴얼 캡처 이미지 | P1에서 `doc/assets/`로 이동 예정 |
 
 `README.md`는 강사 제공 매뉴얼이라 내용을 임의로 바꾸지 않는다. 내 판단·실측은 `evaluation-checklist.md`와 별도 보고서에 쓴다. 매뉴얼과 내 문서가 충돌하면 **코드와 실행 결과를 우선**하고, 차이를 체크리스트에 남긴다.

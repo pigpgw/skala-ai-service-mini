@@ -22,7 +22,7 @@ Day1 = 2026-10-20, Day3 = 2026-10-22. 등록처는 Google Spread `https://shortu
 | S3 | Day1 10/20 ~17:00 | 진행 계획(초안) 등록 — 진행 중 수정 가능 | Google Spread | [x] 2026-10-20 등록 |
 | S4 | Day3 10/22 ~14:00 | 계획을 반영한 구현 | – | [x] 0~4단계 구현 완료 |
 | S5 | Day3 10/22 ~14:00 | Git 주소 등록 | Google Spread | [x] `https://github.com/pigpgw/skala-ai-service-mini` |
-| S6 | Day3 10/22 ~14:00 | 결과 보고서 작성 + 보고서 주소 등록 | Google Spread | [ ] |
+| S6 | Day3 10/22 ~14:00 | 결과 보고서 작성 + 보고서 주소 등록 | Google Spread | [~] 초안 완료(Google Spread 등록·주소 입력 필요) |
 | S7 | Day3 10/22 17:30 | 개인별 결과 보고서 발표 (Zoom, 반별 자율 진행) | Zoom | [ ] |
 
 - **S2·S3 등록 완료 (2026-10-20, 사용자 보고)**: 소원 `G079 박건우`, 과제 `1`,
@@ -177,7 +177,7 @@ PDF 11–12쪽에 제시된 개선 예시(채택 여부 미정, 후보 풀):
 |---|---|---|---|
 | G1 | Git 주소 등록(S5) | `https://github.com/pigpgw/skala-ai-service-mini` — `origin` 설정됨, `main` = `origin/main` = `923514e` (2026-10-20 확인) | [x] |
 | G2 | 제출 코드가 현재 작업 트리와 일치 | 2026-10-20 커밋·푸시 완료 — `923514e..4e7d752` (0~4단계 6커밋), `main` = `origin/main` = `4e7d752`, 작업 트리 clean | [x] |
-| G3 | 결과 보고서(Google Spread) | 근거 대조표 `doc/reports/evidence/index.md`, Before/After 표는 준비됨. 보고서 본문 미작성 | [ ] |
+| G3 | 결과 보고서(Google Spread) | 보고서 초안 `doc/reports/result_report.md`(+PDF), 발표자료 `doc/reports/presentation.html`·PPTX·구성안, 아키텍처 `doc/design/architecture.html`, 시연 캡처 3장. **스프레드시트 입력·주소 등록은 남음** | [~] |
 | G4 | `.env`·`.venv`·`session.db` 미커밋 | `.gitignore`에 포함됨 | [x] |
 | G5 | 생성물(원본 측정·런타임 상태) 미커밋 | `artifacts/`·`var/` 제외됨, `artifacts/README.md`만 예외 커밋 | [x] |
 
@@ -196,3 +196,4 @@ PDF 11–12쪽에 제시된 개선 예시(채택 여부 미정, 후보 풀):
 | 2026-10-20 | **4단계 완료** — 통합 하네스(`eval/run_eval.py`: manifest·metrics·requests/responses jsonl, 실행 1회=`artifacts/runs/<run_id>/`), 지표 모듈(`eval/metrics.py`), 테스트 50개(`tests/`), Before/After 표 자동 생성(`eval/make_before_after.py`) → `doc/reports/evidence/`. 40문항 0.3250→0.8500, macro-F1 0.2836→0.8521, E2E 1/5→5/5, 재현성 identical, 분류 지연 +32.43ms | `eval/run_eval.py`, `eval/metrics.py`, `eval/make_before_after.py`, `eval/e2e_cases.json`, `tests/{unit,integration}/`, `pytest.ini`, `requirements-dev.txt`, `artifacts/runs/20261020-1527*`, `artifacts/runs/20261020-1532*`, `doc/reports/evidence/{index.md,before_after.md,metrics/}`, `doc/rag_design.md` §9.4 | 0~4단계 변경 커밋·푸시 → S6 보고서 작성 |
 | 2026-10-20 | **S2·S3·S5 확인** — 소원 G079 박건우, 과제 1번, 등록 문구 "RAG 기반 RunBook 선택 · 데이터 확장 · 평가 하네스 구축", Git 주소 `https://github.com/pigpgw/skala-ai-service-mini` | 사용자 등록 보고, `git remote -v`·`git ls-remote` 확인(origin = 해당 주소, main = origin/main = `923514e`) | 0~4단계 변경 커밋·푸시 → S6 보고서 |
 | 2026-10-20 | **커밋·푸시 완료** — 0~4단계 6커밋(`923514e..4e7d752`), `main` = `origin/main`, 작업 트리 clean. 비밀·상태 파일 미포함 확인(`.env`·`session.db`·`.venv`·`artifacts/`·`var/` 전부 제외, `.env.example`만 존재) | `git push origin main` → `923514e..4e7d752 main -> main`, `git ls-remote origin` = `4e7d752` | S6 결과 보고서 작성(증거 대조표 `doc/reports/evidence/index.md` 인용) |
+| 2026-10-20 | **제출 산출물 작성** — 결과 보고서(MD+PDF), 발표자료(슬라이드 10장 HTML·PDF·PPTX + 구성안), 아키텍처 다이어그램, 시연 캡처 3장. 스프레드시트 입력용으로 `skala-tasks/w14-ai-agent/`에 복사 | `doc/reports/{result_report.md,result_report.pdf,presentation*,images/}`, `doc/design/architecture.html`, `doc/tools/{md2html.py,build_pptx.py,capture_ui.mjs}`, `skala-tasks/w14-ai-agent/` | 스프레드시트에 보고서 본문·주소 입력 → 발표 리허설 |
