@@ -63,6 +63,7 @@ P1은 매뉴얼 이미지 압축(JPEG 전환)만 하고 **경로는 유지**했�
 | `.venv/bin/python eval/run_eval.py --variant after-rag --profile extended --repeat 2` | 개선 후 측정·재현성 확인 |
 | `.venv/bin/python eval/run_eval.py --variant after-rag --mode e2e` | 기동 중인 서버(:8100) 대상 지연·비용 측정 |
 | `.venv/bin/python eval/make_before_after.py --pair <before> <after>` | Before/After 표 생성 → `doc/reports/evidence/` |
+| `.venv/bin/python eval/check_reported_numbers.py` | 문서에 적힌 수치 ↔ 측정 원본 일치 검사 (13/13) |
 
 환경변수로 런타임이 바뀐다 — 측정 조건에 반드시 적는다.
 
@@ -75,6 +76,13 @@ P1은 매뉴얼 이미지 압축(JPEG 전환)만 하고 **경로는 유지**했�
 | `RAG_MIN_SCORE`, `RAG_MIN_MARGIN` | `0.50`, `0.03` | RAG 판정 하한·1·2위 격차 하한 (미달 시 keyword 폴백) |
 | `RAG_EMBEDDER`, `RAG_EMBED_MODEL` | `auto` / `qwen3-embedding:0.6b` | 임베더 선택·모델 (실제 사용값은 `/health.rag`) |
 | `LANGCHAIN_TRACING_V2`, `LANGCHAIN_PROJECT` | `.env` | LangSmith 기록 |
+
+## 최종 상태 (2026-10-20)
+
+- 코드: 0~4단계 구현 + 산출물 + 정리까지 커밋 완료. `main` = `origin/main`, 작업 트리 clean
+- 산출물 색인: `doc/reports/index.md` (제출물 한눈에 보기)
+- 진행 추적: `doc/evaluation-checklist.md` (남은 건은 사용자 몫 2가지: 스프레드시트 등록·말하기 리허설)
+- 검증: 테스트 50개 통과 · 수치 일치 검사 13/13 · E2E 5건 PASS · 같은 조건 2회 실행 재현성 identical
 
 ## 근거 규칙 (평가 대응)
 

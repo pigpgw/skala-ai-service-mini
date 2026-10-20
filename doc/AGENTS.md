@@ -12,11 +12,14 @@
 | `manual_ollma.md`, `manual_openai.md` | 백엔드별 사용법 + 실행 캡처 | 참고 |
 | `regression_test_queries.md` | Before/After 공통 입력(고정 질의 세트) | 측정 기준선 |
 | `rag_design.md` | E1 RAG 설계·임계값·측정 결과 | 설계 + 측정 결과 |
+| `reports/index.md` | 제출 산출물 색인 — 무엇이 어디 있는지, 재현 명령 | 제출용 |
 | `reports/evidence/index.md` | 주장 ↔ 증거 ↔ 재현 명령 대조표 | 제출용 근거 |
 | `reports/evidence/before_after.md` | Before/After 표 (원본에서 자동 생성) | 제출용 근거 |
 | `reports/evidence/metrics/*.json` | 원본에서 잘라낸 요약 수치 | 커밋 대상(원본은 `artifacts/`) |
 | `reports/result_report.md` · `.pdf` | 최종 결과 보고서(제출본) | 제출용. 수치는 `evidence/`에서 인용 |
-| `reports/presentation_outline.md` | 발표 구성안·시간 배분·예상 질문 | 발표 준비 |
+| `reports/presentation_outline.md` | 발표 구성안·시간 배분·예상 질문·리허설 체크리스트 | 발표 준비 |
+| `reports/spreadsheet_input.md` | Google Spread 붙여넣기용 본문 | 제출용 |
+| `reports/rehearsal_log.md` | 리허설 기록(수치 검사 결과·시연 실측) | 발표 준비 |
 | `reports/presentation.html` · `presentation.pdf` | 발표 슬라이드(16:9, 10장) | 제출용 |
 | `reports/images/*.png` | 보고서에 넣는 시연 캡처 | 커밋 대상(원본은 `artifacts/captures/`) |
 | `design/architecture.html` | 개선 시스템 아키텍처 다이어그램 (archify) | 제출용 |

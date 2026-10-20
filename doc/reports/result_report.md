@@ -228,3 +228,9 @@ RAG가 확신을 갖지 못해 keyword 경로로 내려갑니다.
 | 설계 문서 | `doc/rag_design.md`, `doc/evaluation-checklist.md` |
 | 아키텍처 다이어그램 | `doc/design/architecture.html` |
 | 발표자료 | `doc/reports/presentation.html`(+PDF·PPTX), `presentation_outline.md` |
+| 스프레드시트 입력본문 | `doc/reports/spreadsheet_input.md` |
+| 리허설 기록 | `doc/reports/rehearsal_log.md` (수치 일치 검사 13/13, 시연 실측) |
+| 산출물 색인 | `doc/reports/index.md` |
+
+마지막으로 문서에 적힌 수치가 측정 원본과 같은지 기계적으로 대조했다
+(`eval/check_reported_numbers.py`, 13개 주장 13/13 일치).

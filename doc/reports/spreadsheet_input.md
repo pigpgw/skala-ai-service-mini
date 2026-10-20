@@ -65,9 +65,16 @@ artifacts/runs/20261020-153204_fake_before-rag, artifacts/runs/20261020-153211_f
 - 동시 요청 부하에서의 지연 측정
 - 실 OpenAI 백엔드로 비용·지연 재측정
 
-## 6. 참고 링크
+## 6. 제출 전 확인한 것
+
+- 문서에 적힌 수치 13개가 측정 원본과 일치함을 기계 대조로 확인 (eval/check_reported_numbers.py, 13/13)
+- 테스트 50개 통과, E2E 5개 항목 PASS, 같은 조건 2회 실행 결과 동일(재현성)
+- 시연 순서 4단계 실측(총 3초) — 기록: doc/reports/rehearsal_log.md
+
+## 7. 참고 링크
 
 - Git: https://github.com/pigpgw/skala-ai-service-mini
 - 근거 대조표(수치 ↔ 원본 파일 ↔ 재현 명령): doc/reports/evidence/index.md
+- 제출 산출물 색인: doc/reports/index.md
 - 아키텍처 다이어그램: doc/design/architecture.html
 - 발표자료: doc/reports/presentation.pdf (PPTX 동봉)

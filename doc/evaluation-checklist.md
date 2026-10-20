@@ -11,6 +11,19 @@
 
 ---
 
+## 0. 최종 상태 요약 (2026-10-20)
+
+| 항목 | 상태 |
+|---|---|
+| 구현 | 0~4단계 완료 — RAG RunBook 선택 · 데이터 확장(12시스템/10런북) · 평가 하네스 |
+| 코드 | `main` = `origin/main`, 작업 트리 clean, 커밋 파일 141개 / 5.5MB |
+| 측정 | 40문항 0.3250 → 0.8500, macro-F1 0.2836 → 0.8521, E2E 1/5 → 5/5, 재현성 identical |
+| 검증 | 테스트 50개 통과 · 수치 일치 검사 13/13 · E2E 5건 PASS · 프로파일 3건 PASS |
+| 산출물 | 보고서(MD·PDF) · 발표자료(HTML·PDF·PPTX·구성안) · 스프레드시트 본문 · 아키텍처 · 리허설 기록 (색인: `doc/reports/index.md`) |
+| 남은 일 (사용자 몫) | ① 스프레드시트 붙여넣기 + 보고서 주소 등록 ② 말하기 리허설 1회 |
+
+---
+
 ## 1. 일정과 제출 (PDF 3쪽)
 
 Day1 = 2026-10-20, Day3 = 2026-10-22. 등록처는 Google Spread `https://shorturl.at/UfFvw` (소속반 UID·성함 먼저 작성).
@@ -101,9 +114,9 @@ PDF 11–12쪽에 제시된 개선 예시(채택 여부 미정, 후보 풀):
 | MCP | `mcp_server.py`(ops), `mcp_server_docs.py`(decoy), `agent/mcp_client.py` | [x] 코드 있음 |
 | 의존성 주입 | `agent/deps.py`, `server.py:63` lifespan에서 번들 1회 생성 | [x] 코드 있음 |
 | 모듈화 | `agent/` 하위 llm·graph·mcp·retry 분리 | [x] 코드 있음 |
-| LangSmith | `.env.example`의 `LANGCHAIN_TRACING_V2`·`LANGCHAIN_PROJECT` | [~] 실제 trace 캡처 필요 |
+| LangSmith | `.env.example`의 `LANGCHAIN_TRACING_V2`·`LANGCHAIN_PROJECT`, `agent/graph.py` 노드에 `@traceable` | [~] 실 API 키 없는 환경이라 trace 캡처는 미수행(연결만 확인) |
 | RAG | `agent/rag/` — `embedder.py`(Ollama/Hashing), `index.py`(JSON 캐시·무효화), `classifier.py`(5분기+폴백). `deps.rag`로 주입, `graph.py::_select_incident_type`에서 호출 | [x] 2단계 E2E 검증 (`eval/e2e_probe.json`) |
-| 단위 테스트 | `tests/` 없음, pytest 미설치 | [ ] 미착수 |
+| 단위 테스트 | `tests/unit/` 5종 + `tests/integration/` 2종, `pytest.ini`, `requirements-dev.txt` | [x] 50개 통과 |
 
 ---
 
@@ -198,7 +211,7 @@ PDF 11–12쪽에 제시된 개선 예시(채택 여부 미정, 후보 풀):
 | 2026-10-20 | **2단계 완료** — `deps.rag` 주입, `_select_incident_type` 연결, `/health.rag`·`/chat` metadata·SSE `ReplanCheck`에 근거 노출. E2E 3/3, RAG off 시 1/3로 기준선 재현 | `agent/deps.py`, `agent/graph.py`, `server.py`, `eval/run_e2e_probe.py`, `eval/e2e_probe.json`, `eval/e2e_probe_rag_off.json`, `doc/rag_design.md` §9.2 | 3단계 데이터 확장(12시스템·10런북·신규 4타입) |
 | 2026-10-20 | **3단계 완료** — 시스템 6→12, 런북 6→10, `DATA_PROFILE` 일원화(5곳 하드코딩 제거), 40문항 동결·측정. keyword 13/40 → RAG 34/40. 데이터 확장은 정확도 0·coverage 18.75%→0% | `agent/data_profile.py`, `data/monitoring_extended.json`, `data/runbooks/{connection-pool,cert-expiry,replication-lag,queue-backlog}.md`, `eval/labels_extended.json`, `eval/{baseline_extended_keyword,rag_probe_extended,rag_probe_extended_on_base,ablation,profile_probe}.json`, `doc/rag_design.md` §9.3 | 4단계 평가 하네스 정식화(`eval/run_eval.py`, macro-F1, 지연 p50/p95, 재현성) |
 | 2026-10-20 | **4단계 완료** — 통합 하네스(`eval/run_eval.py`: manifest·metrics·requests/responses jsonl, 실행 1회=`artifacts/runs/<run_id>/`), 지표 모듈(`eval/metrics.py`), 테스트 50개(`tests/`), Before/After 표 자동 생성(`eval/make_before_after.py`) → `doc/reports/evidence/`. 40문항 0.3250→0.8500, macro-F1 0.2836→0.8521, E2E 1/5→5/5, 재현성 identical, 분류 지연 +32.43ms | `eval/run_eval.py`, `eval/metrics.py`, `eval/make_before_after.py`, `eval/e2e_cases.json`, `tests/{unit,integration}/`, `pytest.ini`, `requirements-dev.txt`, `artifacts/runs/20261020-1527*`, `artifacts/runs/20261020-1532*`, `doc/reports/evidence/{index.md,before_after.md,metrics/}`, `doc/rag_design.md` §9.4 | 0~4단계 변경 커밋·푸시 → S6 보고서 작성 |
-| 2026-10-20 | **S2·S3·S5 확인** — 소원 G079 박건우, 과제 1번, 등록 문구 "RAG 기반 RunBook 선택 · 데이터 확장 · 평가 하네스 구축", Git 주소 `https://github.com/pigpgw/skala-ai-service-mini` | 사용자 등록 보고, `git remote -v`·`git ls-remote` 확인(origin = 해당 주소, main = origin/main = `923514e`) | 0~4단계 변경 커밋·푸시 → S6 보고서 |
+| 2026-10-20 | **S2·S3·S5 확인** — 소원 G079 박건우, 과제 1번, 등록 문구 "RAG 기반 RunBook 선택 · 데이터 확장 · 평가 하네스 구축", Git 주소 `https://github.com/pigpgw/skala-ai-service-mini` | 사용자 등록 보고, `git remote -v`·`git ls-remote` 확인(origin = 해당 주소, `main` = `origin/main`) | 0~4단계 변경 커밋·푸시 → S6 보고서 |
 | 2026-10-20 | **커밋·푸시 완료** — 0~4단계 6커밋(`923514e..4e7d752`), `main` = `origin/main`, 작업 트리 clean. 비밀·상태 파일 미포함 확인(`.env`·`session.db`·`.venv`·`artifacts/`·`var/` 전부 제외, `.env.example`만 존재) | `git push origin main` → `923514e..4e7d752 main -> main`, `git ls-remote origin` = `4e7d752` | S6 결과 보고서 작성(증거 대조표 `doc/reports/evidence/index.md` 인용) |
 | 2026-10-20 | **제출 산출물 작성** — 결과 보고서(MD+PDF), 발표자료(슬라이드 10장 HTML·PDF·PPTX + 구성안), 아키텍처 다이어그램, 시연 캡처 3장. 스프레드시트 입력용으로 `skala-tasks/w14-ai-agent/`에 복사 | `doc/reports/{result_report.md,result_report.pdf,presentation*,images/}`, `doc/design/architecture.html`, `doc/tools/{md2html.py,build_pptx.py,capture_ui.mjs}`, `skala-tasks/w14-ai-agent/` | 스프레드시트에 보고서 본문·주소 입력 → 발표 리허설 |
 | 2026-10-20 | **산출물·디렉토리 정리** — 조사 후 일괄 정리: 생성물 삭제(`.archify` 3.0M·`__pycache__`·`.pytest_cache`·`artifacts/captures`·중복 PDF·인덱스 캐시), 매뉴얼 이미지 PNG→JPEG 압축(5.2MB→1.6MB), 세션 DB를 `var/session.db`로 이동(P2), 배포 zip 제외 규칙 보강·재생성(5.2MB→1.9MB), 아키텍처 영수증 `artifacts/design/` 분리 | `doc/artifact_management_design.md` v0.3, `git status`, `unzip -l all_total_vue_student.zip`, 세션 저장소 재오픈 이력 확인, pytest 50개 통과 | 스프레드시트에 보고서 본문·주소 입력 → 발표 리허설 |

@@ -1,4 +1,4 @@
-# 산출물 관리 및 폴더 구조 설계 (v0.3)
+# 산출물 관리 및 폴더 구조 설계 (v0.4)
 
 - 대상: `skala-references/w15-ai-service-mini/all_total_vue_student`
 - 상태: **P0~P3 실행 완료 (2026-10-20)**.
@@ -14,6 +14,11 @@
 - **정리(2026-10-20)**: `.archify/`(3.0M)·`__pycache__`·`.pytest_cache`·`artifacts/captures/`(원본 캡처는
   `doc/reports/images/`에 압축본 커밋)·`artifacts/exports/`의 중복 PDF·`data/runbook_index.json`(캐시) 삭제.
   `/tmp`의 Chrome 프로필 잔여물도 정리했다.
+- **최종 문서 동기화 (2026-10-20, 마무리 단계)**: 모든 문서를 최신 상태로 맞췄다 —
+  루트 `README.md`(개선 내용 중심 개편)·`AGENTS.md`(최종 상태 요약·평가 명령)·`doc/AGENTS.md`(신규 산출물 4건)·
+  `doc/evaluation-checklist.md`(§0 최종 상태 요약 추가, §4·§7·§8·§9 갱신)·`doc/rag_design.md`(§9.5 수치 일치 검사)·
+  `doc/reports/{index,evidence/index,result_report,spreadsheet_input}.md`·`artifacts/README.md`(산출물 색인 링크).
+  제출 폴더(`skala-tasks/w14-ai-agent/`)는 저장소 원본과 해시 동일하게 9개 파일 + images/ 3장을 동기화했다.
 - 근거
   - `../AI 서비스 Mini-Project.pdf`: Git 주소 등록, 결과 보고서(Google Spread), 개인별 발표
   - 같은 PDF 평가표: 기능 구현 30 · Before/After 실측 10(보너스) · 기술 요소 30 · 한계/트레이드오프 20 · 발표 20

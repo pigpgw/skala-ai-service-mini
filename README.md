@@ -47,6 +47,7 @@ bash sh/run_frontend.sh    # 채팅 화면 (:8600)
 .venv/bin/python eval/run_eval.py --variant before-rag --profile extended   # 기준선
 .venv/bin/python eval/run_eval.py --variant after-rag  --profile extended --repeat 2
 .venv/bin/python eval/make_before_after.py --pair <before> <after>          # 비교표 자동 생성
+.venv/bin/python eval/check_reported_numbers.py                              # 문서 수치 ↔ 원본 일치 검사
 ```
 
 측정 조건(백엔드·프로파일·임계값·데이터 해시·git 상태)은 실행마다 `artifacts/runs/<run_id>/manifest.json`에 남는다.
@@ -78,8 +79,11 @@ bash sh/run_frontend.sh    # 채팅 화면 (:8600)
 
 | 문서 | 내용 |
 |---|---|
+| `doc/reports/index.md` | 제출 산출물 색인 (무엇이 어디 있는지) |
 | `doc/reports/result_report.md` (+PDF) | 최종 결과 보고서 |
-| `doc/reports/presentation.html` (+PDF·PPTX) | 발표 슬라이드 10장, `presentation_outline.md`는 구성안·시간 배분·예상 질문 |
+| `doc/reports/presentation.html` (+PDF·PPTX) | 발표 슬라이드 10장, `presentation_outline.md`는 구성안·시간 배분·예상 질문·리허설 체크리스트 |
+| `doc/reports/spreadsheet_input.md` | Google Spread 붙여넣기용 본문 |
+| `doc/reports/rehearsal_log.md` | 리허설 기록 (수치 검사 13/13, 시연 실측) |
 | `doc/design/architecture.html` | 개선 시스템 아키텍처 다이어그램 |
 | `doc/reports/evidence/index.md` | 주장 ↔ 증거 ↔ 재현 명령 대조표 |
 | `doc/rag_design.md` | RAG 설계·임계값 근거·측정 결과 |
