@@ -1,0 +1,151 @@
+{
+  "schema_version": 1,
+  "stage": "2단계 E2E (graph·server 연결)",
+  "tag": "rag-on",
+  "generated_at": "2026-10-20T14:28:16+09:00",
+  "base_url": "http://127.0.0.1:8100",
+  "health": {
+    "llm_backend": "fake",
+    "supervisor_version": "v2",
+    "creation_count": 1,
+    "rag": {
+      "enabled": true,
+      "embedder": "ollama:qwen3-embedding:0.6b",
+      "dim": 1024,
+      "docs": 6,
+      "index_sha256": "3acb3580476d7ea01b5dc9818ef3519b83934859e95d5499c611aa7194ed9945",
+      "index_built_at": "2026-10-20T14:22:41+09:00",
+      "cache_hit": true,
+      "min_score": 0.5,
+      "min_margin": 0.03,
+      "error": null
+    }
+  },
+  "chat_cases": [
+    {
+      "id": "E01",
+      "message": "gateway-service에서 payments-service로 가는 요청이 타임아웃 나요, 원인 진단해주세요",
+      "expect": "network-timeout",
+      "route": "incident",
+      "incident_type": "network-timeout",
+      "classifier_source": "rag",
+      "classifier_reason": "ok",
+      "rag_score": 0.545,
+      "rag_margin": 0.0415,
+      "retry_count": 1,
+      "replan_rounds": 1,
+      "correct": true,
+      "reply_len": 400
+    },
+    {
+      "id": "E02",
+      "message": "auth-service 디스크 공간이 부족하다는 알림이 왔어요, 원인 진단해주세요",
+      "expect": "disk-full",
+      "route": "incident",
+      "incident_type": "disk-full",
+      "classifier_source": "rag",
+      "classifier_reason": "ok",
+      "rag_score": 0.558,
+      "rag_margin": 0.131,
+      "retry_count": 0,
+      "replan_rounds": 1,
+      "correct": true,
+      "reply_len": 339
+    },
+    {
+      "id": "E03",
+      "message": "auth-service 로그인 응답이 p95 2.4초로 느려졌고 커넥션 풀이 92% 찼어요, 원인 진단해주세요",
+      "expect": "high-latency",
+      "route": "incident",
+      "incident_type": "high-latency",
+      "classifier_source": "rag",
+      "classifier_reason": "ok",
+      "rag_score": 0.6413,
+      "rag_margin": 0.2247,
+      "retry_count": 0,
+      "replan_rounds": 1,
+      "correct": true,
+      "reply_len": 353
+    }
+  ],
+  "chat_route_case": {
+    "id": "C01",
+    "message": "안녕하세요, 오늘 뭐 해요?",
+    "expect": null,
+    "route": "chat",
+    "incident_type": null,
+    "classifier_source": null,
+    "classifier_reason": null,
+    "rag_score": null,
+    "rag_margin": null,
+    "retry_count": 0,
+    "replan_rounds": 0,
+    "correct": null,
+    "reply_len": 18
+  },
+  "stream_case": {
+    "id": "S01",
+    "event_types": [
+      "RouteDecided",
+      "PlanCreated",
+      "GateApplied",
+      "TaskCompleted",
+      "TaskCompleted",
+      "TaskCompleted",
+      "ReplanCheck",
+      "TaskCompleted",
+      "ReplanCheck",
+      "AnalysisSkipped",
+      "AnswerToken",
+      "DraftWritten",
+      "Validation",
+      "AnswerToken",
+      "DraftWritten",
+      "Validation",
+      "Finalize"
+    ],
+    "replan_check": {
+      "round": 0,
+      "is_sufficient": false,
+      "target": "disk-full",
+      "incident_type": null,
+      "classifier_source": "rag",
+      "classifier_reason": "ok",
+      "rag_score": 0.6021,
+      "rag_margin": 0.0598
+    },
+    "final": {
+      "incident_type": "disk-full",
+      "classifier_source": "rag",
+      "rag_score": 0.6021,
+      "rag_margin": 0.0598
+    },
+    "correct": true
+  },
+  "checks": {
+    "health_reports_rag": {
+      "enabled": true,
+      "embedder": "ollama:qwen3-embedding:0.6b",
+      "docs": 6,
+      "cache_hit": true,
+      "error": null,
+      "pass": true
+    },
+    "incident_cases": {
+      "correct": 3,
+      "total": 3,
+      "pass": true
+    },
+    "chat_route_unaffected": {
+      "route": "chat",
+      "incident_type": null,
+      "pass": true
+    },
+    "stream_carries_evidence": {
+      "has_replan_event": true,
+      "source": "rag",
+      "correct": true,
+      "pass": true
+    }
+  }
+}

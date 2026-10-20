@@ -19,19 +19,17 @@ from langgraph.config import get_stream_writer
 from langgraph.graph import END, StateGraph
 from langsmith import traceable
 
+from .data_profile import known_systems
 from .deps import SupervisorDeps
 from .retry import with_retry
 
 
 def _load_known_systems() -> set[str]:
-    """ollama_llm.py/openai_llm.py와 동일한 소스(data/monitoring.json)에서
-    시스템 목록을 읽는다 — plan_node가 MCP Prompt에 넘길 system_name을
-    쿼리에서 멤버십 매칭으로 뽑아낼 때 쓴다."""
-    path = Path(__file__).resolve().parent.parent / "data" / "monitoring.json"
-    try:
-        return set(json.loads(path.read_text()).keys())
-    except (OSError, json.JSONDecodeError):
-        return {"auth-service", "web-01"}
+    """시스템 목록을 데이터 프로파일에 맞춘다 — base(6) / extended(12).
+
+    경로를 여기서 직접 조립하지 않는다(`agent/data_profile.py`가 유일한 결정 지점).
+    """
+    return known_systems()
 
 
 KNOWN_SYSTEMS = _load_known_systems()
@@ -66,6 +64,11 @@ class AgentState(TypedDict, total=False):
     last_prompt: str
     cost_usd: float
     events: list[dict]
+    incident_type: str          # E1 — 선택된 runbook(=incident_type)
+    classifier_source: str      # E1 — "rag" | "keyword"
+    classifier_reason: str      # E1 — ok | disabled | index_unavailable | low_score | low_margin ...
+    rag_score: float | None     # E1 — top1 cosine
+    rag_margin: float | None    # E1 — top1 - top2
 
 
 def _cost(state: AgentState, usage: dict) -> float:
@@ -213,21 +216,54 @@ def _classify_incident_type(collected: list[dict]) -> str:
     return "db-down"   # 매칭되는 증상이 없으면 가장 일반적인 장애 대응 절차로 폴백
 
 
+def _select_incident_type(state: AgentState, deps: SupervisorDeps) -> dict:
+    """E1 — RAG 우선, 실패 시 keyword. 두 경로의 결과를 같은 모양으로 돌려준다.
+
+    반환 키는 AgentState 필드와 1:1로 맞춘다(`**selection`으로 그대로 병합).
+    """
+    collected = state.get("collected", [])
+    classifier = getattr(deps, "rag", None)
+    if classifier is None:
+        return {"incident_type": _classify_incident_type(collected),
+                "classifier_source": "keyword", "classifier_reason": "rag_not_configured",
+                "rag_score": None, "rag_margin": None}
+    result = classifier.classify(state.get("query"), collected)
+    return {"incident_type": result.incident_type, "classifier_source": result.source,
+            "classifier_reason": result.reason, "rag_score": result.score,
+            "rag_margin": result.margin}
+
+
+
 @traceable(name="replan_check_node")
 async def replan_check_node(state: AgentState, deps: SupervisorDeps) -> dict:
-    """Wave 7 — 1차 수집 결과 평가. runbook이 없으면 gap task만 추가해 재조사."""
+    """Wave 7 — 1차 수집 결과 평가. runbook이 없으면 gap task만 추가해 재조사.
+
+    E1 — runbook(incident_type) 선택을 RAG에 맡긴다. `deps.rag`가 없거나 확신하지
+    못하면 기존 `_classify_incident_type()`이 그대로 답한다(폴백). 선택 근거
+    (`classifier_source`·`rag_score`·`rag_margin`)를 이벤트와 상태에 남긴다 —
+    나중에 "RAG가 골랐는지 keyword가 골랐는지"를 응답만 보고 구분할 수 있어야 한다.
+    """
     has_runbook = any(c["source"] == "runbook" for c in state.get("collected", []))
     rounds = state.get("replan_rounds", 0)
     if has_runbook or rounds >= 1:
-        verdict = {"type": "ReplanCheck", "round": rounds, "is_sufficient": True}
+        verdict = {"type": "ReplanCheck", "round": rounds, "is_sufficient": True,
+                   "incident_type": state.get("incident_type"),
+                   "classifier_source": state.get("classifier_source"),
+                   "classifier_reason": state.get("classifier_reason")}
         return {"events": state["events"] + [verdict]}
-    incident_type = _classify_incident_type(state.get("collected", []))
+    selection = _select_incident_type(state, deps)
+    incident_type = selection["incident_type"]
     gap_task = {"id": "task-gap-runbook", "agent": "research", "kind": "runbook",
                 "target": incident_type, "status": "pending"}
     verdict = {"type": "ReplanCheck", "round": rounds, "is_sufficient": False,
-               "gap_task": gap_task["id"], "target": incident_type}
+               "gap_task": gap_task["id"], "target": incident_type,
+               "classifier_source": selection["classifier_source"],
+               "classifier_reason": selection["classifier_reason"],
+               "rag_score": selection["rag_score"],
+               "rag_margin": selection["rag_margin"]}
     return {"tasks": state["tasks"] + [gap_task], "replan_rounds": rounds + 1,
-            "events": state["events"] + [verdict]}
+            **selection, "events": state["events"] + [verdict]}
+
 
 
 @traceable(name="analysis_node")

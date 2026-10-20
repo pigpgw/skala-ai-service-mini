@@ -11,6 +11,7 @@
 import json
 import os
 from contextlib import asynccontextmanager
+from typing import Any
 
 from dotenv import load_dotenv
 
@@ -23,6 +24,7 @@ from langsmith.run_helpers import get_current_run_tree
 from pydantic import BaseModel
 
 from agent.deps import SupervisorDeps
+from agent.data_profile import profile_report
 from agent.fake_llm import FastLLM, QualityLLM
 from agent.graph import build_graph
 from agent.mcp_client import MCPClient
@@ -59,6 +61,47 @@ def _build_llms():
     return backend, fast, quality
 
 
+def _build_rag() -> tuple[Any, dict]:
+    """E1 — RunBook 선택기(RAG)를 프로세스당 1회 만든다.
+
+    여기서 실패해도 서버는 떠야 한다. 실패하면 deps.rag=None → 기존 keyword 경로.
+    인덱스 캐시 판정(load_or_build)도 이 시점에 끝나므로, 두 번째 기동부터는
+    임베딩 호출 없이 JSON을 읽는다.
+    """
+    enabled = os.environ.get("RAG_ENABLED", "1").strip().lower() not in {
+        "0", "false", "no", "off", ""}
+    info: dict[str, Any] = {
+        "enabled": enabled, "embedder": None, "dim": None, "docs": 0,
+        "index_sha256": None, "index_built_at": None, "cache_hit": None,
+        "min_score": None, "min_margin": None, "error": None,
+    }
+    if not enabled:
+        from agent.rag import RagClassifier
+        classifier = RagClassifier(None, None, enabled=False)
+        info.update({"min_score": classifier.min_score,
+                     "min_margin": classifier.min_margin})
+        return classifier, info
+    try:
+        from agent.rag import RagClassifier, build_embedder, load_or_build
+        embedder = build_embedder()
+        index = load_or_build(embedder)
+        classifier = RagClassifier.from_env(index, embedder)
+    except Exception as exc:   # 인덱스·모델 문제로 서버 전체를 죽이지 않는다
+        info["error"] = f"{type(exc).__name__}: {exc}"
+        return None, info
+    info.update({
+        "embedder": index.embedder_name,
+        "dim": index.dim,
+        "docs": len(index.docs),
+        "index_sha256": index.index_sha256,
+        "index_built_at": index.built_at,
+        "cache_hit": index.cache_hit,
+        "min_score": classifier.min_score,
+        "min_margin": classifier.min_margin,
+    })
+    return classifier, info
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global CREATION_COUNT
@@ -67,12 +110,18 @@ async def lifespan(app: FastAPI):
     await mcp.start()   # Wave 2 — MCP subprocess는 서버 수명 동안 딱 1개
     backend, fast_llm, quality_llm = _build_llms()
     app.state.llm_backend = backend
+    rag, rag_info = _build_rag()   # E1 — 인덱스 캐시 판정·임베딩 확인은 기동 시 1회
+    app.state.rag_info = rag_info
+    app.state.data_profile = profile_report()
+    print(f"[rag] {json.dumps(rag_info, ensure_ascii=False)}")
+    print(f"[data] {json.dumps(app.state.data_profile, ensure_ascii=False)}")
     deps = SupervisorDeps(
         fast_llm=fast_llm,
         quality_llm=quality_llm,
         mcp=mcp,
         session_store=SqliteSessionStore(),
         version=os.environ.get("SUPERVISOR_VERSION", "v2"),
+        rag=rag,
     )
     app.state.deps = deps
     app.state.graph = build_graph(deps) if deps.version == "v2" else None
@@ -97,7 +146,9 @@ async def health():
             "supervisor_version": app.state.deps.version,
             "llm_backend": app.state.llm_backend,
             "fast_llm": app.state.deps.fast_llm.name,
-            "quality_llm": app.state.deps.quality_llm.name}
+            "quality_llm": app.state.deps.quality_llm.name,
+            "rag": app.state.rag_info,
+            "data_profile": app.state.data_profile}
 
 
 @app.get("/version")
@@ -105,7 +156,17 @@ async def version():
     return {"supervisor_version": app.state.deps.version}
 
 
+def _coverage(result: dict) -> tuple[int, list[str]]:
+    """이번 요청이 실제로 조회한 시스템 수와, 데이터에 없어서 unknown이 된 시스템."""
+    items = [c.get("data", {}) for c in result.get("collected", [])
+             if c.get("source") == "monitoring"]
+    unknown = [str(item.get("system_name")) for item in items
+               if item.get("status") == "unknown"]
+    return len(items), unknown
+
+
 def _metadata(result: dict, run_id: str | None) -> dict:
+    queried, unknown = _coverage(result)
     return {
         "route": result.get("route"),
         "task_count": len(result.get("tasks", [])),
@@ -115,6 +176,13 @@ def _metadata(result: dict, run_id: str | None) -> dict:
         "parallel_elapsed": result.get("parallel_elapsed"),
         "validation_attempts": result.get("validation_attempts", 0),
         "cost_usd": result.get("cost_usd", 0.0),
+        "incident_type": result.get("incident_type"),
+        "classifier_source": result.get("classifier_source"),
+        "classifier_reason": result.get("classifier_reason"),
+        "rag_score": result.get("rag_score"),
+        "rag_margin": result.get("rag_margin"),
+        "systems_queried": queried,
+        "systems_unknown": unknown,
         "llm_backend": app.state.llm_backend,
         "supervisor_version": app.state.deps.version,
         "instance_id": app.state.instance_id,
@@ -165,6 +233,10 @@ async def chat_stream(message: str, thread_id: str = "default"):
             seen = 0
             final = ""
             last_prompt = None   # finalize까지 살아남은 최종 write/chat 호출의 실제 프롬프트
+            incident_type = None
+            classifier_source = None
+            rag_score = None
+            rag_margin = None
             # stream_mode를 리스트로 주면 (mode, payload) 튜플이 나온다 — "updates"는
             # 노드가 끝날 때마다의 상태 델타, "custom"은 write_node/chat_answer_node가
             # get_stream_writer()로 실행 중에 즉시 흘려보내는 토큰(AnswerToken) 이벤트다.
@@ -184,7 +256,12 @@ async def chat_stream(message: str, thread_id: str = "default"):
                         final = delta["final"]
                     if delta.get("last_prompt"):
                         last_prompt = delta["last_prompt"]
-            yield f"data: {json.dumps({'type': 'FinalAnswer', 'reply': final, 'prompt': last_prompt}, ensure_ascii=False)}\n\n"
+                    if delta.get("incident_type"):
+                        incident_type = delta["incident_type"]
+                        classifier_source = delta.get("classifier_source")
+                        rag_score = delta.get("rag_score")
+                        rag_margin = delta.get("rag_margin")
+            yield f"data: {json.dumps({'type': 'FinalAnswer', 'reply': final, 'prompt': last_prompt, 'incident_type': incident_type, 'classifier_source': classifier_source, 'rag_score': rag_score, 'rag_margin': rag_margin}, ensure_ascii=False)}\n\n"
             deps.session_store.append(thread_id, "user", message)
             deps.session_store.append(thread_id, "assistant", final)
         yield "data: [DONE]\n\n"
