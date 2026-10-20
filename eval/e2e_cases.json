@@ -1,0 +1,45 @@
+{
+  "version": "1.1",
+  "note": "E2E 고정 입력 세트. run_e2e_probe.py와 run_eval.py가 같은 파일을 읽는다 — 케이스를 두 곳에 두면 안 된다.",
+  "chat_cases": [
+    {
+      "id": "E01",
+      "thread": "t-e2e-b07",
+      "message": "gateway-service에서 payments-service로 가는 요청이 타임아웃 나요, 원인 진단해주세요",
+      "expect": "network-timeout",
+      "why": "기준선 오분류 B07 — keyword는 cpu로 갔던 문항"
+    },
+    {
+      "id": "E02",
+      "thread": "t-e2e-b10",
+      "message": "auth-service 디스크 공간이 부족하다는 알림이 왔어요, 원인 진단해주세요",
+      "expect": "disk-full",
+      "why": "질의 텍스트를 읽어야만 맞는 문항(B10)"
+    },
+    {
+      "id": "E03",
+      "thread": "t-e2e-b05",
+      "message": "auth-service 로그인 응답이 p95 2.4초로 느려졌고 커넥션 풀이 92% 찼어요, 원인 진단해주세요",
+      "expect": "high-latency",
+      "why": "원본 데이터에서 keyword도 맞히는 대조군"
+    },
+    {
+      "id": "E04",
+      "thread": "t-e2e-queue",
+      "message": "search-service 인덱싱 큐가 1만 2천 건 밀렸어요, 원인 진단해주세요",
+      "expect": "queue-backlog",
+      "why": "확장 프로파일에서만 조사 가능한 신규 시스템(E8)"
+    }
+  ],
+  "chat_route_case": {
+    "id": "C01",
+    "thread": "t-e2e-chat",
+    "message": "안녕하세요, 오늘 뭐 해요?"
+  },
+  "stream_case": {
+    "id": "S01",
+    "thread": "t-e2e-stream",
+    "message": "log-service 디스크가 95%인데 cache-service 메모리도 같이 올라가요, 진단해주세요",
+    "expect": "disk-full"
+  }
+}
