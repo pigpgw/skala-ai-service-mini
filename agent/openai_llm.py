@@ -29,18 +29,9 @@ from langsmith import traceable
 OPENAI_URL = "https://api.openai.com/v1/chat/completions"
 
 
-def _load_known_systems() -> set[str]:
-    """KNOWN_SYSTEMS를 data/monitoring.json의 실제 시스템 키들로 동적으로 맞춘다 —
-    하드코딩된 2개짜리 목록이 모니터링 데이터와 어긋나던 문제(payments/cache/gateway/
-    log-service 미인식) 수정."""
-    path = Path(__file__).resolve().parent.parent / "data" / "monitoring.json"
-    try:
-        return set(json.loads(path.read_text()).keys())
-    except (OSError, json.JSONDecodeError):
-        return {"auth-service", "web-01"}
+from .data_profile import known_systems
 
-
-KNOWN_SYSTEMS = _load_known_systems()
+KNOWN_SYSTEMS = known_systems()
 
 
 def _guess_target(query: str) -> str:

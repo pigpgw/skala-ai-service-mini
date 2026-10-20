@@ -21,14 +21,13 @@ OLLAMA_URL = "http://127.0.0.1:11434/api/chat"
 
 
 def _load_known_systems() -> set[str]:
-    """KNOWN_SYSTEMS를 data/monitoring.json의 실제 시스템 키들로 동적으로 맞춘다 —
-    하드코딩된 2개짜리 목록이 모니터링 데이터와 어긋나던 문제(payments/cache/gateway/
-    log-service 미인식) 수정."""
-    path = Path(__file__).resolve().parent.parent / "data" / "monitoring.json"
-    try:
-        return set(json.loads(path.read_text()).keys())
-    except (OSError, json.JSONDecodeError):
-        return {"auth-service", "web-01"}
+    """KNOWN_SYSTEMS를 데이터 프로파일(base 6 / extended 12)에 맞춘다.
+
+    하드코딩된 2개짜리 목록이 모니터링 데이터와 어긋나던 문제
+    (payments/cache/gateway/log-service 미인식) 수정은 유지하고,
+    파일 선택만 `agent/data_profile.py`로 일원화했다.
+    """
+    return known_systems()
 
 
 KNOWN_SYSTEMS = _load_known_systems()

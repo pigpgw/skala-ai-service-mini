@@ -1,0 +1,1203 @@
+{
+  "schema_version": 1,
+  "variant": "after-rag",
+  "stage": "1단계 임시 측정 (4단계에서 eval/run_eval.py로 통합)",
+  "generated_at": "2026-10-20T14:36:31+09:00",
+  "embedder": {
+    "name": "ollama:qwen3-embedding:0.6b",
+    "dim": 1024,
+    "requested": "auto"
+  },
+  "index": {
+    "docs": [
+      "cert-expiry",
+      "connection-pool",
+      "cpu-spike",
+      "db-down",
+      "disk-full",
+      "high-latency",
+      "memory-leak",
+      "network-timeout",
+      "queue-backlog",
+      "replication-lag"
+    ],
+    "doc_count": 10,
+    "built_at": "2026-10-20T14:35:44+09:00",
+    "index_sha256": "bfdc27ec9b9f506d58c8509e93b424cc2de96a674deba494a28eca2e955cde47",
+    "cache_hit_first": true,
+    "cache_hit_second": true
+  },
+  "thresholds": {
+    "RAG_ENABLED": true,
+    "RAG_MIN_SCORE": 0.5,
+    "RAG_MIN_MARGIN": 0.03,
+    "top_k": 3
+  },
+  "monitoring_sha256": "44cf849b6ea4c64bb2ff6911fd99add291cc7a7bb94f56dc1ce562e527be8224",
+  "data_profile": "base",
+  "dataset_sha256": "994775da26ee45a06ec00feed8001c7f74dc6d3dd9482f87002d1b1df1757129",
+  "baseline_file": "baseline_extended_keyword_base.json",
+  "git_commit": "923514e",
+  "git_dirty": true,
+  "item_count": 40,
+  "correct": 34,
+  "accuracy": 0.85,
+  "errors": [
+    "X21",
+    "X22",
+    "X25",
+    "X26",
+    "X30",
+    "X32"
+  ],
+  "checks": {
+    "cache_reuse": {
+      "first_cache_hit": true,
+      "second_cache_hit": true,
+      "pass": true
+    },
+    "accuracy": {
+      "correct": 34,
+      "total": 40,
+      "accuracy": 0.85,
+      "baseline_accuracy": 0.325,
+      "pass": true
+    },
+    "forced_low_score": {
+      "min_score": 0.99,
+      "reasons": [
+        "low_score"
+      ],
+      "all_keyword_source": true,
+      "same_as_keyword": true,
+      "pass": true
+    },
+    "disabled": {
+      "same_as_baseline": true,
+      "pass": true
+    }
+  },
+  "items": [
+    {
+      "id": "X01",
+      "category": "single",
+      "query": "auth-service p95 응답이 2.8초까지 올라갔어요",
+      "expected_type": "high-latency",
+      "predicted_type": "high-latency",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.628,
+      "margin": 0.1607,
+      "doc_id": "high-latency",
+      "candidates": [
+        {
+          "id": "high-latency",
+          "score": 0.628
+        },
+        {
+          "id": "network-timeout",
+          "score": 0.4673
+        },
+        {
+          "id": "replication-lag",
+          "score": 0.4547
+        }
+      ],
+      "elapsed_ms": 47.11
+    },
+    {
+      "id": "X02",
+      "category": "single",
+      "query": "payments-service CPU 사용률이 93%로 유지되고 있어요",
+      "expected_type": "cpu-spike",
+      "predicted_type": "cpu-spike",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.5661,
+      "margin": 0.0882,
+      "doc_id": "cpu-spike",
+      "candidates": [
+        {
+          "id": "cpu-spike",
+          "score": 0.5661
+        },
+        {
+          "id": "high-latency",
+          "score": 0.4779
+        },
+        {
+          "id": "queue-backlog",
+          "score": 0.4206
+        }
+      ],
+      "elapsed_ms": 35.94
+    },
+    {
+      "id": "X03",
+      "category": "single",
+      "query": "cache-service 힙 사용량이 계속 증가하고 있어요",
+      "expected_type": "memory-leak",
+      "predicted_type": "memory-leak",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.5765,
+      "margin": 0.1322,
+      "doc_id": "memory-leak",
+      "candidates": [
+        {
+          "id": "memory-leak",
+          "score": 0.5765
+        },
+        {
+          "id": "cpu-spike",
+          "score": 0.4444
+        },
+        {
+          "id": "disk-full",
+          "score": 0.4129
+        }
+      ],
+      "elapsed_ms": 34.48
+    },
+    {
+      "id": "X04",
+      "category": "single",
+      "query": "gateway-service에서 504 응답이 늘었어요",
+      "expected_type": "network-timeout",
+      "predicted_type": "network-timeout",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.5263,
+      "margin": 0.0673,
+      "doc_id": "network-timeout",
+      "candidates": [
+        {
+          "id": "network-timeout",
+          "score": 0.5263
+        },
+        {
+          "id": "high-latency",
+          "score": 0.4589
+        },
+        {
+          "id": "connection-pool",
+          "score": 0.3992
+        }
+      ],
+      "elapsed_ms": 32.62
+    },
+    {
+      "id": "X05",
+      "category": "single",
+      "query": "log-service 디스크 사용량이 96%입니다",
+      "expected_type": "disk-full",
+      "predicted_type": "disk-full",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.6816,
+      "margin": 0.2627,
+      "doc_id": "disk-full",
+      "candidates": [
+        {
+          "id": "disk-full",
+          "score": 0.6816
+        },
+        {
+          "id": "memory-leak",
+          "score": 0.4189
+        },
+        {
+          "id": "queue-backlog",
+          "score": 0.3685
+        }
+      ],
+      "elapsed_ms": 31.26
+    },
+    {
+      "id": "X06",
+      "category": "single",
+      "query": "inventory-service 데이터베이스가 다운됐어요",
+      "expected_type": "db-down",
+      "predicted_type": "db-down",
+      "correct": true,
+      "source": "keyword",
+      "reason": "low_score",
+      "score": 0.4947,
+      "margin": 0.1539,
+      "doc_id": null,
+      "candidates": [
+        {
+          "id": "db-down",
+          "score": 0.4947
+        },
+        {
+          "id": "queue-backlog",
+          "score": 0.3408
+        },
+        {
+          "id": "disk-full",
+          "score": 0.3327
+        }
+      ],
+      "elapsed_ms": 315.97
+    },
+    {
+      "id": "X07",
+      "category": "single",
+      "query": "search-service 인덱싱 큐가 1만 2천 건 밀렸어요",
+      "expected_type": "queue-backlog",
+      "predicted_type": "queue-backlog",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.5359,
+      "margin": 0.1263,
+      "doc_id": "queue-backlog",
+      "candidates": [
+        {
+          "id": "queue-backlog",
+          "score": 0.5359
+        },
+        {
+          "id": "memory-leak",
+          "score": 0.4097
+        },
+        {
+          "id": "connection-pool",
+          "score": 0.3878
+        }
+      ],
+      "elapsed_ms": 32.17
+    },
+    {
+      "id": "X08",
+      "category": "single",
+      "query": "notify-service TLS 인증서가 3일 뒤 만료됩니다",
+      "expected_type": "cert-expiry",
+      "predicted_type": "cert-expiry",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.6075,
+      "margin": 0.2847,
+      "doc_id": "cert-expiry",
+      "candidates": [
+        {
+          "id": "cert-expiry",
+          "score": 0.6075
+        },
+        {
+          "id": "network-timeout",
+          "score": 0.3228
+        },
+        {
+          "id": "replication-lag",
+          "score": 0.3108
+        }
+      ],
+      "elapsed_ms": 34.56
+    },
+    {
+      "id": "X09",
+      "category": "single",
+      "query": "session-service 커넥션 풀이 100% 찼고 대기 요청이 180건이에요",
+      "expected_type": "connection-pool",
+      "predicted_type": "connection-pool",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.597,
+      "margin": 0.1245,
+      "doc_id": "connection-pool",
+      "candidates": [
+        {
+          "id": "connection-pool",
+          "score": 0.597
+        },
+        {
+          "id": "high-latency",
+          "score": 0.4725
+        },
+        {
+          "id": "memory-leak",
+          "score": 0.4251
+        }
+      ],
+      "elapsed_ms": 37.65
+    },
+    {
+      "id": "X10",
+      "category": "single",
+      "query": "media-service 읽기 복제 지연이 42초입니다",
+      "expected_type": "replication-lag",
+      "predicted_type": "replication-lag",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.5703,
+      "margin": 0.1372,
+      "doc_id": "replication-lag",
+      "candidates": [
+        {
+          "id": "replication-lag",
+          "score": 0.5703
+        },
+        {
+          "id": "high-latency",
+          "score": 0.4331
+        },
+        {
+          "id": "network-timeout",
+          "score": 0.3769
+        }
+      ],
+      "elapsed_ms": 33.52
+    },
+    {
+      "id": "X11",
+      "category": "multi",
+      "query": "web-01은 정상인데 auth-service 로그인 응답이 느려요",
+      "expected_type": "high-latency",
+      "predicted_type": "high-latency",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.6133,
+      "margin": 0.1562,
+      "doc_id": "high-latency",
+      "candidates": [
+        {
+          "id": "high-latency",
+          "score": 0.6133
+        },
+        {
+          "id": "replication-lag",
+          "score": 0.4571
+        },
+        {
+          "id": "network-timeout",
+          "score": 0.4481
+        }
+      ],
+      "elapsed_ms": 36.29
+    },
+    {
+      "id": "X12",
+      "category": "multi",
+      "query": "payments-service CPU가 93%이고 web-01도 함께 확인해주세요",
+      "expected_type": "cpu-spike",
+      "predicted_type": "cpu-spike",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.5156,
+      "margin": 0.0693,
+      "doc_id": "cpu-spike",
+      "candidates": [
+        {
+          "id": "cpu-spike",
+          "score": 0.5156
+        },
+        {
+          "id": "high-latency",
+          "score": 0.4463
+        },
+        {
+          "id": "queue-backlog",
+          "score": 0.3896
+        }
+      ],
+      "elapsed_ms": 41.53
+    },
+    {
+      "id": "X13",
+      "category": "multi",
+      "query": "web-01은 정상, cache-service 메모리가 계속 올라가요",
+      "expected_type": "memory-leak",
+      "predicted_type": "memory-leak",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.602,
+      "margin": 0.1876,
+      "doc_id": "memory-leak",
+      "candidates": [
+        {
+          "id": "memory-leak",
+          "score": 0.602
+        },
+        {
+          "id": "cpu-spike",
+          "score": 0.4144
+        },
+        {
+          "id": "disk-full",
+          "score": 0.402
+        }
+      ],
+      "elapsed_ms": 34.66
+    },
+    {
+      "id": "X14",
+      "category": "multi",
+      "query": "web-01 확인했고 gateway-service 타임아웃이 계속돼요",
+      "expected_type": "network-timeout",
+      "predicted_type": "network-timeout",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.593,
+      "margin": 0.1165,
+      "doc_id": "network-timeout",
+      "candidates": [
+        {
+          "id": "network-timeout",
+          "score": 0.593
+        },
+        {
+          "id": "high-latency",
+          "score": 0.4764
+        },
+        {
+          "id": "db-down",
+          "score": 0.4222
+        }
+      ],
+      "elapsed_ms": 34.38
+    },
+    {
+      "id": "X15",
+      "category": "multi",
+      "query": "log-service 디스크가 96%이고 web-01은 정상입니다",
+      "expected_type": "disk-full",
+      "predicted_type": "disk-full",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.6477,
+      "margin": 0.2332,
+      "doc_id": "disk-full",
+      "candidates": [
+        {
+          "id": "disk-full",
+          "score": 0.6477
+        },
+        {
+          "id": "memory-leak",
+          "score": 0.4145
+        },
+        {
+          "id": "db-down",
+          "score": 0.4082
+        }
+      ],
+      "elapsed_ms": 36.04
+    },
+    {
+      "id": "X16",
+      "category": "multi",
+      "query": "inventory-service DB 다운, web-01은 영향 없음",
+      "expected_type": "db-down",
+      "predicted_type": "db-down",
+      "correct": true,
+      "source": "keyword",
+      "reason": "low_score",
+      "score": 0.4808,
+      "margin": 0.1176,
+      "doc_id": null,
+      "candidates": [
+        {
+          "id": "db-down",
+          "score": 0.4808
+        },
+        {
+          "id": "queue-backlog",
+          "score": 0.3632
+        },
+        {
+          "id": "replication-lag",
+          "score": 0.3413
+        }
+      ],
+      "elapsed_ms": 32.91
+    },
+    {
+      "id": "X17",
+      "category": "multi",
+      "query": "web-01은 정상인데 search-service 큐가 계속 쌓여요",
+      "expected_type": "queue-backlog",
+      "predicted_type": "queue-backlog",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.5204,
+      "margin": 0.0715,
+      "doc_id": "queue-backlog",
+      "candidates": [
+        {
+          "id": "queue-backlog",
+          "score": 0.5204
+        },
+        {
+          "id": "memory-leak",
+          "score": 0.449
+        },
+        {
+          "id": "replication-lag",
+          "score": 0.3882
+        }
+      ],
+      "elapsed_ms": 38.45
+    },
+    {
+      "id": "X18",
+      "category": "multi",
+      "query": "web-01과 notify-service를 같이 봐주세요, 인증서가 곧 만료됩니다",
+      "expected_type": "cert-expiry",
+      "predicted_type": "cert-expiry",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.549,
+      "margin": 0.1918,
+      "doc_id": "cert-expiry",
+      "candidates": [
+        {
+          "id": "cert-expiry",
+          "score": 0.549
+        },
+        {
+          "id": "memory-leak",
+          "score": 0.3571
+        },
+        {
+          "id": "db-down",
+          "score": 0.3407
+        }
+      ],
+      "elapsed_ms": 32.53
+    },
+    {
+      "id": "X19",
+      "category": "multi",
+      "query": "session-service 커넥션 풀 고갈, web-01은 정상",
+      "expected_type": "connection-pool",
+      "predicted_type": "connection-pool",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.5151,
+      "margin": 0.1144,
+      "doc_id": "connection-pool",
+      "candidates": [
+        {
+          "id": "connection-pool",
+          "score": 0.5151
+        },
+        {
+          "id": "db-down",
+          "score": 0.4007
+        },
+        {
+          "id": "memory-leak",
+          "score": 0.378
+        }
+      ],
+      "elapsed_ms": 33.39
+    },
+    {
+      "id": "X20",
+      "category": "multi",
+      "query": "web-01은 정상이고 media-service 복제 지연만 문제예요",
+      "expected_type": "replication-lag",
+      "predicted_type": "replication-lag",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.5255,
+      "margin": 0.1244,
+      "doc_id": "replication-lag",
+      "candidates": [
+        {
+          "id": "replication-lag",
+          "score": 0.5255
+        },
+        {
+          "id": "db-down",
+          "score": 0.4011
+        },
+        {
+          "id": "high-latency",
+          "score": 0.3856
+        }
+      ],
+      "elapsed_ms": 33.62
+    },
+    {
+      "id": "X21",
+      "category": "ambiguous",
+      "query": "report-service 응답이 3초씩 걸린대요",
+      "expected_type": "high-latency",
+      "predicted_type": "db-down",
+      "correct": false,
+      "source": "keyword",
+      "reason": "low_score",
+      "score": 0.4904,
+      "margin": 0.037,
+      "doc_id": null,
+      "candidates": [
+        {
+          "id": "high-latency",
+          "score": 0.4904
+        },
+        {
+          "id": "replication-lag",
+          "score": 0.4535
+        },
+        {
+          "id": "network-timeout",
+          "score": 0.4412
+        }
+      ],
+      "elapsed_ms": 32.43
+    },
+    {
+      "id": "X22",
+      "category": "ambiguous",
+      "query": "notify-service CPU가 95%까지 치솟았대요",
+      "expected_type": "cpu-spike",
+      "predicted_type": "db-down",
+      "correct": false,
+      "source": "keyword",
+      "reason": "low_score",
+      "score": 0.4795,
+      "margin": 0.0861,
+      "doc_id": null,
+      "candidates": [
+        {
+          "id": "cpu-spike",
+          "score": 0.4795
+        },
+        {
+          "id": "memory-leak",
+          "score": 0.3934
+        },
+        {
+          "id": "queue-backlog",
+          "score": 0.3773
+        }
+      ],
+      "elapsed_ms": 33.01
+    },
+    {
+      "id": "X23",
+      "category": "ambiguous",
+      "query": "media-service 메모리가 계속 올라간대요",
+      "expected_type": "memory-leak",
+      "predicted_type": "memory-leak",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.5396,
+      "margin": 0.1588,
+      "doc_id": "memory-leak",
+      "candidates": [
+        {
+          "id": "memory-leak",
+          "score": 0.5396
+        },
+        {
+          "id": "queue-backlog",
+          "score": 0.3808
+        },
+        {
+          "id": "disk-full",
+          "score": 0.3682
+        }
+      ],
+      "elapsed_ms": 32.77
+    },
+    {
+      "id": "X24",
+      "category": "ambiguous",
+      "query": "search-service 호출이 자꾸 타임아웃 난대요",
+      "expected_type": "network-timeout",
+      "predicted_type": "network-timeout",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.536,
+      "margin": 0.0845,
+      "doc_id": "network-timeout",
+      "candidates": [
+        {
+          "id": "network-timeout",
+          "score": 0.536
+        },
+        {
+          "id": "high-latency",
+          "score": 0.4515
+        },
+        {
+          "id": "memory-leak",
+          "score": 0.3928
+        }
+      ],
+      "elapsed_ms": 33.35
+    },
+    {
+      "id": "X25",
+      "category": "ambiguous",
+      "query": "session-service 디스크가 가득 찼대요",
+      "expected_type": "disk-full",
+      "predicted_type": "db-down",
+      "correct": false,
+      "source": "keyword",
+      "reason": "low_score",
+      "score": 0.4852,
+      "margin": 0.061,
+      "doc_id": null,
+      "candidates": [
+        {
+          "id": "disk-full",
+          "score": 0.4852
+        },
+        {
+          "id": "memory-leak",
+          "score": 0.4242
+        },
+        {
+          "id": "queue-backlog",
+          "score": 0.3593
+        }
+      ],
+      "elapsed_ms": 33.9
+    },
+    {
+      "id": "X26",
+      "category": "ambiguous",
+      "query": "cache-service 데이터베이스 연결이 끊겼대요",
+      "expected_type": "db-down",
+      "predicted_type": "memory-leak",
+      "correct": false,
+      "source": "keyword",
+      "reason": "low_score",
+      "score": 0.466,
+      "margin": 0.0202,
+      "doc_id": null,
+      "candidates": [
+        {
+          "id": "db-down",
+          "score": 0.466
+        },
+        {
+          "id": "memory-leak",
+          "score": 0.4458
+        },
+        {
+          "id": "connection-pool",
+          "score": 0.4132
+        }
+      ],
+      "elapsed_ms": 32.36
+    },
+    {
+      "id": "X27",
+      "category": "ambiguous",
+      "query": "gateway-service 큐에 요청이 1만 건 쌓였대요",
+      "expected_type": "queue-backlog",
+      "predicted_type": "queue-backlog",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.5362,
+      "margin": 0.0435,
+      "doc_id": "queue-backlog",
+      "candidates": [
+        {
+          "id": "queue-backlog",
+          "score": 0.5362
+        },
+        {
+          "id": "high-latency",
+          "score": 0.4927
+        },
+        {
+          "id": "connection-pool",
+          "score": 0.4703
+        }
+      ],
+      "elapsed_ms": 32.36
+    },
+    {
+      "id": "X28",
+      "category": "ambiguous",
+      "query": "log-service TLS 인증서가 3일 뒤 만료된대요",
+      "expected_type": "cert-expiry",
+      "predicted_type": "cert-expiry",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.5599,
+      "margin": 0.0724,
+      "doc_id": "cert-expiry",
+      "candidates": [
+        {
+          "id": "cert-expiry",
+          "score": 0.5599
+        },
+        {
+          "id": "disk-full",
+          "score": 0.4875
+        },
+        {
+          "id": "replication-lag",
+          "score": 0.3832
+        }
+      ],
+      "elapsed_ms": 32.28
+    },
+    {
+      "id": "X29",
+      "category": "ambiguous",
+      "query": "payments-service 커넥션 풀이 고갈됐대요",
+      "expected_type": "connection-pool",
+      "predicted_type": "connection-pool",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.6342,
+      "margin": 0.1061,
+      "doc_id": "connection-pool",
+      "candidates": [
+        {
+          "id": "connection-pool",
+          "score": 0.6342
+        },
+        {
+          "id": "db-down",
+          "score": 0.5281
+        },
+        {
+          "id": "high-latency",
+          "score": 0.5259
+        }
+      ],
+      "elapsed_ms": 33.67
+    },
+    {
+      "id": "X30",
+      "category": "ambiguous",
+      "query": "auth-service 읽기 복제 지연이 40초래요",
+      "expected_type": "replication-lag",
+      "predicted_type": "high-latency",
+      "correct": false,
+      "source": "keyword",
+      "reason": "low_margin",
+      "score": 0.5817,
+      "margin": 0.0102,
+      "doc_id": null,
+      "candidates": [
+        {
+          "id": "replication-lag",
+          "score": 0.5817
+        },
+        {
+          "id": "high-latency",
+          "score": 0.5715
+        },
+        {
+          "id": "network-timeout",
+          "score": 0.4485
+        }
+      ],
+      "elapsed_ms": 34.68
+    },
+    {
+      "id": "X31",
+      "category": "no_system",
+      "query": "로그인 응답이 느려요, 원인 확인 부탁드립니다",
+      "expected_type": "high-latency",
+      "predicted_type": "high-latency",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.6037,
+      "margin": 0.1912,
+      "doc_id": "high-latency",
+      "candidates": [
+        {
+          "id": "high-latency",
+          "score": 0.6037
+        },
+        {
+          "id": "network-timeout",
+          "score": 0.4124
+        },
+        {
+          "id": "replication-lag",
+          "score": 0.407
+        }
+      ],
+      "elapsed_ms": 33.42
+    },
+    {
+      "id": "X32",
+      "category": "no_system",
+      "query": "결제 처리 서버 CPU가 90% 넘게 유지돼요",
+      "expected_type": "cpu-spike",
+      "predicted_type": "high-latency",
+      "correct": false,
+      "source": "keyword",
+      "reason": "low_margin",
+      "score": 0.5422,
+      "margin": 0.0,
+      "doc_id": null,
+      "candidates": [
+        {
+          "id": "high-latency",
+          "score": 0.5422
+        },
+        {
+          "id": "cpu-spike",
+          "score": 0.5422
+        },
+        {
+          "id": "replication-lag",
+          "score": 0.4267
+        }
+      ],
+      "elapsed_ms": 32.27
+    },
+    {
+      "id": "X33",
+      "category": "no_system",
+      "query": "캐시 메모리가 계속 올라가고 있어요",
+      "expected_type": "memory-leak",
+      "predicted_type": "memory-leak",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.5907,
+      "margin": 0.1398,
+      "doc_id": "memory-leak",
+      "candidates": [
+        {
+          "id": "memory-leak",
+          "score": 0.5907
+        },
+        {
+          "id": "high-latency",
+          "score": 0.451
+        },
+        {
+          "id": "queue-backlog",
+          "score": 0.4257
+        }
+      ],
+      "elapsed_ms": 32.67
+    },
+    {
+      "id": "X34",
+      "category": "no_system",
+      "query": "외부 API 호출이 자꾸 타임아웃 나요",
+      "expected_type": "network-timeout",
+      "predicted_type": "network-timeout",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.5996,
+      "margin": 0.0462,
+      "doc_id": "network-timeout",
+      "candidates": [
+        {
+          "id": "network-timeout",
+          "score": 0.5996
+        },
+        {
+          "id": "high-latency",
+          "score": 0.5534
+        },
+        {
+          "id": "connection-pool",
+          "score": 0.421
+        }
+      ],
+      "elapsed_ms": 32.29
+    },
+    {
+      "id": "X35",
+      "category": "no_system",
+      "query": "디스크 사용량이 95%를 넘었어요",
+      "expected_type": "disk-full",
+      "predicted_type": "disk-full",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.5993,
+      "margin": 0.0741,
+      "doc_id": "disk-full",
+      "candidates": [
+        {
+          "id": "disk-full",
+          "score": 0.5993
+        },
+        {
+          "id": "high-latency",
+          "score": 0.5253
+        },
+        {
+          "id": "connection-pool",
+          "score": 0.4821
+        }
+      ],
+      "elapsed_ms": 32.72
+    },
+    {
+      "id": "X36",
+      "category": "no_system",
+      "query": "데이터베이스가 다운됐어요",
+      "expected_type": "db-down",
+      "predicted_type": "db-down",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.6133,
+      "margin": 0.2246,
+      "doc_id": "db-down",
+      "candidates": [
+        {
+          "id": "db-down",
+          "score": 0.6133
+        },
+        {
+          "id": "high-latency",
+          "score": 0.3886
+        },
+        {
+          "id": "replication-lag",
+          "score": 0.3759
+        }
+      ],
+      "elapsed_ms": 31.33
+    },
+    {
+      "id": "X37",
+      "category": "no_system",
+      "query": "배치 큐가 계속 밀리고 있어요",
+      "expected_type": "queue-backlog",
+      "predicted_type": "queue-backlog",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.6018,
+      "margin": 0.0844,
+      "doc_id": "queue-backlog",
+      "candidates": [
+        {
+          "id": "queue-backlog",
+          "score": 0.6018
+        },
+        {
+          "id": "high-latency",
+          "score": 0.5175
+        },
+        {
+          "id": "memory-leak",
+          "score": 0.4682
+        }
+      ],
+      "elapsed_ms": 32.1
+    },
+    {
+      "id": "X38",
+      "category": "no_system",
+      "query": "인증서 만료 알림이 왔어요",
+      "expected_type": "cert-expiry",
+      "predicted_type": "cert-expiry",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.6226,
+      "margin": 0.2208,
+      "doc_id": "cert-expiry",
+      "candidates": [
+        {
+          "id": "cert-expiry",
+          "score": 0.6226
+        },
+        {
+          "id": "high-latency",
+          "score": 0.4018
+        },
+        {
+          "id": "network-timeout",
+          "score": 0.3999
+        }
+      ],
+      "elapsed_ms": 32.01
+    },
+    {
+      "id": "X39",
+      "category": "no_system",
+      "query": "커넥션 풀이 고갈됐어요",
+      "expected_type": "connection-pool",
+      "predicted_type": "connection-pool",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.7013,
+      "margin": 0.187,
+      "doc_id": "connection-pool",
+      "candidates": [
+        {
+          "id": "connection-pool",
+          "score": 0.7013
+        },
+        {
+          "id": "high-latency",
+          "score": 0.5143
+        },
+        {
+          "id": "db-down",
+          "score": 0.4994
+        }
+      ],
+      "elapsed_ms": 32.07
+    },
+    {
+      "id": "X40",
+      "category": "no_system",
+      "query": "읽기 복제본 지연이 심해요",
+      "expected_type": "replication-lag",
+      "predicted_type": "replication-lag",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.6282,
+      "margin": 0.0599,
+      "doc_id": "replication-lag",
+      "candidates": [
+        {
+          "id": "replication-lag",
+          "score": 0.6282
+        },
+        {
+          "id": "high-latency",
+          "score": 0.5684
+        },
+        {
+          "id": "db-down",
+          "score": 0.4601
+        }
+      ],
+      "elapsed_ms": 32.71
+    }
+  ],
+  "fallback_prediction_diff": []
+}

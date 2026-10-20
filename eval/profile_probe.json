@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "stage": "3단계 데이터 프로파일 검증",
+  "generated_at": "2026-10-20T14:36:55+09:00",
+  "checks": {
+    "base_excludes_extended_system": {
+      "pass": true
+    },
+    "extended_includes_new_systems": {
+      "pass": true
+    },
+    "regression_8_unknown_system": {
+      "pass": true
+    }
+  },
+  "results": [
+    {
+      "profile": "base",
+      "known_systems_count": 6,
+      "file": "data/monitoring.json",
+      "targets": [
+        {
+          "system": "search-service",
+          "status": "unknown",
+          "alerts": [
+            "System 'search-service' not found in monitoring"
+          ],
+          "known": false
+        },
+        {
+          "system": "inventory-service",
+          "status": "unknown",
+          "alerts": [
+            "System 'inventory-service' not found in monitoring"
+          ],
+          "known": false
+        },
+        {
+          "system": "auth-service",
+          "status": "degraded",
+          "alerts": [
+            "p95 latency 2.4s (threshold 1.0s)",
+            "connection pool 92% used"
+          ],
+          "known": true
+        },
+        {
+          "system": "billing-service",
+          "status": "unknown",
+          "alerts": [
+            "System 'billing-service' not found in monitoring"
+          ],
+          "known": false
+        }
+      ]
+    },
+    {
+      "profile": "extended",
+      "known_systems_count": 12,
+      "file": "data/monitoring_extended.json",
+      "targets": [
+        {
+          "system": "search-service",
+          "status": "degraded",
+          "alerts": [
+            "indexing queue backlog 12,000 messages",
+            "worker throughput 240 docs/min (threshold 2,000 docs/min)"
+          ],
+          "known": true
+        },
+        {
+          "system": "inventory-service",
+          "status": "down",
+          "alerts": [
+            "database connection refused (primary db-core-01)",
+            "database is down, failover pending"
+          ],
+          "known": true
+        },
+        {
+          "system": "auth-service",
+          "status": "degraded",
+          "alerts": [
+            "p95 latency 2.4s (threshold 1.0s)",
+            "connection pool 92% used"
+          ],
+          "known": true
+        },
+        {
+          "system": "billing-service",
+          "status": "unknown",
+          "alerts": [
+            "System 'billing-service' not found in monitoring"
+          ],
+          "known": false
+        }
+      ]
+    }
+  ]
+}

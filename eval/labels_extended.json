@@ -1,0 +1,300 @@
+{
+  "dataset": "labels_extended",
+  "version": "1.0",
+  "item_count": 40,
+  "frozen_at": "2026-10-20",
+  "frozen": true,
+  "model_backend": "fake",
+  "monitoring_snapshot": "data/monitoring_extended.json",
+  "design_notes": [
+    "구성: 10개 incident_type × 4카테고리(single/multi/ambiguous/no_system) = 40문항.",
+    "10개 타입: high-latency, cpu-spike, memory-leak, network-timeout, disk-full, db-down, queue-backlog, cert-expiry, connection-pool, replication-lag.",
+    "single: 대상 시스템 1개 + 증상. multi: 정상 시스템이 섞인 2개 시스템. ambiguous: 질의 신고 증상과 모니터링 데이터가 불일치. no_system: 시스템명 미언급(auth-service 폴백 경로).",
+    "ambiguous·no_system의 정답은 '사용자 신고 증상' 기준이다. 데이터가 다른 증상을 보여도 이 카테고리는 질의 텍스트를 읽는지를 측정한다. 두 카테고리는 40문항 중 20문항이므로 **카테고리별 정확도를 따로 보고**하고 전체 수치로 일반화하지 않는다.",
+    "systems는 fake 백엔드 plan()이 실제로 조회하는 목록이다: 질의에서 뽑은 시스템 + web-01 자동 추가(agent/fake_llm.py:40-47).",
+    "이 파일은 측정 전에 동결한다. 기존 eval/baseline_labels.json(12문항, base 6시스템)은 그대로 보존한다.",
+    "billing-service는 회귀 질의 #8('목록에 없는 시스템명')을 지키기 위해 확장 데이터에 넣지 않았다."
+  ],
+  "items": [
+    {
+      "id": "X01", "type_id": "high-latency", "category": "single",
+      "query": "auth-service p95 응답이 2.8초까지 올라갔어요",
+      "systems": ["auth-service", "web-01"],
+      "expected_type": "high-latency",
+      "rationale": "p95 지연 알림이 1차 증상. 단일 시스템."
+    },
+    {
+      "id": "X02", "type_id": "cpu-spike", "category": "single",
+      "query": "payments-service CPU 사용률이 93%로 유지되고 있어요",
+      "systems": ["payments-service", "web-01"],
+      "expected_type": "cpu-spike",
+      "rationale": "CPU 91% 알림 + 임계 80% 초과 지속."
+    },
+    {
+      "id": "X03", "type_id": "memory-leak", "category": "single",
+      "query": "cache-service 힙 사용량이 계속 증가하고 있어요",
+      "systems": ["cache-service", "web-01"],
+      "expected_type": "memory-leak",
+      "rationale": "메모리 89% + 6시간 상승 + heap near limit."
+    },
+    {
+      "id": "X04", "type_id": "network-timeout", "category": "single",
+      "query": "gateway-service에서 504 응답이 늘었어요",
+      "systems": ["gateway-service", "web-01"],
+      "expected_type": "network-timeout",
+      "rationale": "upstream 504 + packet loss 3%."
+    },
+    {
+      "id": "X05", "type_id": "disk-full", "category": "single",
+      "query": "log-service 디스크 사용량이 96%입니다",
+      "systems": ["log-service", "web-01"],
+      "expected_type": "disk-full",
+      "rationale": "/var/log 95% 사용, 디스크 포화."
+    },
+    {
+      "id": "X06", "type_id": "db-down", "category": "single",
+      "query": "inventory-service 데이터베이스가 다운됐어요",
+      "systems": ["inventory-service", "web-01"],
+      "expected_type": "db-down",
+      "rationale": "status=down, database connection refused, failover pending."
+    },
+    {
+      "id": "X07", "type_id": "queue-backlog", "category": "single",
+      "query": "search-service 인덱싱 큐가 1만 2천 건 밀렸어요",
+      "systems": ["search-service", "web-01"],
+      "expected_type": "queue-backlog",
+      "rationale": "indexing queue backlog 12,000 + worker throughput 저하."
+    },
+    {
+      "id": "X08", "type_id": "cert-expiry", "category": "single",
+      "query": "notify-service TLS 인증서가 3일 뒤 만료됩니다",
+      "systems": ["notify-service", "web-01"],
+      "expected_type": "cert-expiry",
+      "rationale": "TLS certificate expires in 3 days + renewal job failed."
+    },
+    {
+      "id": "X09", "type_id": "connection-pool", "category": "single",
+      "query": "session-service 커넥션 풀이 100% 찼고 대기 요청이 180건이에요",
+      "systems": ["session-service", "web-01"],
+      "expected_type": "connection-pool",
+      "rationale": "connection pool exhausted (100/100) + 180 requests waiting."
+    },
+    {
+      "id": "X10", "type_id": "replication-lag", "category": "single",
+      "query": "media-service 읽기 복제 지연이 42초입니다",
+      "systems": ["media-service", "web-01"],
+      "expected_type": "replication-lag",
+      "rationale": "replica lag 42s (threshold 5s)."
+    },
+    {
+      "id": "X11", "type_id": "high-latency", "category": "multi",
+      "query": "web-01은 정상인데 auth-service 로그인 응답이 느려요",
+      "systems": ["web-01", "auth-service"],
+      "expected_type": "high-latency",
+      "rationale": "정상 시스템이 섞여도 저하 시스템의 증상으로 판정."
+    },
+    {
+      "id": "X12", "type_id": "cpu-spike", "category": "multi",
+      "query": "payments-service CPU가 93%이고 web-01도 함께 확인해주세요",
+      "systems": ["payments-service", "web-01"],
+      "expected_type": "cpu-spike",
+      "rationale": "두 시스템 조회지만 저하 증상은 payments-service의 CPU."
+    },
+    {
+      "id": "X13", "type_id": "memory-leak", "category": "multi",
+      "query": "web-01은 정상, cache-service 메모리가 계속 올라가요",
+      "systems": ["web-01", "cache-service"],
+      "expected_type": "memory-leak",
+      "rationale": "정상 시스템이 먼저 언급돼도 메모리 상승 추세로 판정."
+    },
+    {
+      "id": "X14", "type_id": "network-timeout", "category": "multi",
+      "query": "web-01 확인했고 gateway-service 타임아웃이 계속돼요",
+      "systems": ["web-01", "gateway-service"],
+      "expected_type": "network-timeout",
+      "rationale": "gateway 504 + packet loss."
+    },
+    {
+      "id": "X15", "type_id": "disk-full", "category": "multi",
+      "query": "log-service 디스크가 96%이고 web-01은 정상입니다",
+      "systems": ["log-service", "web-01"],
+      "expected_type": "disk-full",
+      "rationale": "디스크 포화가 직접 원인."
+    },
+    {
+      "id": "X16", "type_id": "db-down", "category": "multi",
+      "query": "inventory-service DB 다운, web-01은 영향 없음",
+      "systems": ["inventory-service", "web-01"],
+      "expected_type": "db-down",
+      "rationale": "status=down + connection refused."
+    },
+    {
+      "id": "X17", "type_id": "queue-backlog", "category": "multi",
+      "query": "web-01은 정상인데 search-service 큐가 계속 쌓여요",
+      "systems": ["web-01", "search-service"],
+      "expected_type": "queue-backlog",
+      "rationale": "consumer throughput 저하로 큐 적체."
+    },
+    {
+      "id": "X18", "type_id": "cert-expiry", "category": "multi",
+      "query": "web-01과 notify-service를 같이 봐주세요, 인증서가 곧 만료됩니다",
+      "systems": ["web-01", "notify-service"],
+      "expected_type": "cert-expiry",
+      "rationale": "만료 3일 전 + 갱신 실패."
+    },
+    {
+      "id": "X19", "type_id": "connection-pool", "category": "multi",
+      "query": "session-service 커넥션 풀 고갈, web-01은 정상",
+      "systems": ["session-service", "web-01"],
+      "expected_type": "connection-pool",
+      "rationale": "pool 100/100 + 대기 요청 180."
+    },
+    {
+      "id": "X20", "type_id": "replication-lag", "category": "multi",
+      "query": "web-01은 정상이고 media-service 복제 지연만 문제예요",
+      "systems": ["web-01", "media-service"],
+      "expected_type": "replication-lag",
+      "rationale": "replica lag 42s > 임계 5s."
+    },
+    {
+      "id": "X21", "type_id": "high-latency", "category": "ambiguous",
+      "query": "report-service 응답이 3초씩 걸린대요",
+      "systems": ["report-service", "web-01"],
+      "expected_type": "high-latency",
+      "rationale": "신고 증상은 응답 지연. 실제 데이터는 healthy(알림 없음) — 불일치."
+    },
+    {
+      "id": "X22", "type_id": "cpu-spike", "category": "ambiguous",
+      "query": "notify-service CPU가 95%까지 치솟았대요",
+      "systems": ["notify-service", "web-01"],
+      "expected_type": "cpu-spike",
+      "rationale": "신고 증상은 CPU. 실제 데이터는 인증서 만료 — 불일치."
+    },
+    {
+      "id": "X23", "type_id": "memory-leak", "category": "ambiguous",
+      "query": "media-service 메모리가 계속 올라간대요",
+      "systems": ["media-service", "web-01"],
+      "expected_type": "memory-leak",
+      "rationale": "신고 증상은 메모리. 실제 데이터는 복제 지연 — 불일치."
+    },
+    {
+      "id": "X24", "type_id": "network-timeout", "category": "ambiguous",
+      "query": "search-service 호출이 자꾸 타임아웃 난대요",
+      "systems": ["search-service", "web-01"],
+      "expected_type": "network-timeout",
+      "rationale": "신고 증상은 타임아웃. 실제 데이터는 큐 적체 — 불일치."
+    },
+    {
+      "id": "X25", "type_id": "disk-full", "category": "ambiguous",
+      "query": "session-service 디스크가 가득 찼대요",
+      "systems": ["session-service", "web-01"],
+      "expected_type": "disk-full",
+      "rationale": "신고 증상은 디스크. 실제 데이터는 커넥션 풀 고갈 — 불일치."
+    },
+    {
+      "id": "X26", "type_id": "db-down", "category": "ambiguous",
+      "query": "cache-service 데이터베이스 연결이 끊겼대요",
+      "systems": ["cache-service", "web-01"],
+      "expected_type": "db-down",
+      "rationale": "신고 증상은 DB 연결 단절. 실제 데이터는 메모리 누수 — 불일치."
+    },
+    {
+      "id": "X27", "type_id": "queue-backlog", "category": "ambiguous",
+      "query": "gateway-service 큐에 요청이 1만 건 쌓였대요",
+      "systems": ["gateway-service", "web-01"],
+      "expected_type": "queue-backlog",
+      "rationale": "신고 증상은 큐 적체. 실제 데이터는 타임아웃 — 불일치."
+    },
+    {
+      "id": "X28", "type_id": "cert-expiry", "category": "ambiguous",
+      "query": "log-service TLS 인증서가 3일 뒤 만료된대요",
+      "systems": ["log-service", "web-01"],
+      "expected_type": "cert-expiry",
+      "rationale": "신고 증상은 인증서 만료. 실제 데이터는 디스크 포화 — 불일치."
+    },
+    {
+      "id": "X29", "type_id": "connection-pool", "category": "ambiguous",
+      "query": "payments-service 커넥션 풀이 고갈됐대요",
+      "systems": ["payments-service", "web-01"],
+      "expected_type": "connection-pool",
+      "rationale": "신고 증상은 커넥션 풀 고갈. 실제 데이터는 CPU 급증 — 불일치."
+    },
+    {
+      "id": "X30", "type_id": "replication-lag", "category": "ambiguous",
+      "query": "auth-service 읽기 복제 지연이 40초래요",
+      "systems": ["auth-service", "web-01"],
+      "expected_type": "replication-lag",
+      "rationale": "신고 증상은 복제 지연. 실제 데이터는 p95 지연·풀 사용 — 불일치."
+    },
+    {
+      "id": "X31", "type_id": "high-latency", "category": "no_system",
+      "query": "로그인 응답이 느려요, 원인 확인 부탁드립니다",
+      "systems": ["auth-service", "web-01"],
+      "expected_type": "high-latency",
+      "rationale": "시스템명 미언급 → auth-service 폴백. 데이터도 p95 지연."
+    },
+    {
+      "id": "X32", "type_id": "cpu-spike", "category": "no_system",
+      "query": "결제 처리 서버 CPU가 90% 넘게 유지돼요",
+      "systems": ["auth-service", "web-01"],
+      "expected_type": "cpu-spike",
+      "rationale": "시스템명 미언급. 신고 증상은 CPU이며 폴백 데이터에는 CPU 알림이 없다(불일치)."
+    },
+    {
+      "id": "X33", "type_id": "memory-leak", "category": "no_system",
+      "query": "캐시 메모리가 계속 올라가고 있어요",
+      "systems": ["auth-service", "web-01"],
+      "expected_type": "memory-leak",
+      "rationale": "시스템명 미언급. 신고 증상은 메모리 상승, 폴백 데이터는 지연(불일치)."
+    },
+    {
+      "id": "X34", "type_id": "network-timeout", "category": "no_system",
+      "query": "외부 API 호출이 자꾸 타임아웃 나요",
+      "systems": ["auth-service", "web-01"],
+      "expected_type": "network-timeout",
+      "rationale": "시스템명 미언급. 신고 증상은 타임아웃(불일치)."
+    },
+    {
+      "id": "X35", "type_id": "disk-full", "category": "no_system",
+      "query": "디스크 사용량이 95%를 넘었어요",
+      "systems": ["auth-service", "web-01"],
+      "expected_type": "disk-full",
+      "rationale": "시스템명 미언급. 신고 증상은 디스크 포화."
+    },
+    {
+      "id": "X36", "type_id": "db-down", "category": "no_system",
+      "query": "데이터베이스가 다운됐어요",
+      "systems": ["auth-service", "web-01"],
+      "expected_type": "db-down",
+      "rationale": "시스템명 미언급. 신고 증상은 DB 다운."
+    },
+    {
+      "id": "X37", "type_id": "queue-backlog", "category": "no_system",
+      "query": "배치 큐가 계속 밀리고 있어요",
+      "systems": ["auth-service", "web-01"],
+      "expected_type": "queue-backlog",
+      "rationale": "시스템명 미언급. 신고 증상은 큐 적체."
+    },
+    {
+      "id": "X38", "type_id": "cert-expiry", "category": "no_system",
+      "query": "인증서 만료 알림이 왔어요",
+      "systems": ["auth-service", "web-01"],
+      "expected_type": "cert-expiry",
+      "rationale": "시스템명 미언급. 신고 증상은 인증서 만료."
+    },
+    {
+      "id": "X39", "type_id": "connection-pool", "category": "no_system",
+      "query": "커넥션 풀이 고갈됐어요",
+      "systems": ["auth-service", "web-01"],
+      "expected_type": "connection-pool",
+      "rationale": "시스템명 미언급. 폴백 데이터에 pool 알림은 있으나 고갈이 아니라 92% 사용(불일치)."
+    },
+    {
+      "id": "X40", "type_id": "replication-lag", "category": "no_system",
+      "query": "읽기 복제본 지연이 심해요",
+      "systems": ["auth-service", "web-01"],
+      "expected_type": "replication-lag",
+      "rationale": "시스템명 미언급. 신고 증상은 복제 지연."
+    }
+  ]
+}

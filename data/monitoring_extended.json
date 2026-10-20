@@ -1,0 +1,74 @@
+{
+  "auth-service": {
+    "status": "degraded",
+    "cpu_base": 78.0,
+    "memory_base": 61.0,
+    "alerts": ["p95 latency 2.4s (threshold 1.0s)", "connection pool 92% used"]
+  },
+  "web-01": {
+    "status": "healthy",
+    "cpu_base": 34.0,
+    "memory_base": 48.0,
+    "alerts": []
+  },
+  "payments-service": {
+    "status": "degraded",
+    "cpu_base": 91.0,
+    "memory_base": 55.0,
+    "alerts": ["CPU 91% (threshold 80%)", "payments-service-3 instance responding slow"]
+  },
+  "cache-service": {
+    "status": "degraded",
+    "cpu_base": 42.0,
+    "memory_base": 89.0,
+    "alerts": ["memory usage climbing steadily over 6h", "heap near limit"]
+  },
+  "gateway-service": {
+    "status": "degraded",
+    "cpu_base": 30.0,
+    "memory_base": 45.0,
+    "alerts": ["upstream timeout to payments-service (504)", "network packet loss 3%"]
+  },
+  "log-service": {
+    "status": "degraded",
+    "cpu_base": 20.0,
+    "memory_base": 35.0,
+    "alerts": ["disk usage 95% on /var/log", "disk space low"]
+  },
+  "search-service": {
+    "status": "degraded",
+    "cpu_base": 66.0,
+    "memory_base": 71.0,
+    "alerts": ["indexing queue backlog 12,000 messages", "worker throughput 240 docs/min (threshold 2,000 docs/min)"]
+  },
+  "notify-service": {
+    "status": "degraded",
+    "cpu_base": 18.0,
+    "memory_base": 30.0,
+    "alerts": ["TLS certificate for smtp-relay expires in 3 days", "certificate renewal job failed"]
+  },
+  "session-service": {
+    "status": "degraded",
+    "cpu_base": 44.0,
+    "memory_base": 58.0,
+    "alerts": ["connection pool exhausted (100/100)", "180 requests waiting for a connection"]
+  },
+  "media-service": {
+    "status": "degraded",
+    "cpu_base": 39.0,
+    "memory_base": 62.0,
+    "alerts": ["replica lag 42s (threshold 5s)", "storage replication queue growing"]
+  },
+  "inventory-service": {
+    "status": "down",
+    "cpu_base": 0.0,
+    "memory_base": 0.0,
+    "alerts": ["database connection refused (primary db-core-01)", "database is down, failover pending"]
+  },
+  "report-service": {
+    "status": "healthy",
+    "cpu_base": 22.0,
+    "memory_base": 40.0,
+    "alerts": []
+  }
+}

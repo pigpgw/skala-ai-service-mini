@@ -16,6 +16,8 @@ from pathlib import Path
 from fastmcp import FastMCP
 from pydantic import BaseModel, Field
 
+from agent.data_profile import load_monitoring
+
 mcp = FastMCP(name="capstone-all-total-ops")
 
 DATA_DIR = Path(__file__).parent / "data"
@@ -33,7 +35,7 @@ class SystemStatus(BaseModel):
 @mcp.tool()
 def get_monitoring_status(system_name: str) -> SystemStatus:
     """지정된 시스템의 현재 모니터링 상태를 조회합니다 (호출마다 값이 달라지는 동적 Tool)."""
-    monitoring_data = json.loads((DATA_DIR / "monitoring.json").read_text())
+    monitoring_data = load_monitoring()   # DATA_PROFILE=base|extended
     if system_name not in monitoring_data:
         return SystemStatus(
             system_name=system_name, status="unknown",

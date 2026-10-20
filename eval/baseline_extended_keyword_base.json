@@ -1,0 +1,529 @@
+{
+  "schema_version": 1,
+  "variant": "before-keyword",
+  "generated_at": "2026-10-20T14:36:18+09:00",
+  "classifier": "agent.graph._classify_incident_type",
+  "llm_backend": "fake",
+  "monitoring_file": "data/monitoring.json",
+  "monitoring_sha256": "44cf849b6ea4c64bb2ff6911fd99add291cc7a7bb94f56dc1ce562e527be8224",
+  "dataset": "labels_extended.json",
+  "dataset_sha256": "994775da26ee45a06ec00feed8001c7f74dc6d3dd9482f87002d1b1df1757129",
+  "dataset_frozen_at": "2026-10-20",
+  "data_profile": "base",
+  "item_count": 40,
+  "correct": 13,
+  "accuracy": 0.325,
+  "errors": [
+    "X07",
+    "X08",
+    "X09",
+    "X10",
+    "X17",
+    "X18",
+    "X19",
+    "X20",
+    "X21",
+    "X22",
+    "X23",
+    "X24",
+    "X25",
+    "X26",
+    "X27",
+    "X28",
+    "X29",
+    "X30",
+    "X32",
+    "X33",
+    "X34",
+    "X35",
+    "X36",
+    "X37",
+    "X38",
+    "X39",
+    "X40"
+  ],
+  "git_commit": "923514e",
+  "git_dirty": true,
+  "items": [
+    {
+      "id": "X01",
+      "category": "single",
+      "query": "auth-service p95 응답이 2.8초까지 올라갔어요",
+      "systems": [
+        "auth-service",
+        "web-01"
+      ],
+      "expected_type": "high-latency",
+      "predicted_type": "high-latency",
+      "correct": true
+    },
+    {
+      "id": "X02",
+      "category": "single",
+      "query": "payments-service CPU 사용률이 93%로 유지되고 있어요",
+      "systems": [
+        "payments-service",
+        "web-01"
+      ],
+      "expected_type": "cpu-spike",
+      "predicted_type": "cpu-spike",
+      "correct": true
+    },
+    {
+      "id": "X03",
+      "category": "single",
+      "query": "cache-service 힙 사용량이 계속 증가하고 있어요",
+      "systems": [
+        "cache-service",
+        "web-01"
+      ],
+      "expected_type": "memory-leak",
+      "predicted_type": "memory-leak",
+      "correct": true
+    },
+    {
+      "id": "X04",
+      "category": "single",
+      "query": "gateway-service에서 504 응답이 늘었어요",
+      "systems": [
+        "gateway-service",
+        "web-01"
+      ],
+      "expected_type": "network-timeout",
+      "predicted_type": "network-timeout",
+      "correct": true
+    },
+    {
+      "id": "X05",
+      "category": "single",
+      "query": "log-service 디스크 사용량이 96%입니다",
+      "systems": [
+        "log-service",
+        "web-01"
+      ],
+      "expected_type": "disk-full",
+      "predicted_type": "disk-full",
+      "correct": true
+    },
+    {
+      "id": "X06",
+      "category": "single",
+      "query": "inventory-service 데이터베이스가 다운됐어요",
+      "systems": [
+        "inventory-service",
+        "web-01"
+      ],
+      "expected_type": "db-down",
+      "predicted_type": "db-down",
+      "correct": true
+    },
+    {
+      "id": "X07",
+      "category": "single",
+      "query": "search-service 인덱싱 큐가 1만 2천 건 밀렸어요",
+      "systems": [
+        "search-service",
+        "web-01"
+      ],
+      "expected_type": "queue-backlog",
+      "predicted_type": "db-down",
+      "correct": false
+    },
+    {
+      "id": "X08",
+      "category": "single",
+      "query": "notify-service TLS 인증서가 3일 뒤 만료됩니다",
+      "systems": [
+        "notify-service",
+        "web-01"
+      ],
+      "expected_type": "cert-expiry",
+      "predicted_type": "db-down",
+      "correct": false
+    },
+    {
+      "id": "X09",
+      "category": "single",
+      "query": "session-service 커넥션 풀이 100% 찼고 대기 요청이 180건이에요",
+      "systems": [
+        "session-service",
+        "web-01"
+      ],
+      "expected_type": "connection-pool",
+      "predicted_type": "db-down",
+      "correct": false
+    },
+    {
+      "id": "X10",
+      "category": "single",
+      "query": "media-service 읽기 복제 지연이 42초입니다",
+      "systems": [
+        "media-service",
+        "web-01"
+      ],
+      "expected_type": "replication-lag",
+      "predicted_type": "db-down",
+      "correct": false
+    },
+    {
+      "id": "X11",
+      "category": "multi",
+      "query": "web-01은 정상인데 auth-service 로그인 응답이 느려요",
+      "systems": [
+        "web-01",
+        "auth-service"
+      ],
+      "expected_type": "high-latency",
+      "predicted_type": "high-latency",
+      "correct": true
+    },
+    {
+      "id": "X12",
+      "category": "multi",
+      "query": "payments-service CPU가 93%이고 web-01도 함께 확인해주세요",
+      "systems": [
+        "payments-service",
+        "web-01"
+      ],
+      "expected_type": "cpu-spike",
+      "predicted_type": "cpu-spike",
+      "correct": true
+    },
+    {
+      "id": "X13",
+      "category": "multi",
+      "query": "web-01은 정상, cache-service 메모리가 계속 올라가요",
+      "systems": [
+        "web-01",
+        "cache-service"
+      ],
+      "expected_type": "memory-leak",
+      "predicted_type": "memory-leak",
+      "correct": true
+    },
+    {
+      "id": "X14",
+      "category": "multi",
+      "query": "web-01 확인했고 gateway-service 타임아웃이 계속돼요",
+      "systems": [
+        "web-01",
+        "gateway-service"
+      ],
+      "expected_type": "network-timeout",
+      "predicted_type": "network-timeout",
+      "correct": true
+    },
+    {
+      "id": "X15",
+      "category": "multi",
+      "query": "log-service 디스크가 96%이고 web-01은 정상입니다",
+      "systems": [
+        "log-service",
+        "web-01"
+      ],
+      "expected_type": "disk-full",
+      "predicted_type": "disk-full",
+      "correct": true
+    },
+    {
+      "id": "X16",
+      "category": "multi",
+      "query": "inventory-service DB 다운, web-01은 영향 없음",
+      "systems": [
+        "inventory-service",
+        "web-01"
+      ],
+      "expected_type": "db-down",
+      "predicted_type": "db-down",
+      "correct": true
+    },
+    {
+      "id": "X17",
+      "category": "multi",
+      "query": "web-01은 정상인데 search-service 큐가 계속 쌓여요",
+      "systems": [
+        "web-01",
+        "search-service"
+      ],
+      "expected_type": "queue-backlog",
+      "predicted_type": "db-down",
+      "correct": false
+    },
+    {
+      "id": "X18",
+      "category": "multi",
+      "query": "web-01과 notify-service를 같이 봐주세요, 인증서가 곧 만료됩니다",
+      "systems": [
+        "web-01",
+        "notify-service"
+      ],
+      "expected_type": "cert-expiry",
+      "predicted_type": "db-down",
+      "correct": false
+    },
+    {
+      "id": "X19",
+      "category": "multi",
+      "query": "session-service 커넥션 풀 고갈, web-01은 정상",
+      "systems": [
+        "session-service",
+        "web-01"
+      ],
+      "expected_type": "connection-pool",
+      "predicted_type": "db-down",
+      "correct": false
+    },
+    {
+      "id": "X20",
+      "category": "multi",
+      "query": "web-01은 정상이고 media-service 복제 지연만 문제예요",
+      "systems": [
+        "web-01",
+        "media-service"
+      ],
+      "expected_type": "replication-lag",
+      "predicted_type": "db-down",
+      "correct": false
+    },
+    {
+      "id": "X21",
+      "category": "ambiguous",
+      "query": "report-service 응답이 3초씩 걸린대요",
+      "systems": [
+        "report-service",
+        "web-01"
+      ],
+      "expected_type": "high-latency",
+      "predicted_type": "db-down",
+      "correct": false
+    },
+    {
+      "id": "X22",
+      "category": "ambiguous",
+      "query": "notify-service CPU가 95%까지 치솟았대요",
+      "systems": [
+        "notify-service",
+        "web-01"
+      ],
+      "expected_type": "cpu-spike",
+      "predicted_type": "db-down",
+      "correct": false
+    },
+    {
+      "id": "X23",
+      "category": "ambiguous",
+      "query": "media-service 메모리가 계속 올라간대요",
+      "systems": [
+        "media-service",
+        "web-01"
+      ],
+      "expected_type": "memory-leak",
+      "predicted_type": "db-down",
+      "correct": false
+    },
+    {
+      "id": "X24",
+      "category": "ambiguous",
+      "query": "search-service 호출이 자꾸 타임아웃 난대요",
+      "systems": [
+        "search-service",
+        "web-01"
+      ],
+      "expected_type": "network-timeout",
+      "predicted_type": "db-down",
+      "correct": false
+    },
+    {
+      "id": "X25",
+      "category": "ambiguous",
+      "query": "session-service 디스크가 가득 찼대요",
+      "systems": [
+        "session-service",
+        "web-01"
+      ],
+      "expected_type": "disk-full",
+      "predicted_type": "db-down",
+      "correct": false
+    },
+    {
+      "id": "X26",
+      "category": "ambiguous",
+      "query": "cache-service 데이터베이스 연결이 끊겼대요",
+      "systems": [
+        "cache-service",
+        "web-01"
+      ],
+      "expected_type": "db-down",
+      "predicted_type": "memory-leak",
+      "correct": false
+    },
+    {
+      "id": "X27",
+      "category": "ambiguous",
+      "query": "gateway-service 큐에 요청이 1만 건 쌓였대요",
+      "systems": [
+        "gateway-service",
+        "web-01"
+      ],
+      "expected_type": "queue-backlog",
+      "predicted_type": "network-timeout",
+      "correct": false
+    },
+    {
+      "id": "X28",
+      "category": "ambiguous",
+      "query": "log-service TLS 인증서가 3일 뒤 만료된대요",
+      "systems": [
+        "log-service",
+        "web-01"
+      ],
+      "expected_type": "cert-expiry",
+      "predicted_type": "disk-full",
+      "correct": false
+    },
+    {
+      "id": "X29",
+      "category": "ambiguous",
+      "query": "payments-service 커넥션 풀이 고갈됐대요",
+      "systems": [
+        "payments-service",
+        "web-01"
+      ],
+      "expected_type": "connection-pool",
+      "predicted_type": "cpu-spike",
+      "correct": false
+    },
+    {
+      "id": "X30",
+      "category": "ambiguous",
+      "query": "auth-service 읽기 복제 지연이 40초래요",
+      "systems": [
+        "auth-service",
+        "web-01"
+      ],
+      "expected_type": "replication-lag",
+      "predicted_type": "high-latency",
+      "correct": false
+    },
+    {
+      "id": "X31",
+      "category": "no_system",
+      "query": "로그인 응답이 느려요, 원인 확인 부탁드립니다",
+      "systems": [
+        "auth-service",
+        "web-01"
+      ],
+      "expected_type": "high-latency",
+      "predicted_type": "high-latency",
+      "correct": true
+    },
+    {
+      "id": "X32",
+      "category": "no_system",
+      "query": "결제 처리 서버 CPU가 90% 넘게 유지돼요",
+      "systems": [
+        "auth-service",
+        "web-01"
+      ],
+      "expected_type": "cpu-spike",
+      "predicted_type": "high-latency",
+      "correct": false
+    },
+    {
+      "id": "X33",
+      "category": "no_system",
+      "query": "캐시 메모리가 계속 올라가고 있어요",
+      "systems": [
+        "auth-service",
+        "web-01"
+      ],
+      "expected_type": "memory-leak",
+      "predicted_type": "high-latency",
+      "correct": false
+    },
+    {
+      "id": "X34",
+      "category": "no_system",
+      "query": "외부 API 호출이 자꾸 타임아웃 나요",
+      "systems": [
+        "auth-service",
+        "web-01"
+      ],
+      "expected_type": "network-timeout",
+      "predicted_type": "high-latency",
+      "correct": false
+    },
+    {
+      "id": "X35",
+      "category": "no_system",
+      "query": "디스크 사용량이 95%를 넘었어요",
+      "systems": [
+        "auth-service",
+        "web-01"
+      ],
+      "expected_type": "disk-full",
+      "predicted_type": "high-latency",
+      "correct": false
+    },
+    {
+      "id": "X36",
+      "category": "no_system",
+      "query": "데이터베이스가 다운됐어요",
+      "systems": [
+        "auth-service",
+        "web-01"
+      ],
+      "expected_type": "db-down",
+      "predicted_type": "high-latency",
+      "correct": false
+    },
+    {
+      "id": "X37",
+      "category": "no_system",
+      "query": "배치 큐가 계속 밀리고 있어요",
+      "systems": [
+        "auth-service",
+        "web-01"
+      ],
+      "expected_type": "queue-backlog",
+      "predicted_type": "high-latency",
+      "correct": false
+    },
+    {
+      "id": "X38",
+      "category": "no_system",
+      "query": "인증서 만료 알림이 왔어요",
+      "systems": [
+        "auth-service",
+        "web-01"
+      ],
+      "expected_type": "cert-expiry",
+      "predicted_type": "high-latency",
+      "correct": false
+    },
+    {
+      "id": "X39",
+      "category": "no_system",
+      "query": "커넥션 풀이 고갈됐어요",
+      "systems": [
+        "auth-service",
+        "web-01"
+      ],
+      "expected_type": "connection-pool",
+      "predicted_type": "high-latency",
+      "correct": false
+    },
+    {
+      "id": "X40",
+      "category": "no_system",
+      "query": "읽기 복제본 지연이 심해요",
+      "systems": [
+        "auth-service",
+        "web-01"
+      ],
+      "expected_type": "replication-lag",
+      "predicted_type": "high-latency",
+      "correct": false
+    }
+  ]
+}
