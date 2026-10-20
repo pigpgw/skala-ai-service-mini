@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "variant": "before-keyword",
+  "generated_at": "2026-10-20T14:13:13+09:00",
+  "classifier": "agent.graph._classify_incident_type",
+  "llm_backend": "fake",
+  "monitoring_file": "data/monitoring.json",
+  "monitoring_sha256": "44cf849b6ea4c64bb2ff6911fd99add291cc7a7bb94f56dc1ce562e527be8224",
+  "dataset": "baseline_labels.json",
+  "dataset_sha256": "e18476f698b379a72151578175f55bd1a18531e2bbd310cbab35093d8a8473b4",
+  "dataset_frozen_at": "2026-10-20",
+  "item_count": 12,
+  "correct": 8,
+  "accuracy": 0.6667,
+  "errors": [
+    "B07",
+    "B09",
+    "B10",
+    "B11"
+  ],
+  "git_commit": "923514e",
+  "git_dirty": false,
+  "items": [
+    {
+      "id": "B01",
+      "category": "single",
+      "query": "payments-service 결제 응답이 느리고 CPU 사용률이 91%까지 올라갔어요",
+      "systems": [
+        "payments-service",
+        "web-01"
+      ],
+      "expected_type": "cpu-spike",
+      "predicted_type": "cpu-spike",
+      "correct": true
+    },
+    {
+      "id": "B02",
+      "category": "single",
+      "query": "cache-service 메모리 사용률이 6시간째 계속 올라가고 있어요",
+      "systems": [
+        "cache-service",
+        "web-01"
+      ],
+      "expected_type": "memory-leak",
+      "predicted_type": "memory-leak",
+      "correct": true
+    },
+    {
+      "id": "B03",
+      "category": "single",
+      "query": "log-service 디스크 사용량이 95%라서 로그가 안 쌓인대요",
+      "systems": [
+        "log-service",
+        "web-01"
+      ],
+      "expected_type": "disk-full",
+      "predicted_type": "disk-full",
+      "correct": true
+    },
+    {
+      "id": "B04",
+      "category": "single",
+      "query": "gateway-service에서 upstream 타임아웃이 발생하고 있어요",
+      "systems": [
+        "gateway-service",
+        "web-01"
+      ],
+      "expected_type": "network-timeout",
+      "predicted_type": "network-timeout",
+      "correct": true
+    },
+    {
+      "id": "B05",
+      "category": "single",
+      "query": "auth-service 로그인 응답이 p95 2.4초로 느려졌고 커넥션 풀이 92% 찼어요",
+      "systems": [
+        "auth-service",
+        "web-01"
+      ],
+      "expected_type": "high-latency",
+      "predicted_type": "high-latency",
+      "correct": true
+    },
+    {
+      "id": "B06",
+      "category": "multi",
+      "query": "web-01 CPU가 급증했고 payments-service 결제도 느려요",
+      "systems": [
+        "web-01",
+        "payments-service"
+      ],
+      "expected_type": "cpu-spike",
+      "predicted_type": "cpu-spike",
+      "correct": true
+    },
+    {
+      "id": "B07",
+      "category": "multi",
+      "query": "gateway-service에서 payments-service로 가는 요청이 타임아웃 나요",
+      "systems": [
+        "gateway-service",
+        "payments-service",
+        "web-01"
+      ],
+      "expected_type": "network-timeout",
+      "predicted_type": "cpu-spike",
+      "correct": false
+    },
+    {
+      "id": "B08",
+      "category": "multi",
+      "query": "web-01은 정상인데 cache-service 메모리가 계속 차오릅니다",
+      "systems": [
+        "web-01",
+        "cache-service"
+      ],
+      "expected_type": "memory-leak",
+      "predicted_type": "memory-leak",
+      "correct": true
+    },
+    {
+      "id": "B09",
+      "category": "multi",
+      "query": "log-service 디스크가 95%인데 cache-service 메모리도 같이 올라가요",
+      "systems": [
+        "log-service",
+        "cache-service",
+        "web-01"
+      ],
+      "expected_type": "disk-full",
+      "predicted_type": "memory-leak",
+      "correct": false
+    },
+    {
+      "id": "B10",
+      "category": "ambiguous",
+      "query": "auth-service 디스크 공간이 부족하다는 알림이 왔어요",
+      "systems": [
+        "auth-service",
+        "web-01"
+      ],
+      "expected_type": "disk-full",
+      "predicted_type": "high-latency",
+      "correct": false
+    },
+    {
+      "id": "B11",
+      "category": "ambiguous",
+      "query": "gateway-service에서 메모리 누수가 의심됩니다",
+      "systems": [
+        "gateway-service",
+        "web-01"
+      ],
+      "expected_type": "memory-leak",
+      "predicted_type": "network-timeout",
+      "correct": false
+    },
+    {
+      "id": "B12",
+      "category": "no_system",
+      "query": "로그인 응답이 느려요, 원인 확인해주세요",
+      "systems": [
+        "auth-service",
+        "web-01"
+      ],
+      "expected_type": "high-latency",
+      "predicted_type": "high-latency",
+      "correct": true
+    }
+  ]
+}

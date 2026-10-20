@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-10-20",
+  "notes": [
+    "incident_type ↔ runbook 파일명 매핑 표다. data/AGENTS.md가 요구하는 '매핑 표를 문서에 남긴다'의 구현.",
+    "이 파일은 기존 monitoring.json·runbooks/*.md를 대체하지 않는다. 추가 메타데이터만 담는다(3단계에서 10종으로 확장).",
+    "symptoms·keywords는 runbook 본문과 monitoring.json의 알림 문구에서 뽑았다. 평가 문항 문장을 그대로 옮겨 적지 않는다."
+  ],
+  "incident_types": {
+    "cpu-spike": {
+      "title": "CPU 급증 대응 절차",
+      "systems": ["payments-service", "web-01"],
+      "symptoms": [
+        "CPU 사용률 급증",
+        "임계치 80% 초과",
+        "특정 인스턴스 응답 지연",
+        "배포 직후 부하 상승"
+      ],
+      "keywords": ["cpu", "cpu spike", "사용률", "급증", "autoscaling", "오토스케일링", "롤백", "프로파일링", "핫스팟"],
+      "aliases": ["CPU 과부하", "CPU 폭주", "compute saturation"]
+    },
+    "db-down": {
+      "title": "DB Down 대응 절차",
+      "systems": ["payments-service", "auth-service"],
+      "symptoms": [
+        "데이터베이스 연결 실패",
+        "커넥션 풀 고갈",
+        "리플리케이션 중단",
+        "failover 전환 필요"
+      ],
+      "keywords": ["db", "database", "down", "connection refused", "failover", "replication", "데이터베이스", "연결 실패"],
+      "aliases": ["DB 장애", "database outage", "primary down"]
+    },
+    "disk-full": {
+      "title": "디스크 용량 부족 대응 절차",
+      "systems": ["log-service", "web-01"],
+      "symptoms": [
+        "디스크 사용률 90% 이상",
+        "디스크 공간 부족",
+        "로그 파일 증가",
+        "쓰기 실패"
+      ],
+      "keywords": ["disk", "disk usage", "disk space low", "/var/log", "디스크", "용량", "부족", "로그 로테이션", "볼륨 확장", "no space left"],
+      "aliases": ["디스크 풀", "disk pressure", "저장 공간 부족"]
+    },
+    "high-latency": {
+      "title": "응답 지연(High Latency) 대응 절차",
+      "systems": ["auth-service", "payments-service"],
+      "symptoms": [
+        "p95 지연 증가",
+        "응답 지연",
+        "커넥션 풀 사용률 90% 이상",
+        "느린 쿼리"
+      ],
+      "keywords": ["latency", "p95", "slow", "지연", "응답 시간", "pool", "커넥션 풀", "느린 쿼리", "로드밸런서 제외"],
+      "aliases": ["응답이 느림", "high response time", "성능 저하"]
+    },
+    "memory-leak": {
+      "title": "메모리 누수(Memory Leak) 대응 절차",
+      "systems": ["cache-service", "web-01"],
+      "symptoms": [
+        "메모리 사용률 지속 상승",
+        "힙 사용량 증가",
+        "OOM 임박",
+        "캐시 무제한 증가"
+      ],
+      "keywords": ["memory", "memory leak", "heap", "oom", "메모리", "누수", "힙", "재시작", "프로파일링", "커넥션 미반환"],
+      "aliases": ["메모리 증가", "memory pressure", "OOM kill"]
+    },
+    "network-timeout": {
+      "title": "네트워크 타임아웃 대응 절차",
+      "systems": ["gateway-service", "payments-service"],
+      "symptoms": [
+        "시스템 간 호출 타임아웃",
+        "504 응답",
+        "패킷 손실",
+        "DNS·방화벽 변경"
+      ],
+      "keywords": ["timeout", "network", "packet loss", "504", "dns", "방화벽", "타임아웃", "네트워크", "헬스체크", "우회 라우팅"],
+      "aliases": ["통신 실패", "connection timeout", "upstream timeout"]
+    },
+    "queue-backlog": {
+      "title": "큐 적체(Queue Backlog) 대응 절차",
+      "systems": ["search-service"],
+      "symptoms": [
+        "큐 길이 증가",
+        "소비자 처리량 저하",
+        "인덱싱 작업 적체",
+        "메시지 재처리 필요"
+      ],
+      "keywords": ["queue", "backlog", "consumer", "dead letter", "큐", "적체", "밀림", "처리량", "소비자", "재처리"],
+      "aliases": ["큐 밀림", "message backlog", "consumer lag"]
+    },
+    "cert-expiry": {
+      "title": "인증서 만료(Certificate Expiry) 대응 절차",
+      "systems": ["notify-service"],
+      "symptoms": [
+        "인증서 만료 임박",
+        "자동 갱신 실패",
+        "TLS 핸드셰이크 오류",
+        "만료 알림"
+      ],
+      "keywords": ["certificate", "cert", "tls", "acme", "expiry", "인증서", "만료", "갱신", "핸드셰이크", "mTLS"],
+      "aliases": ["certificate expiration", "인증서 교체", "SSL 만료"]
+    },
+    "connection-pool": {
+      "title": "커넥션 풀 고갈(Connection Pool Exhausted) 대응 절차",
+      "systems": ["session-service"],
+      "symptoms": [
+        "커넥션 풀 사용률 100%",
+        "대기 요청 증가",
+        "커넥션 반환 누락",
+        "풀 크기 부족"
+      ],
+      "keywords": ["connection pool", "pool exhausted", "max_connections", "커넥션 풀", "고갈", "대기 요청", "반환 누락", "풀 크기"],
+      "aliases": ["pool exhaustion", "DB 커넥션 부족", "connection saturation"]
+    },
+    "replication-lag": {
+      "title": "복제 지연(Replication Lag) 대응 절차",
+      "systems": ["media-service"],
+      "symptoms": [
+        "복제 지연 증가",
+        "복제본 최신성 저하",
+        "읽기 트래픽 우회 필요",
+        "복제 큐 증가"
+      ],
+      "keywords": ["replica lag", "replication", "lag", "read replica", "복제", "지연", "복제본", "우회", "동기화"],
+      "aliases": ["replica delay", "복제 지연", "standby lag"]
+    }
+  }
+}

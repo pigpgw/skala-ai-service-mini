@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "source": "eval/rag_probe.json + eval/baseline_keyword.json",
+  "note": "12문항 개발셋 기준. 임계값 선택의 일반화 근거가 아니라 민감도 기록이다.",
+  "margin_sweep_min_score_0.50": [
+    {
+      "min_margin": 0.0,
+      "correct": 11,
+      "rag": 12
+    },
+    {
+      "min_margin": 0.01,
+      "correct": 12,
+      "rag": 11
+    },
+    {
+      "min_margin": 0.02,
+      "correct": 12,
+      "rag": 11
+    },
+    {
+      "min_margin": 0.03,
+      "correct": 12,
+      "rag": 10
+    },
+    {
+      "min_margin": 0.05,
+      "correct": 11,
+      "rag": 9
+    },
+    {
+      "min_margin": 0.08,
+      "correct": 10,
+      "rag": 8
+    }
+  ],
+  "score_sweep_min_margin_0.03": [
+    {
+      "min_score": 0.4,
+      "correct": 12,
+      "rag": 10
+    },
+    {
+      "min_score": 0.45,
+      "correct": 12,
+      "rag": 10
+    },
+    {
+      "min_score": 0.5,
+      "correct": 12,
+      "rag": 10
+    },
+    {
+      "min_score": 0.55,
+      "correct": 12,
+      "rag": 10
+    },
+    {
+      "min_score": 0.6,
+      "correct": 9,
+      "rag": 5
+    },
+    {
+      "min_score": 0.65,
+      "correct": 8,
+      "rag": 1
+    }
+  ]
+}

@@ -1,0 +1,407 @@
+{
+  "schema_version": 1,
+  "variant": "after-rag",
+  "stage": "1단계 임시 측정 (4단계에서 eval/run_eval.py로 통합)",
+  "generated_at": "2026-10-20T14:23:01+09:00",
+  "embedder": {
+    "name": "ollama:qwen3-embedding:0.6b",
+    "dim": 1024,
+    "requested": "auto"
+  },
+  "index": {
+    "docs": [
+      "cpu-spike",
+      "db-down",
+      "disk-full",
+      "high-latency",
+      "memory-leak",
+      "network-timeout"
+    ],
+    "doc_count": 6,
+    "built_at": "2026-10-20T14:22:41+09:00",
+    "index_sha256": "3acb3580476d7ea01b5dc9818ef3519b83934859e95d5499c611aa7194ed9945",
+    "cache_hit_first": true,
+    "cache_hit_second": true
+  },
+  "thresholds": {
+    "RAG_ENABLED": true,
+    "RAG_MIN_SCORE": 0.5,
+    "RAG_MIN_MARGIN": 0.03,
+    "top_k": 3
+  },
+  "monitoring_sha256": "44cf849b6ea4c64bb2ff6911fd99add291cc7a7bb94f56dc1ce562e527be8224",
+  "dataset_sha256": "e18476f698b379a72151578175f55bd1a18531e2bbd310cbab35093d8a8473b4",
+  "baseline_file": "baseline_keyword.json",
+  "git_commit": "923514e",
+  "git_dirty": true,
+  "item_count": 12,
+  "correct": 12,
+  "accuracy": 1.0,
+  "errors": [],
+  "checks": {
+    "cache_reuse": {
+      "first_cache_hit": true,
+      "second_cache_hit": true,
+      "pass": true
+    },
+    "accuracy": {
+      "correct": 12,
+      "total": 12,
+      "accuracy": 1.0,
+      "baseline_accuracy": 0.6667,
+      "pass": true
+    },
+    "forced_low_score": {
+      "min_score": 0.99,
+      "reasons": [
+        "low_score"
+      ],
+      "all_keyword_source": true,
+      "same_as_keyword": true,
+      "pass": true
+    },
+    "disabled": {
+      "same_as_baseline": true,
+      "pass": true
+    }
+  },
+  "items": [
+    {
+      "id": "B01",
+      "category": "single",
+      "query": "payments-service 결제 응답이 느리고 CPU 사용률이 91%까지 올라갔어요",
+      "expected_type": "cpu-spike",
+      "predicted_type": "cpu-spike",
+      "correct": true,
+      "source": "keyword",
+      "reason": "low_margin",
+      "score": 0.5834,
+      "margin": 0.0065,
+      "doc_id": null,
+      "candidates": [
+        {
+          "id": "high-latency",
+          "score": 0.5834
+        },
+        {
+          "id": "cpu-spike",
+          "score": 0.5769
+        },
+        {
+          "id": "memory-leak",
+          "score": 0.4325
+        }
+      ],
+      "elapsed_ms": 315.38
+    },
+    {
+      "id": "B02",
+      "category": "single",
+      "query": "cache-service 메모리 사용률이 6시간째 계속 올라가고 있어요",
+      "expected_type": "memory-leak",
+      "predicted_type": "memory-leak",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.6047,
+      "margin": 0.1883,
+      "doc_id": "memory-leak",
+      "candidates": [
+        {
+          "id": "memory-leak",
+          "score": 0.6047
+        },
+        {
+          "id": "cpu-spike",
+          "score": 0.4164
+        },
+        {
+          "id": "disk-full",
+          "score": 0.4127
+        }
+      ],
+      "elapsed_ms": 32.98
+    },
+    {
+      "id": "B03",
+      "category": "single",
+      "query": "log-service 디스크 사용량이 95%라서 로그가 안 쌓인대요",
+      "expected_type": "disk-full",
+      "predicted_type": "disk-full",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.7148,
+      "margin": 0.2499,
+      "doc_id": "disk-full",
+      "candidates": [
+        {
+          "id": "disk-full",
+          "score": 0.7148
+        },
+        {
+          "id": "memory-leak",
+          "score": 0.4648
+        },
+        {
+          "id": "db-down",
+          "score": 0.3883
+        }
+      ],
+      "elapsed_ms": 32.0
+    },
+    {
+      "id": "B04",
+      "category": "single",
+      "query": "gateway-service에서 upstream 타임아웃이 발생하고 있어요",
+      "expected_type": "network-timeout",
+      "predicted_type": "network-timeout",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.5724,
+      "margin": 0.0957,
+      "doc_id": "network-timeout",
+      "candidates": [
+        {
+          "id": "network-timeout",
+          "score": 0.5724
+        },
+        {
+          "id": "high-latency",
+          "score": 0.4768
+        },
+        {
+          "id": "db-down",
+          "score": 0.4213
+        }
+      ],
+      "elapsed_ms": 31.66
+    },
+    {
+      "id": "B05",
+      "category": "single",
+      "query": "auth-service 로그인 응답이 p95 2.4초로 느려졌고 커넥션 풀이 92% 찼어요",
+      "expected_type": "high-latency",
+      "predicted_type": "high-latency",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.6475,
+      "margin": 0.2095,
+      "doc_id": "high-latency",
+      "candidates": [
+        {
+          "id": "high-latency",
+          "score": 0.6475
+        },
+        {
+          "id": "db-down",
+          "score": 0.438
+        },
+        {
+          "id": "network-timeout",
+          "score": 0.423
+        }
+      ],
+      "elapsed_ms": 34.07
+    },
+    {
+      "id": "B06",
+      "category": "multi",
+      "query": "web-01 CPU가 급증했고 payments-service 결제도 느려요",
+      "expected_type": "cpu-spike",
+      "predicted_type": "cpu-spike",
+      "correct": true,
+      "source": "keyword",
+      "reason": "low_margin",
+      "score": 0.5677,
+      "margin": 0.02,
+      "doc_id": null,
+      "candidates": [
+        {
+          "id": "cpu-spike",
+          "score": 0.5677
+        },
+        {
+          "id": "high-latency",
+          "score": 0.5477
+        },
+        {
+          "id": "db-down",
+          "score": 0.436
+        }
+      ],
+      "elapsed_ms": 32.16
+    },
+    {
+      "id": "B07",
+      "category": "multi",
+      "query": "gateway-service에서 payments-service로 가는 요청이 타임아웃 나요",
+      "expected_type": "network-timeout",
+      "predicted_type": "network-timeout",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.5533,
+      "margin": 0.0404,
+      "doc_id": "network-timeout",
+      "candidates": [
+        {
+          "id": "network-timeout",
+          "score": 0.5533
+        },
+        {
+          "id": "high-latency",
+          "score": 0.5129
+        },
+        {
+          "id": "db-down",
+          "score": 0.4116
+        }
+      ],
+      "elapsed_ms": 38.02
+    },
+    {
+      "id": "B08",
+      "category": "multi",
+      "query": "web-01은 정상인데 cache-service 메모리가 계속 차오릅니다",
+      "expected_type": "memory-leak",
+      "predicted_type": "memory-leak",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.6085,
+      "margin": 0.194,
+      "doc_id": "memory-leak",
+      "candidates": [
+        {
+          "id": "memory-leak",
+          "score": 0.6085
+        },
+        {
+          "id": "disk-full",
+          "score": 0.4145
+        },
+        {
+          "id": "cpu-spike",
+          "score": 0.3827
+        }
+      ],
+      "elapsed_ms": 54.05
+    },
+    {
+      "id": "B09",
+      "category": "multi",
+      "query": "log-service 디스크가 95%인데 cache-service 메모리도 같이 올라가요",
+      "expected_type": "disk-full",
+      "predicted_type": "disk-full",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.613,
+      "margin": 0.0625,
+      "doc_id": "disk-full",
+      "candidates": [
+        {
+          "id": "disk-full",
+          "score": 0.613
+        },
+        {
+          "id": "memory-leak",
+          "score": 0.5506
+        },
+        {
+          "id": "high-latency",
+          "score": 0.3814
+        }
+      ],
+      "elapsed_ms": 56.31
+    },
+    {
+      "id": "B10",
+      "category": "ambiguous",
+      "query": "auth-service 디스크 공간이 부족하다는 알림이 왔어요",
+      "expected_type": "disk-full",
+      "predicted_type": "disk-full",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.5583,
+      "margin": 0.1116,
+      "doc_id": "disk-full",
+      "candidates": [
+        {
+          "id": "disk-full",
+          "score": 0.5583
+        },
+        {
+          "id": "memory-leak",
+          "score": 0.4467
+        },
+        {
+          "id": "high-latency",
+          "score": 0.4082
+        }
+      ],
+      "elapsed_ms": 53.62
+    },
+    {
+      "id": "B11",
+      "category": "ambiguous",
+      "query": "gateway-service에서 메모리 누수가 의심됩니다",
+      "expected_type": "memory-leak",
+      "predicted_type": "memory-leak",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.5787,
+      "margin": 0.1262,
+      "doc_id": "memory-leak",
+      "candidates": [
+        {
+          "id": "memory-leak",
+          "score": 0.5787
+        },
+        {
+          "id": "network-timeout",
+          "score": 0.4525
+        },
+        {
+          "id": "db-down",
+          "score": 0.3975
+        }
+      ],
+      "elapsed_ms": 40.72
+    },
+    {
+      "id": "B12",
+      "category": "no_system",
+      "query": "로그인 응답이 느려요, 원인 확인해주세요",
+      "expected_type": "high-latency",
+      "predicted_type": "high-latency",
+      "correct": true,
+      "source": "rag",
+      "reason": "ok",
+      "score": 0.5895,
+      "margin": 0.1775,
+      "doc_id": "high-latency",
+      "candidates": [
+        {
+          "id": "high-latency",
+          "score": 0.5895
+        },
+        {
+          "id": "network-timeout",
+          "score": 0.4121
+        },
+        {
+          "id": "db-down",
+          "score": 0.3836
+        }
+      ],
+      "elapsed_ms": 42.38
+    }
+  ],
+  "fallback_prediction_diff": []
+}

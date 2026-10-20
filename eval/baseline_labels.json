@@ -1,0 +1,114 @@
+{
+  "dataset": "baseline_labels",
+  "version": "1.0",
+  "item_count": 12,
+  "frozen_at": "2026-10-20",
+  "frozen": true,
+  "model_backend": "fake",
+  "monitoring_snapshot": "data/monitoring.json",
+  "design_notes": [
+    "원본 6시스템(auth-service, web-01, payments-service, cache-service, gateway-service, log-service)만 사용한다. 12시스템 확장본은 E8 이후 평가셋(eval/labels_extended.json)에서 다룬다.",
+    "systems는 fake 백엔드 plan()이 실제로 조회하는 목록이다: 질의에서 뽑은 시스템 + web-01 자동 추가(agent/fake_llm.py:40-47).",
+    "원본 데이터에는 db-down을 정당화할 근거(DB 다운 알림)가 없으므로 db-down 라벨은 넣지 않는다. db-down은 keyword 규칙의 폴백 기본값일 뿐이다(agent/graph.py:213).",
+    "category: single=단일 시스템, multi=복수 시스템, ambiguous=질의 신고 증상과 모니터링 데이터가 불일치, no_system=시스템명 미언급(폴백 경로).",
+    "측정 전에 이 파일을 동결한다. 수정이 필요하면 새 버전 파일을 만들고 기존 측정을 무효 처리한다(data/AGENTS.md 동결 규칙)."
+  ],
+  "items": [
+    {
+      "id": "B01",
+      "category": "single",
+      "query": "payments-service 결제 응답이 느리고 CPU 사용률이 91%까지 올라갔어요",
+      "systems": ["payments-service", "web-01"],
+      "expected_type": "cpu-spike",
+      "rationale": "CPU 91% 알림이 1차 원인. 결제 지연은 그 결과로 본다."
+    },
+    {
+      "id": "B02",
+      "category": "single",
+      "query": "cache-service 메모리 사용률이 6시간째 계속 올라가고 있어요",
+      "systems": ["cache-service", "web-01"],
+      "expected_type": "memory-leak",
+      "rationale": "메모리 89% + 6시간 지속 상승 + heap near limit = 누수 패턴."
+    },
+    {
+      "id": "B03",
+      "category": "single",
+      "query": "log-service 디스크 사용량이 95%라서 로그가 안 쌓인대요",
+      "systems": ["log-service", "web-01"],
+      "expected_type": "disk-full",
+      "rationale": "/var/log 95% 사용. 디스크 포화가 직접 원인."
+    },
+    {
+      "id": "B04",
+      "category": "single",
+      "query": "gateway-service에서 upstream 타임아웃이 발생하고 있어요",
+      "systems": ["gateway-service", "web-01"],
+      "expected_type": "network-timeout",
+      "rationale": "upstream 504 + packet loss 3% = 네트워크 타임아웃."
+    },
+    {
+      "id": "B05",
+      "category": "single",
+      "query": "auth-service 로그인 응답이 p95 2.4초로 느려졌고 커넥션 풀이 92% 찼어요",
+      "systems": ["auth-service", "web-01"],
+      "expected_type": "high-latency",
+      "rationale": "p95 2.4s(임계 1.0s)가 주 증상. 풀 고갈은 지연의 원인 중 하나로 본다."
+    },
+    {
+      "id": "B06",
+      "category": "multi",
+      "query": "web-01 CPU가 급증했고 payments-service 결제도 느려요",
+      "systems": ["web-01", "payments-service"],
+      "expected_type": "cpu-spike",
+      "rationale": "저하된 시스템은 payments-service 하나이고 증상도 CPU. web-01은 healthy."
+    },
+    {
+      "id": "B07",
+      "category": "multi",
+      "query": "gateway-service에서 payments-service로 가는 요청이 타임아웃 나요",
+      "systems": ["gateway-service", "payments-service", "web-01"],
+      "expected_type": "network-timeout",
+      "rationale": "사용자 호소 증상은 구간 통신 타임아웃. payments-service CPU 상승은 이 구간 장애의 결과로 본다."
+    },
+    {
+      "id": "B08",
+      "category": "multi",
+      "query": "web-01은 정상인데 cache-service 메모리가 계속 차오릅니다",
+      "systems": ["web-01", "cache-service"],
+      "expected_type": "memory-leak",
+      "rationale": "정상 시스템이 섞여도 저하 시스템의 증상(메모리 상승)으로 판정해야 한다."
+    },
+    {
+      "id": "B09",
+      "category": "multi",
+      "query": "log-service 디스크가 95%인데 cache-service 메모리도 같이 올라가요",
+      "systems": ["log-service", "cache-service", "web-01"],
+      "expected_type": "disk-full",
+      "rationale": "두 증상이 동시에 있으나 디스크 95%는 로그 유실이 임박한 즉시 조치 대상. 메모리 상승은 추세 관찰 대상."
+    },
+    {
+      "id": "B10",
+      "category": "ambiguous",
+      "query": "auth-service 디스크 공간이 부족하다는 알림이 왔어요",
+      "systems": ["auth-service", "web-01"],
+      "expected_type": "disk-full",
+      "rationale": "사용자 신고 증상은 디스크. 실제 응답 데이터에는 디스크 알림이 없어 질의와 데이터가 불일치한다."
+    },
+    {
+      "id": "B11",
+      "category": "ambiguous",
+      "query": "gateway-service에서 메모리 누수가 의심됩니다",
+      "systems": ["gateway-service", "web-01"],
+      "expected_type": "memory-leak",
+      "rationale": "사용자 신고 증상은 메모리 누수. 실제 응답 데이터는 타임아웃·패킷 손실만 있어 불일치한다."
+    },
+    {
+      "id": "B12",
+      "category": "no_system",
+      "query": "로그인 응답이 느려요, 원인 확인해주세요",
+      "systems": ["auth-service", "web-01"],
+      "expected_type": "high-latency",
+      "rationale": "시스템명 미언급 → auth-service 폴백. p95 지연 알림으로 판정."
+    }
+  ]
+}
