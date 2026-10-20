@@ -176,7 +176,7 @@ PDF 11–12쪽에 제시된 개선 예시(채택 여부 미정, 후보 풀):
 | # | 요건 | 현재 상태 | 상태 |
 |---|---|---|---|
 | G1 | Git 주소 등록(S5) | `https://github.com/pigpgw/skala-ai-service-mini` — `origin` 설정됨, `main` = `origin/main` = `923514e` (2026-10-20 확인) | [x] |
-| G2 | 제출 코드가 현재 작업 트리와 일치 | 원격에는 기준선 커밋 3건(`e546487`, `e2a1ef3`, `923514e`)까지만 있음. **0~4단계 변경분은 아직 미커밋** | [ ] 커밋·푸시 필요 |
+| G2 | 제출 코드가 현재 작업 트리와 일치 | 2026-10-20 커밋·푸시 완료 — `923514e..4e7d752` (0~4단계 6커밋), `main` = `origin/main` = `4e7d752`, 작업 트리 clean | [x] |
 | G3 | 결과 보고서(Google Spread) | 근거 대조표 `doc/reports/evidence/index.md`, Before/After 표는 준비됨. 보고서 본문 미작성 | [ ] |
 | G4 | `.env`·`.venv`·`session.db` 미커밋 | `.gitignore`에 포함됨 | [x] |
 | G5 | 생성물(원본 측정·런타임 상태) 미커밋 | `artifacts/`·`var/` 제외됨, `artifacts/README.md`만 예외 커밋 | [x] |
@@ -195,3 +195,4 @@ PDF 11–12쪽에 제시된 개선 예시(채택 여부 미정, 후보 풀):
 | 2026-10-20 | **3단계 완료** — 시스템 6→12, 런북 6→10, `DATA_PROFILE` 일원화(5곳 하드코딩 제거), 40문항 동결·측정. keyword 13/40 → RAG 34/40. 데이터 확장은 정확도 0·coverage 18.75%→0% | `agent/data_profile.py`, `data/monitoring_extended.json`, `data/runbooks/{connection-pool,cert-expiry,replication-lag,queue-backlog}.md`, `eval/labels_extended.json`, `eval/{baseline_extended_keyword,rag_probe_extended,rag_probe_extended_on_base,ablation,profile_probe}.json`, `doc/rag_design.md` §9.3 | 4단계 평가 하네스 정식화(`eval/run_eval.py`, macro-F1, 지연 p50/p95, 재현성) |
 | 2026-10-20 | **4단계 완료** — 통합 하네스(`eval/run_eval.py`: manifest·metrics·requests/responses jsonl, 실행 1회=`artifacts/runs/<run_id>/`), 지표 모듈(`eval/metrics.py`), 테스트 50개(`tests/`), Before/After 표 자동 생성(`eval/make_before_after.py`) → `doc/reports/evidence/`. 40문항 0.3250→0.8500, macro-F1 0.2836→0.8521, E2E 1/5→5/5, 재현성 identical, 분류 지연 +32.43ms | `eval/run_eval.py`, `eval/metrics.py`, `eval/make_before_after.py`, `eval/e2e_cases.json`, `tests/{unit,integration}/`, `pytest.ini`, `requirements-dev.txt`, `artifacts/runs/20261020-1527*`, `artifacts/runs/20261020-1532*`, `doc/reports/evidence/{index.md,before_after.md,metrics/}`, `doc/rag_design.md` §9.4 | 0~4단계 변경 커밋·푸시 → S6 보고서 작성 |
 | 2026-10-20 | **S2·S3·S5 확인** — 소원 G079 박건우, 과제 1번, 등록 문구 "RAG 기반 RunBook 선택 · 데이터 확장 · 평가 하네스 구축", Git 주소 `https://github.com/pigpgw/skala-ai-service-mini` | 사용자 등록 보고, `git remote -v`·`git ls-remote` 확인(origin = 해당 주소, main = origin/main = `923514e`) | 0~4단계 변경 커밋·푸시 → S6 보고서 |
+| 2026-10-20 | **커밋·푸시 완료** — 0~4단계 6커밋(`923514e..4e7d752`), `main` = `origin/main`, 작업 트리 clean. 비밀·상태 파일 미포함 확인(`.env`·`session.db`·`.venv`·`artifacts/`·`var/` 전부 제외, `.env.example`만 존재) | `git push origin main` → `923514e..4e7d752 main -> main`, `git ls-remote origin` = `4e7d752` | S6 결과 보고서 작성(증거 대조표 `doc/reports/evidence/index.md` 인용) |
