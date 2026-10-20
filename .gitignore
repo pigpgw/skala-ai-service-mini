@@ -1,0 +1,15 @@
+.env
+.venv/
+session.db
+__pycache__/
+*.log
+
+# 생성 산출물 (원본) — 규칙은 artifacts/README.md 참조
+/artifacts/*
+!/artifacts/README.md
+
+# 런타임 상태
+/var/
+
+# 도구 작업 디렉토리
+.archify/
