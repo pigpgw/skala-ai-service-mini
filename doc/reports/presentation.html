@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<title>Base AI Agent의 RunBook 선택 개선 — 발표 자료</title>
+<title>Base AI Agent의 RunBook 선택 개선 — 5분 발표</title>
 <style>
 :root{
   --ink:#16191d; --muted:#5b6470; --line:#e3e7ee; --soft:#f6f8fb;
@@ -17,48 +17,51 @@ body{
 }
 .slide{
   width:1280px; height:720px; margin:28px auto; background:#fff;
-  padding:56px 64px 46px; position:relative; overflow:hidden;
+  padding:46px 58px 40px; position:relative; overflow:hidden;
   box-shadow:0 8px 30px rgba(20,30,60,.10); border-radius:6px;
   display:flex; flex-direction:column;
 }
-.kicker{font-size:15px;letter-spacing:.08em;color:var(--accent);font-weight:600;margin-bottom:8px}
-h1{font-size:44px;line-height:1.22;letter-spacing:-.02em;margin-bottom:14px}
-h2{font-size:34px;line-height:1.25;letter-spacing:-.02em;margin-bottom:6px}
-.lead{font-size:19px;color:var(--muted);margin-bottom:26px;line-height:1.55}
-ul{list-style:none;margin-top:6px}
-li{font-size:18.5px;line-height:1.62;margin:11px 0;padding-left:22px;position:relative}
-li::before{content:"";position:absolute;left:2px;top:11px;width:7px;height:7px;border-radius:2px;background:var(--accent)}
+.kicker{font-size:14px;letter-spacing:.06em;color:var(--accent);font-weight:600;margin-bottom:6px}
+.kicker b{background:var(--accent-soft);color:var(--accent);border-radius:6px;padding:2px 8px;margin-right:8px}
+h1{font-size:42px;line-height:1.22;letter-spacing:-.02em;margin-bottom:12px}
+h2{font-size:31px;line-height:1.25;letter-spacing:-.02em;margin-bottom:6px}
+.lead{font-size:17px;color:var(--muted);margin-bottom:18px;line-height:1.5}
+ul{list-style:none;margin-top:4px}
+li{font-size:17.5px;line-height:1.55;margin:9px 0;padding-left:20px;position:relative}
+li::before{content:"";position:absolute;left:2px;top:10px;width:7px;height:7px;border-radius:2px;background:var(--accent)}
 li strong{font-weight:700}
-code{background:var(--soft);border:1px solid var(--line);border-radius:5px;padding:1px 6px;
-     font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:.88em}
-pre{background:#12161c;color:#e6ecf3;border-radius:10px;padding:18px 22px;overflow:hidden;
-    font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:16px;line-height:1.62}
+code{background:var(--soft);border:1px solid var(--line);border-radius:5px;padding:1px 5px;
+     font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:.86em}
+pre{background:#12161c;color:#e6ecf3;border-radius:10px;padding:16px 20px;overflow:hidden;
+    font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:14.5px;line-height:1.6}
 pre .k{color:#8fb8ff}.pre-c{color:#7f8a99}.pre-s{color:#9ad8a4}
-table{width:100%;border-collapse:collapse;margin-top:14px;font-size:17px}
-th,td{border-bottom:1px solid var(--line);padding:10px 12px;text-align:left}
-th{font-size:14.5px;color:var(--muted);font-weight:600;letter-spacing:.02em;border-bottom:2px solid #cfd6e2}
+table{width:100%;border-collapse:collapse;margin-top:8px;font-size:16px}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left}
+th{font-size:13.5px;color:var(--muted);font-weight:600;letter-spacing:.02em;border-bottom:2px solid #cfd6e2}
 td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 tr.up td{color:var(--good);font-weight:600}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:26px}
-.card{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:20px 22px}
-.card h3{font-size:18px;margin-bottom:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.card{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
 .card.accent{background:var(--accent-soft);border-color:#cddcfb}
 .card.warn{background:var(--warn-soft);border-color:#f0dcb4}
-.metric{display:flex;flex-direction:column;gap:2px}
-.metric .v{font-size:44px;font-weight:700;letter-spacing:-.03em;color:var(--accent)}
-.metric .l{font-size:15px;color:var(--muted)}
-.metric.good .v{color:var(--good)}
-.metric.warn .v{color:var(--warn)}
-.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:18px}
-.foot{position:absolute;left:64px;right:64px;bottom:20px;display:flex;justify-content:space-between;
-      font-size:13px;color:#98a1ad;border-top:1px solid var(--line);padding-top:10px}
-.cover{justify-content:center;background:linear-gradient(160deg,#ffffff 60%,#eef3ff)}
-.cover h1{font-size:56px}
-.cover .sub{font-size:22px;color:var(--muted);margin-bottom:34px}
-.cover .meta{font-size:16px;color:var(--muted);line-height:1.9}
+.card.good{background:var(--good-soft);border-color:#c8e6d4}
+.card h3{font-size:16.5px;margin-bottom:8px}
+.shot{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff;margin-top:6px}
+.shot img{display:block;width:100%}
+.shot .cap{font-size:12.5px;color:var(--muted);padding:6px 10px;background:#fafbfd;border-top:1px solid var(--line)}
+.foot{position:absolute;left:58px;right:58px;bottom:16px;display:flex;justify-content:space-between;
+      font-size:12.5px;color:#98a1ad;border-top:1px solid var(--line);padding-top:8px}
+.cover{justify-content:center;background:linear-gradient(160deg,#ffffff 58%,#eef3ff)}
+.cover h1{font-size:52px}
+.cover .sub{font-size:21px;color:var(--muted);margin-bottom:26px}
+.cover .meta{font-size:15.5px;color:var(--muted);line-height:1.9}
 .badge{display:inline-block;background:var(--accent-soft);color:var(--accent);border:1px solid #cddcfb;
-       border-radius:999px;padding:4px 12px;font-size:14px;margin-right:8px}
-.arrow{color:var(--muted);font-size:16px}
+       border-radius:999px;padding:3px 11px;font-size:13.5px;margin-right:7px}
+.plan{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+.plan .p{border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.plan .p.a{background:var(--accent-soft);border-color:#cddcfb}
+.plan .p b{display:block;font-size:17px;margin-bottom:4px}
+.plan .p span{font-size:14.5px;color:var(--muted)}
 @media print{
   body{background:#fff}
   .slide{box-shadow:none;border-radius:0;margin:0;page-break-after:always;break-after:page}
@@ -70,243 +73,178 @@ tr.up td{color:var(--good);font-weight:600}
 
 <!-- 1. 표지 -->
 <section class="slide cover">
-  <div class="kicker">AI 서비스 MINI-PROJECT · 과제 1번</div>
+  <div class="kicker">SKALA AI 서비스 MINI-PROJECT · 과제 1번</div>
   <h1>Base AI Agent의<br>RunBook 선택 개선</h1>
-  <div class="sub">RAG 기반 RunBook 선택 · 데이터 확장 · 평가 하네스 구축</div>
-  <div class="meta">
-    광주 3반 79번 박건우 · 2026-10-22<br>
+  <div class="sub">RAG 기반 RunBook 선택 · 라우팅 기준 확대 · 데이터 확장 · 평가 하네스</div>
+  <div class="plan">
+    <div class="p a"><b>2분 — 기능과 결과</b><span>무엇을 고쳤나 · Before/After 수치</span></div>
+    <div class="p"><b>3분 — 코드 설명</b><span>Agent Graph 구성 · MCP · RAG</span></div>
+  </div>
+  <div class="meta" style="margin-top:24px">
+    <b style="color:var(--ink)">79번 박건우</b> (G079 · 광주 3반) · 2026-10-21<br>
     <span class="badge">FastAPI + LangGraph v2 + MCP</span><span class="badge">all_total_vue_student</span><br>
-    Git: github.com/pigpgw/skala-ai-service-mini
+    github.com/pigpgw/skala-ai-service-mini
   </div>
-  <div class="foot"><span>광주 3반 79번 박건우</span><span>1</span></div>
+  <div class="foot"><span>79번 박건우 · 광주 3반</span><span>1</span></div>
 </section>
 
-<!-- 2. 문제 -->
+<!-- 2. [2분] 무엇을 고쳤나 -->
 <section class="slide">
-  <div class="kicker">문제</div>
-  <h2>장애 유형을 고르는 부분이 틀리고 있었다</h2>
-  <div class="lead">판정 로직이 한 함수에 압축돼 있었고, 규칙 순서가 곧 결과였습니다.</div>
-  <div class="grid2">
-    <div>
-      <pre><span class="pre-c"># agent/graph.py::_classify_incident_type()</span>
-<span class="k">latency</span> → pool → <span class="k">cpu</span> → memory → timeout
-  → network → disk → down
-<span class="pre-c"># 순서대로 보다가 "처음 맞는 것"을 선택</span></pre>
-    </div>
-    <div>
-      <ul>
-        <li><strong>규칙 순서가 증상 우선순위와 무관</strong><br>CPU가 timeout보다 앞에 있어, 타임아웃 질의가 <code>cpu-spike</code>가 됨</li>
-        <li><strong>질의문을 아예 보지 않음</strong><br>"디스크 부족" 신고가 지연 알림에 가려 <code>high-latency</code>가 됨</li>
-        <li><strong>매칭 실패 시 무조건 <code>db-down</code></strong><br>"아무 장애나 db-down 대응을 내놔라"</li>
-      </ul>
-    </div>
-  </div>
-  <div class="foot"><span>문제 — agent/graph.py::_classify_incident_type</span><span>2</span></div>
-</section>
-
-<!-- 3. 근거 -->
-<section class="slide">
-  <div class="kicker">근거</div>
-  <h2>먼저 고쳐 볼 자리를 찾았다</h2>
-  <div class="lead">고치기 전에, 같은 입력으로 뭐가 틀리는지 고정해서 재기로 했습니다.</div>
-  <div class="metrics">
-    <div class="card metric warn"><span class="v">8/12</span><span class="l">keyword 기준선 정확도 = 0.6667</span></div>
-    <div class="card metric"><span class="v">4개</span><span class="l">오분류 (B07·B09·B10·B11)</span></div>
-    <div class="card metric"><span class="v">0.6667</span><span class="l">eval/baseline_keyword.json</span></div>
-  </div>
-  <ul style="margin-top:22px">
-    <li><strong>B07</strong> — gateway(타임아웃) + payments(CPU)를 함께 조회하면 CPU가 먼저 잡힘</li>
-    <li><strong>B09</strong> — memory 규칙이 disk 규칙보다 앞에 있음</li>
-    <li><strong>B10·B11</strong> — 질의 텍스트를 읽지 않아서 생긴 오분류</li>
-    <li><strong>라우팅 공백</strong> — PDF 9쪽 예시 질의 10개를 돌리니 7개가 chat으로 떨어졌다<br>
-      <span style="font-size:16px;color:var(--muted)">결정론 백엔드의 라우팅 정규식이 7개 키워드뿐이었다 → 3/10 → 수정 후 <strong>10/10</strong></span></li>
-  </ul>
-  <div class="foot"><span>근거 — eval/baseline_keyword.json</span><span>3</span></div>
-</section>
-
-<!-- 4. 개선 1 -->
-<section class="slide">
-  <div class="kicker">개선 1</div>
-  <h2>RunBook 선택을 키워드 규칙 → 임베딩 의미 검색으로</h2>
-  <div class="lead">확신하지 못하면 예전 동작으로 돌아가는 게이트를 두었습니다.</div>
-  <div class="grid2">
-    <div class="card">
-      <h3>판정 5분기 — 실패하면 keyword 폴백</h3>
-      <ul style="font-size:17px">
-        <li>disabled / index_unavailable</li>
-        <li>embed_failed</li>
-        <li>low_score / low_margin</li>
-        <li style="color:var(--accent)"><strong>그 외 → RAG 판정</strong></li>
-      </ul>
-      <p style="font-size:15px;color:var(--muted);margin-top:10px">입력: [사용자 질문][시스템][상태][알림]</p>
-    </div>
-    <div>
-      <ul>
-        <li><code>agent/rag/embedder.py</code> — Ollama qwen3-embedding:0.6b (1024차원)</li>
-        <li><code>agent/rag/index.py</code> — 10문서 인덱스 + JSON 캐시, <code>index_sha256</code> 기록</li>
-        <li><code>agent/rag/classifier.py</code> — 5분기 판정 + 폴백</li>
-        <li><code>agent/graph.py::_select_incident_type()</code> → <code>replan_check_node</code></li>
-        <li>근거 노출: <code>/health.rag</code>, <code>/chat</code> metadata, SSE <code>ReplanCheck</code></li>
-      </ul>
-    </div>
-  </div>
-  <div class="foot"><span>개선 1 — agent/rag/*, agent/graph.py</span><span>4</span></div>
-</section>
-
-<!-- 5. 개선 2 -->
-<section class="slide">
-  <div class="kicker">개선 2</div>
-  <h2>데이터 확장 — 시스템 6→12, 런북 6→10</h2>
-  <div class="lead">파일 선택을 한 곳으로 모았습니다. 다섯 곳에 흩어져 있었습니다.</div>
-  <div class="grid2">
-    <div>
-      <ul>
-        <li>신규 시스템 6개 — search·notify·session·media·inventory·report-service</li>
-        <li>신규 런북 4개 — <strong>queue-backlog</strong>, <strong>cert-expiry</strong>, <strong>connection-pool</strong>, <strong>replication-lag</strong></li>
-        <li><code>DATA_PROFILE=base|extended</code> — 결정 지점은 <code>agent/data_profile.py</code> 한 곳</li>
-        <li>기존 <code>monitoring.json</code>은 덮어쓰지 않고 기준선으로 보존</li>
-        <li><code>billing-service</code>는 일부러 제외 — 미지 시스템 처리 회귀 검증용</li>
-      </ul>
-    </div>
-    <div class="card accent">
-      <h3>왜 한 곳으로 모았나</h3>
-      <p style="font-size:17px;line-height:1.6">경로가 다섯 곳에 흩어져 있으면 시스템만 늘리고
-      나머지가 6개 목록으로 잘리는 <strong>가짜 확장</strong>이 됩니다.
-      측정이 조용히 틀어지는 경우가 가장 위험하다고 판단했습니다.</p>
-    </div>
-  </div>
-  <div class="foot"><span>개선 2 — agent/data_profile.py, data/monitoring_extended.json</span><span>5</span></div>
-</section>
-
-<!-- 6. 개선 3 -->
-<section class="slide">
-  <div class="kicker">개선 3</div>
-  <h2>평가 하네스 — 실행 1회 = 폴더 1개</h2>
-  <div class="lead">Before/After가 같은 조건인지 확인되려면, 그 조건이 파일로 남아야 했습니다.</div>
-  <div class="grid2">
-    <div>
-      <ul>
-        <li><code>eval/run_eval.py</code> — 실행 1회 = <code>artifacts/runs/&lt;run_id&gt;/</code><br>
-          <span style="font-size:16px;color:var(--muted)">manifest.json(조건·해시·git) · metrics.json · requests/responses jsonl</span></li>
-        <li><code>eval/metrics.py</code> — accuracy · macro-F1 · 혼동행렬 · 지연 percentile</li>
-        <li><code>eval/labels_extended.json</code> — 40문항(10유형 × 4카테고리), <strong>측정 전 동결</strong></li>
-        <li><code>tests/</code> — unit 5종 + integration 2종 = <strong>50개 통과</strong></li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>실행 1회의 구조</h3>
-      <pre style="font-size:15px"><span class="k">artifacts/runs/</span>20261020-152756_fake_after-rag/
-  manifest.json   <span class="pre-c">// 조건·해시·git·env</span>
-  metrics.json    <span class="pre-c">// 지표·혼동행렬·오분류</span>
-  requests.jsonl  <span class="pre-c">// 입력 1건 = 1줄</span>
-  responses.jsonl <span class="pre-c">// 출력 1건 = 1줄</span>
-  notes.md        <span class="pre-c">// 관찰 기록</span></pre>
-    </div>
-  </div>
-  <div class="foot"><span>개선 3 — eval/run_eval.py, eval/metrics.py, tests/</span><span>6</span></div>
-</section>
-
-<!-- 7. 결과 -->
-<section class="slide">
-  <div class="kicker">결과</div>
-  <h2>Before / After — 같은 조건, 같은 입력</h2>
-  <div class="lead" style="margin-bottom:8px">fake 백엔드 · DATA_PROFILE=extended · qwen3-embedding:0.6b · 임계값 0.50 / 0.03</div>
+  <div class="kicker"><b>2분</b>개선한 기능</div>
+  <h2>판정 하나를 바꿨고, 그걸 측정할 수 있게 만들었다</h2>
+  <div class="lead">기존 판정은 키워드 규칙을 순서대로 보다가 <b>처음 맞는 것</b>을 고르는 방식이었다.
+    규칙 순서와 증상 우선순위가 무관하고, 질의문은 보지 않았다.</div>
   <table>
-    <thead><tr><th>지표</th><th class="num">Before (keyword)</th><th class="num">After (RAG)</th><th class="num">차이</th></tr></thead>
+    <thead><tr><th>축</th><th>바꾼 것</th><th>결과</th></tr></thead>
     <tbody>
-      <tr class="up"><td>40문항 정확도</td><td class="num">13/40 = 0.3250</td><td class="num">34/40 = 0.8500</td><td class="num">+0.5250</td></tr>
-      <tr class="up"><td>macro-F1</td><td class="num">0.2836</td><td class="num">0.8521</td><td class="num">+0.5685</td></tr>
-      <tr class="up"><td>E2E 5문항 (실서버)</td><td class="num">1/5 = 0.2000</td><td class="num">5/5 = 1.0000</td><td class="num">+0.8000</td></tr>
-      <tr><td>분류 지연 p50</td><td class="num">0.0ms</td><td class="num">32.43ms</td><td class="num">+32.43ms</td></tr>
-      <tr><td>E2E 요청 지연 p50</td><td class="num">750.76ms</td><td class="num">819.73ms</td><td class="num">+68.97ms</td></tr>
-      <tr><td>비용</td><td class="num">$0.000000</td><td class="num">$0.000000</td><td class="num">0 (로컬)</td></tr>
-      <tr class="up"><td>회귀 질의 10문항 (PDF 9쪽)</td><td class="num">3/10</td><td class="num">10/10</td><td class="num">+0.7000</td></tr>
+      <tr><td><strong>1 RAG 판정</strong></td><td>키워드 첫 매칭 → 런북 임베딩 의미 검색 (확신 없으면 keyword 폴백)</td><td class="num">0.3250 → <b>0.8500</b></td></tr>
+      <tr><td><strong>2 라우팅</strong></td><td>결정론 백엔드의 라우팅 정규식이 7개 키워드뿐 → 운영 어휘로 확대</td><td class="num">회귀 3/10 → <b>10/10</b></td></tr>
+      <tr><td><strong>3 데이터</strong></td><td>모니터링 6→12시스템 · 런북 6→10종 · 파일 선택 한 곳으로 통합</td><td class="num">unknown 18.75% → <b>0%</b></td></tr>
+      <tr><td><strong>4 평가</strong></td><td>실행 1회 = 폴더 1개 하네스 · 테스트 65개 · 회귀 실행기</td><td class="num">재현성 <b>identical</b></td></tr>
     </tbody>
   </table>
-  <p style="font-size:16px;color:var(--muted);margin-top:14px">
-    신규 4유형 F1 — queue-backlog 0.000<span class="arrow">→</span><strong>1.000</strong>,
-    cert-expiry 0.000<span class="arrow">→</span><strong>1.000</strong>,
-    connection-pool 0.000<span class="arrow">→</span><strong>1.000</strong>,
-    replication-lag 0.000<span class="arrow">→</span><strong>0.857</strong></p>
-  <div class="foot"><span>결과 — artifacts/runs/20261020-152756_fake_*, doc/reports/evidence/before_after.md</span><span>7</span></div>
+  <div class="card accent" style="margin-top:14px">
+    <p style="font-size:16.5px;line-height:1.55">기준선을 먼저 재고 → 어디가 틀렸는지 코드 위치로 짚은 뒤 →
+      고치고 → 같은 조건 2회 실행으로 비교했다.</p>
+  </div>
+  <div class="foot"><span>개선 내용 — agent/rag/*, agent/fake_llm.py::route, agent/data_profile.py, eval/run_eval.py</span><span>2</span></div>
 </section>
 
-<!-- 8. 해석 -->
+<!-- 3. [2분] 결과 -->
 <section class="slide">
-  <div class="kicker">해석</div>
-  <h2>좋았던 것과, 안 좋았던 것</h2>
-  <div class="grid2">
-    <div class="card warn">
-      <h3>데이터 확장은 정확도를 올리지 못했다</h3>
-      <p style="font-size:17px;line-height:1.6">base 34/40 ≡ extended 34/40 — 문항 단위로 동일.
-      라벨이 질의에 증상을 적어 둬서 RAG가 질의만 읽어도 맞고, 시스템 알림은 중복 신호가 됐습니다.
-      <strong>그래서 "확장으로 정확도 상승"이라고 쓰지 않았습니다.</strong></p>
-      <p style="font-size:16px;color:var(--muted);margin-top:8px">대신 조사 커버리지(unknown) 18.75% → 0%</p>
+  <div class="kicker"><b>2분</b>결과</div>
+  <h2>같은 입력, 같은 조건 — 2회 실행한 결과</h2>
+  <div class="grid2" style="grid-template-columns:1.05fr .95fr;gap:20px">
+    <div>
+      <table style="font-size:15px">
+        <thead><tr><th>지표</th><th class="num">Before</th><th class="num">After</th><th class="num">차이</th></tr></thead>
+        <tbody>
+          <tr class="up"><td>40문항 정확도</td><td class="num">0.3250</td><td class="num">0.8500</td><td class="num">+0.5250</td></tr>
+          <tr class="up"><td>macro-F1</td><td class="num">0.2836</td><td class="num">0.8521</td><td class="num">+0.5685</td></tr>
+          <tr class="up"><td>E2E 5문항(실서버)</td><td class="num">0.2000</td><td class="num">1.0000</td><td class="num">+0.8000</td></tr>
+          <tr class="up"><td>회귀 질의 10문항</td><td class="num">3/10</td><td class="num">10/10</td><td class="num">+0.7000</td></tr>
+          <tr><td>분류 지연 p50</td><td class="num">0.0ms</td><td class="num">32.43ms</td><td class="num">+32.43ms</td></tr>
+          <tr><td>비용 / retry</td><td class="num">$0 / 1</td><td class="num">$0 / 1</td><td class="num">0 / 0</td></tr>
+        </tbody>
+      </table>
+      <div class="card warn" style="margin-top:12px">
+        <p style="font-size:15px;line-height:1.5"><b>한계도 그대로:</b> 데이터 확장은 정확도를 0 올렸습니다
+          (base 34/40 ≡ extended 34/40). margin 게이트는 2문항을 아꼈습니다.<br>
+          keyword 폴백률은 15.00% — 40문항 중 6건만 keyword로 내려갔고, 그 6건은 1·2위 유사도 차이가 0.0155·0.0000인 동점이었습니다.</p>
+      </div>
     </div>
-    <div class="card warn">
-      <h3>margin 게이트는 2문항을 아꼈다</h3>
-      <p style="font-size:17px;line-height:1.6">임계값을 0.00으로 풀면 36/40이 되지만,
-      그 2문항은 1·2위 유사도 차이가 0.0155·0.0000인 동점입니다.
-      1단계에서 정답이 뒤집힌 사례도 이런 동점이었습니다.</p>
-      <p style="font-size:16px;color:var(--muted);margin-top:8px">0.03 유지 + 비용 2문항 기록</p>
-      <p style="font-size:16px;color:var(--muted);margin-top:6px">keyword 폴백은 6/40 (15.00%) — 1·2위 유사도 차이가 0.0155·0.0000인 동점이었던 경우</p>
+    <div class="shot">
+      <img src="images/04_screen_before_after.jpg" alt="Before/After 수치 화면">
+      <div class="cap">Before/After 수치 화면 (원본: artifacts/runs/ → doc/reports/evidence/metrics/)</div>
     </div>
   </div>
-  <div class="card accent" style="margin-top:18px">
-    <p style="font-size:18px;line-height:1.6"><strong>RAG의 비용은 임베딩 1회 호출입니다.</strong>
-    분류 1건당 +32.43ms, 실서버 요청 전체로는 +68.97ms — 요청 시간의 약 9% 수준이었습니다.</p>
-  </div>
-  <div class="foot"><span>해석 — doc/rag_design.md §9.3·§9.4</span><span>8</span></div>
+  <div class="foot"><span>결과 — eval/run_eval.py · eval/run_regression_queries.py · eval/check_reported_numbers.py(15/15)</span><span>3</span></div>
 </section>
 
-<!-- 9. 한계 -->
+<!-- 4. [3분] Agent Graph -->
 <section class="slide">
-  <div class="kicker">한계</div>
-  <h2>아직 확인하지 않은 것</h2>
-  <div class="grid2">
+  <div class="kicker"><b>3분</b>Agent Graph 구성</div>
+  <h2>LangGraph v2 — 판정 지점만 갈아끼운 그래프</h2>
+  <div class="lead">route → plan → gate → research → <b>replan_check</b> → analysis → write → validate → finalize.
+    <code>replan_check</code>가 "모onitoring 정보만으로는 부족해 런북이 필요하다"고 판단하는 지점이고, 그 판단을 RAG로 바꿨다.</div>
+  <div class="shot" style="margin-top:4px">
+    <img src="images/05_architecture_graph.jpg" alt="Agent Graph 및 MCP·RAG 구성">
+    <div class="cap">FastAPI 프로세스(:8100) 안의 그래프와, MCP ops 서버(stdio subprocess)·RAG 인덱스·평가 하네스</div>
+  </div>
+  <div class="foot"><span>그래프 — agent/graph.py (build_graph · _select_incident_type · replan_check_node) · agent/deps.py(rag 주입)</span><span>4</span></div>
+</section>
+
+<!-- 5. [3분] RAG 코드 -->
+<section class="slide">
+  <div class="kicker"><b>3분</b>RAG 코드</div>
+  <h2>런북 임베딩 검색 + 확신 없으면 기존 경로로</h2>
+  <div class="grid2" style="grid-template-columns:1fr 1fr;gap:18px">
+    <div>
+      <pre><span class="pre-c">// agent/rag/classifier.py</span>
+<span class="k">if</span> not self.enabled:            → keyword
+<span class="k">if</span> index is None:            → keyword
+vector = embedder.embed([text])[0]     <span class="pre-c"># [질문][시스템][상태][알림]</span>
+top1, top2 = index.search(vector)
+<span class="k">if</span> top1 &lt; min_score:      → keyword  <span class="pre-c">(0.50)</span>
+<span class="k">if</span> top1-top2 &lt; min_margin: → keyword  <span class="pre-c">(0.03)</span>
+<span class="k">return</span> top1                    <span class="pre-s"># rag</span></pre>
+      <ul style="margin-top:10px">
+        <li><code>agent/rag/embedder.py</code> — Ollama <code>qwen3-embedding:0.6b</code></li>
+        <li><code>agent/rag/index.py</code> — 10문서 인덱스 + JSON 캐시</li>
+        <li>선택 근거는 <code>/health</code>·<code>metadata</code>·SSE로 노출</li>
+      </ul>
+    </div>
+    <div class="shot">
+      <img src="images/03_screen_rag_evidence.jpg" alt="RAG 판정 근거 SSE 출력">
+      <div class="cap">실제 SSE 출력 — classifier_source=rag, rag_score=0.6452, rag_margin=0.2177</div>
+    </div>
+  </div>
+  <div class="foot"><span>RAG — agent/rag/{embedder,index,classifier}.py · 연결 지점 agent/graph.py::_select_incident_type()</span><span>5</span></div>
+</section>
+
+<!-- 6. [3분] MCP 코드 -->
+<section class="slide">
+  <div class="kicker"><b>3분</b>MCP 코드</div>
+  <h2>MCP로 모니터링·런북을 조회하고, 데이터 선택은 한 곳에서</h2>
+  <div class="grid2" style="gap:20px">
+    <div>
+      <pre><span class="pre-c"># mcp_server.py (ops 서버)</span>
+<span class="k">@mcp.tool</span>
+<span class="k">def</span> get_monitoring_status(system_name) → SystemStatus
+<span class="k">@mcp.resource</span>
+<span class="k">def</span> get_incident_runbook(incident_type) → str
+<span class="k">@mcp.prompt</span>
+<span class="k">def</span> incident_analysis_prompt(system_name, symptom)</pre>
+      <pre style="margin-top:10px"><span class="pre-c"># agent/data_profile.py</span>
+DATA_PROFILE=base|extended
+→ 파일 선택의 <span class="s">단일 결정 지점</span> (하드코딩 5곳 제거)</pre>
+    </div>
     <div>
       <ul>
-        <li><strong>40문항 라벨을 제가 만들었다</strong> — 자기 평가라서 카테고리별로 나눠서 보고했습니다. 전체 수치로 일반화하지 않습니다</li>
-        <li><strong>keyword 폴백 규칙은 그대로</strong> — 신규 유형마다 함께 갱신해야 합니다</li>
-        <li><strong>비용 0은 로컬 백엔드 때문</strong> — 실 API 비용은 별도 측정 필요</li>
+        <li><code>agent/mcp_client.py</code> — stdio subprocess로 ops 서버 연결, <code>find_resource_template</code>로 런북 URI 탐색</li>
+        <li><code>mcp_server_docs.py</code>는 decoy — 의도대로 쓰지 않는다</li>
+        <li>파일 선택이 5곳에 흩어져 있으면 시스템만 늘고 조사 대상은 6개로 잘린다 → 한 곳으로 모았다</li>
       </ul>
-    </div>
-    <div class="card">
-      <h3>다음에 확인할 것</h3>
-      <ul style="font-size:17.5px">
-        <li>실제 장애 티켓·운영 로그로 라벨 세트 재구축</li>
-        <li>동시 요청 부하에서의 지연 측정</li>
-        <li>실 OpenAI 백엔드로 비용·지연 재측정</li>
-        <li>keyword 규칙 우선순위를 데이터 기반으로 재설계할지 판단</li>
-      </ul>
+      <div class="card good" style="margin-top:12px">
+        <p style="font-size:15.5px;line-height:1.55"><b>의존성 주입:</b> <code>SupervisorDeps</code>에 <code>rag</code>을 넣고
+          lifespan에서 1회 생성 → 노드가 <code>os.environ</code>을 직접 읽지 않는다.</p>
+      </div>
+      <div class="card" style="margin-top:10px">
+        <p style="font-size:15px;line-height:1.5"><b>LangSmith:</b> 노드에 <code>@traceable</code> 적용,
+          <code>.env</code>로 트레이싱 켜짐 — 실 API 키 없는 환경이라 캡처는 미수행</p>
+      </div>
     </div>
   </div>
-  <div class="foot"><span>한계 — doc/evaluation-checklist.md §6</span><span>9</span></div>
+  <div class="foot"><span>MCP — mcp_server.py · agent/mcp_client.py · agent/data_profile.py · agent/deps.py</span><span>6</span></div>
 </section>
 
-<!-- 10. 시연·정리 -->
+<!-- 7. 마무리 -->
 <section class="slide">
-  <div class="kicker">시연 · 정리</div>
+  <div class="kicker">마무리</div>
   <h2>판정을 바꾼 게 아니라,<br>판단의 근거를 남기고 측정할 수 있게 바꾼 것</h2>
-  <div class="grid2" style="margin-top:16px">
-    <div class="card">
-      <h3>라이브 데모 (3분)</h3>
-      <ul style="font-size:17px">
-        <li><code>curl -s localhost:8100/health</code> → rag 블록 · 12시스템</li>
-        <li>채팅: auth-service p95 2.4초 → <strong>high-latency</strong></li>
-        <li>채팅: search-service 큐 1.2만 건 → <strong>queue-backlog</strong> (신규 유형)</li>
-        <li>채팅: billing-service 장애 → <strong>unknown + 폴백</strong></li>
+  <div class="grid2" style="margin-top:10px">
+    <div class="card accent">
+      <h3>배운 점</h3>
+      <ul style="font-size:16px">
+        <li>RAG는 임베딩보다 <b>입력 정의</b>와 <b>게이트</b>가 핵심이다</li>
+        <li>개선 전에 기준선을 먼저 재야 "개선"을 말할 수 있다</li>
+        <li>근거를 남기면 질문이 와도 바로 보여줄 수 있다</li>
       </ul>
     </div>
-    <div class="card accent">
-      <h3>그리면</h3>
-      <p style="font-size:18px;line-height:1.65">RAG 도입으로 40문항 정확도 <strong>0.3250 → 0.8500</strong>,
-      macro-F1 <strong>0.2836 → 0.8521</strong>.<br><br>
-      대신 비용 <strong>+32.43ms</strong>, margin 게이트 비용 <strong>2문항</strong>,
-      데이터 확장의 정확도 효과 <strong>0</strong> — 이 한계를 수치 그대로 남겼습니다.</p>
+    <div class="card warn">
+      <h3>다음에 하고 싶은 것</h3>
+      <ul style="font-size:16px">
+        <li>실제 장애 티켓으로 라벨 세트 재구축 (지금은 자기 평가)</li>
+        <li>LLM-as-judge 평가 추가 · Research 서브그래프 분리</li>
+        <li>실 OpenAI 백엔드로 비용·지연 재측정</li>
+      </ul>
     </div>
   </div>
-  <div class="foot"><span>github.com/pigpgw/skala-ai-service-mini</span><span>10</span></div>
+  <div class="card good" style="margin-top:14px">
+    <p style="font-size:16.5px;line-height:1.55">40문항 <b>0.3250 → 0.8500</b> · macro-F1 <b>0.2836 → 0.8521</b> ·
+      회귀 <b>3/10 → 10/10</b> · 테스트 <b>65개</b> · 같은 조건 2회 실행 결과 동일</p>
+  </div>
+  <div class="foot"><span>github.com/pigpgw/skala-ai-service-mini · 근거: doc/reports/evidence/index.md</span><span>7</span></div>
 </section>
 
 </body>

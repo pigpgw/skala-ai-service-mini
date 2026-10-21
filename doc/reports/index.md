@@ -9,16 +9,20 @@
 
 | 파일 | 용도 | 상태 |
 |---|---|---|
-| `result_report.md` | 최종 결과 보고서 원문 | 완료 |
+| `result_report.md` | 최종 결과 보고서 원문 (교수님 지정 5개 절 구성) | 완료 |
 | `result_report.pdf` | 위 보고서의 PDF (916KB) | 완료 |
-| `presentation.html` | 발표 슬라이드 10장(16:9) 원본 | 완료 |
+| `presentation.html` | 발표 슬라이드 **7장(16:9, 5분 = 2분+3분)** 원본 | 완료 |
 | `presentation.pdf` | 슬라이드 PDF (780KB) — **발표 기준본** | 완료 |
 | `presentation.pptx` | 슬라이드 PPTX (40KB) — 편집용 | 완료 |
 | `presentation_outline.md` | 슬라이드 구성안 + 10분 시간 배분 + 예상 질문 + 리허설 체크리스트 | 완료 |
 | `spreadsheet_input.md` | Google Spread 붙여넣기용 본문 | 완료 (붙여넣기는 사용자 몫) |
 | `rehearsal_log.md` | 리허설 기록(수치 검사 13/13, 시연 4단계 실측) | 완료 |
 | `architecture.html` | 개선 시스템 아키텍처 다이어그램 (archify) | 완료 |
-| `images/01~03_chat_*.png` | 보고서에 실린 시연 캡처 3장 | 완료 |
+| `images/01_chat_final_screen.jpg` | **최종 실행 화면** 캡처 (필수) | 완료 |
+| `images/02_chat_new_incident_type.jpg` | 신규 유형(queue-backlog) 화면 | 완료 |
+| `images/03_screen_rag_evidence.jpg` | **기능 개선 화면** — SSE로 나오는 RAG 판정 근거 (필수) | 완료 |
+| `images/04_screen_before_after.jpg` | **Before/After 수치 화면** (필수) | 완료 |
+| `images/05_architecture_graph.jpg` | Agent Graph·MCP·RAG 구성도 (발표 3분 절) | 완료 |
 | `evidence/index.md` | 주장 ↔ 증거 ↔ 재현 명령 대조표 | 완료 |
 | `evidence/before_after.md` | Before/After 비교표 (원본에서 자동 생성) | 완료 |
 | `evidence/metrics/*.json` | 인용한 6개 실행의 요약 수치 | 완료 |
@@ -40,7 +44,7 @@
 | `eval/run_regression_queries.py` | 회귀 질의 10개 실행(서버 재시작 포함) — PDF 9쪽 요구 수행 |
 | `eval/make_before_after.py` | Before/After 표·요약 JSON 자동 생성 |
 | `tests/` | unit 6종 + integration 2종 (65개) |
-| `doc/tools/{md2html,build_pptx,capture_ui}` | 보고서 PDF·PPTX·브라우저 캡처 도구 |
+| `doc/tools/{md2html,build_pptx,capture_ui,build_captures}` | 보고서 PDF·PPTX·브라우저 캡처·캡처 화면 생성 도구 |
 
 ## 3. 재현 명령 (같은 수치가 나오는지 확인)
 

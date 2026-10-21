@@ -59,6 +59,10 @@ class SlideParser(HTMLParser):
         classes = dict(attrs).get("class", "")
         if tag == "br" and self._current is not None:
             self._buffer.append(" · ")   # 줄바꿈을 구분자로 보존
+        if tag == "img" and self._current is not None:
+            src = dict(attrs).get("src")
+            if src:
+                self._current.setdefault("images", []).append(src)
         if tag == "section" and "slide" in classes:
             self._current = {"kicker": "", "title": "", "lead": "", "bullets": [], "table": []}
             self.slides.append(self._current)
@@ -210,6 +214,21 @@ def build(source: Path, out: Path) -> int:
                 run.font.name = FONT
                 paragraph.space_after = Pt(10)
                 y = Emu(y + 520000)
+
+        # 화면 캡처(과제 요구: 캡처 필수) — 이미지가 있으면 아래에 배치한다.
+        for src in data.get("images", []):
+            image_path = (source.parent / src).resolve()
+            if not image_path.is_file():
+                print(f"  ! 이미지 없음: {src}")
+                continue
+            from PIL import Image  # Pillow가 없으면 건너뛴다
+            with Image.open(image_path) as probe:
+                width, height = probe.size
+            max_w, max_h = 11_000_000, 4_400_000
+            scale = min(max_w / width, max_h / height)
+            pic = slide.shapes.add_picture(str(image_path), Emu(600000), y,
+                                          Emu(int(width * scale)), Emu(int(height * scale)))
+            y = Emu(y + int(height * scale) + 100000)
 
     out.parent.mkdir(parents=True, exist_ok=True)
     presentation.save(out)
