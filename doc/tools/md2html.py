@@ -26,7 +26,7 @@ CSS = """
 :root { --ink:#1a1d21; --muted:#5b6470; --line:#d9dee5; --accent:#2f5fd0; --code:#f5f7fa; }
 * { box-sizing: border-box; }
 body {
-  margin: 0 auto; padding: 48px 56px; max-width: 860px;
+  margin: 0 auto; padding: 44px 52px; max-width: 900px;
   font-family: "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", -apple-system, sans-serif;
   color: var(--ink); line-height: 1.75; font-size: 15px; word-break: keep-all;
 }
@@ -34,10 +34,10 @@ h1 { font-size: 26px; margin: 0 0 6px; letter-spacing: -0.02em; }
 h2 { font-size: 19px; margin: 38px 0 12px; padding-bottom: 7px; border-bottom: 2px solid var(--line); }
 h3 { font-size: 16px; margin: 26px 0 8px; }
 h4 { font-size: 15px; margin: 20px 0 6px; color: var(--muted); }
-p { margin: 10px 0; }
+p { margin: 11px 0; line-height: 1.95; }
 ul, ol { margin: 10px 0; padding-left: 24px; }
 li { margin: 4px 0; }
-code { background: var(--code); padding: 1px 5px; border-radius: 4px; font-size: 13px;
+code { background: var(--code); padding: 0 4px; border-radius: 4px; font-size: 12.5px; line-height: 1.45;
        font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; }
 pre { background: var(--code); border: 1px solid var(--line); border-radius: 8px;
       padding: 14px 16px; overflow-x: auto; }
@@ -48,7 +48,7 @@ th { background: #f7f9fc; font-weight: 600; }
 tr:nth-child(even) td { background: #fbfcfe; }
 blockquote { margin: 14px 0; padding: 8px 16px; border-left: 3px solid var(--accent);
              background: #f7f9fd; color: var(--muted); }
-img { max-width: 560px; border: 1px solid var(--line); border-radius: 8px; margin: 10px 0 4px; }
+img { display: block; max-width: 100%; border: 1px solid var(--line); border-radius: 8px; margin: 12px 0 6px; }
 hr { border: none; border-top: 1px solid var(--line); margin: 30px 0; }
 a { color: var(--accent); }
 table, pre, img, h2, h3 { page-break-inside: avoid; }

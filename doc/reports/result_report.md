@@ -82,11 +82,12 @@
 그 판단의 근거(어떤 런북인지, 유사도 점수, 1·2위 격차)가 SSE 이벤트로 그대로 나갑니다.
 아래는 실제 `curl -N localhost:8100/chat/stream` 출력입니다.
 
-![RAG 판정 근거가 SSE로 나오는 화면](./images/03_screen_rag_evidence.jpg)
+![RAG 판정 근거가 SSE로 나오는 화면](./images/06_rag_evidence_zoom.png)
 
 `"classifier_source": "rag"`, `"rag_score": 0.6452`, `"rag_margin": 0.2177`이 그대로 보입니다.
 같은 값이 `/chat` 응답의 `metadata`에도 들어가고, `/health`의 `rag` 블록에는 임베더·인덱스·임계값이
 함께 노출됩니다. **왜 이 런북을 골랐는지 설명하지 않아도 근거가 남는 구조**로 만들고 싶었습니다.
+(SSE 전체 로그는 `artifacts/captures/20261021-final/sse_rag_evidence.txt`에 있다.)
 
 ### 2.3 최종 실행 화면
 
