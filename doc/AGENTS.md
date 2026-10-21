@@ -30,6 +30,19 @@
 
 `README.md`는 강사 제공 매뉴얼이라 내용을 임의로 바꾸지 않는다. 내 판단·실측은 `evaluation-checklist.md`와 별도 보고서에 쓴다. 매뉴얼과 내 문서가 충돌하면 **코드와 실행 결과를 우선**하고, 차이를 체크리스트에 남긴다.
 
+## 폴더 배치 원칙 (4계층)
+
+| 계층 | 위치 | 예시 | 커밋 |
+|---|---|---|---|
+| 입력 | `data/`, `eval/*_labels.json` | 모니터링·런북·동결 라벨 | O |
+| 코드 | `agent/`, `eval/*.py`, `tests/`, `doc/tools/` | 실행 코드·평가 코드·도구 | O |
+| 공개 증거(제출 산출물) | `doc/reports/`, `doc/design/` | 보고서·발표자료·캡처·대조표 | O |
+| 생성물 | `artifacts/`, `var/`, `doc/reports/result_report.html` | 측정 원본·캡처 원본·생성 중간물 | X |
+
+`doc/reports/result_report.html`은 PDF 생성 중간물이라 **커밋하지 않는다**
+(`doc/tools/md2html.py`로 언제든 재생성). 이미지 상대경로를 유지하려고 `doc/reports/`에
+남겨 두는 것이고, `.gitignore`으로 추적만 뺀다.
+
 ## 수치 인용 규칙
 
 - 모든 수치는 측정 원본 파일 경로와 함께 적는다. 원본 없는 숫자는 쓰지 않는다.

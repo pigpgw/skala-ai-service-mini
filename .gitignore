@@ -20,3 +20,6 @@ __pycache__/
 
 # 테스트 도구 캐시
 .pytest_cache/
+
+# 보고서 HTML은 PDF 생성 중간물 (doc/tools/md2html.py로 언제든 재생성)
+doc/reports/result_report.html
