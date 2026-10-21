@@ -48,7 +48,7 @@ th { background: #f7f9fc; font-weight: 600; }
 tr:nth-child(even) td { background: #fbfcfe; }
 blockquote { margin: 14px 0; padding: 8px 16px; border-left: 3px solid var(--accent);
              background: #f7f9fd; color: var(--muted); }
-img { max-width: 660px; border: 1px solid var(--line); border-radius: 8px; margin: 10px 0 4px; }
+img { max-width: 560px; border: 1px solid var(--line); border-radius: 8px; margin: 10px 0 4px; }
 hr { border: none; border-top: 1px solid var(--line); margin: 30px 0; }
 a { color: var(--accent); }
 table, pre, img, h2, h3 { page-break-inside: avoid; }
