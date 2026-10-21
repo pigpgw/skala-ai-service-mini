@@ -12,9 +12,9 @@
 | `result_report.md` | 최종 결과 보고서 원문 (교수님 지정 5개 절 구성) | 완료 |
 | `result_report.html` | PDF 생성 중간물 (커밋 안 함 · 재생성 가능) | - |
 | `result_report.pdf` | 위 보고서의 PDF (916KB) | 완료 |
-| `presentation.html` | 발표 슬라이드 **7장(16:9, 5분 = 2분+3분)** 원본 | 완료 |
-| `presentation.pdf` | 슬라이드 PDF (780KB) — **발표 기준본** | 완료 |
-| `presentation.pptx` | 슬라이드 PPTX (40KB) — 편집용 | 완료 |
+| `presentation.html` | 발표 슬라이드 **8장(16:9, 5분 = 2분+3분)** 원본 — `doc/tools/build_deck.py`가 생성 | 완료 |
+| `presentation.pdf` | 슬라이드 PDF — **발표 기준본** | 완료 |
+| `presentation.pptx` | 슬라이드 PPTX — **편집 가능한 네이티브 도형**(텍스트 상자·도형·이미지). html2pptx 스킬로 HTML→PPTX 변환 | 완료 |
 | `presentation_outline.md` | 슬라이드 구성안 + 10분 시간 배분 + 예상 질문 + 리허설 체크리스트 | 완료 |
 | `spreadsheet_input.md` | Google Spread 붙여넣기용 본문 | 완료 (붙여넣기는 사용자 몫) |
 | `rehearsal_log.md` | 리허설 기록(수치 검사 13/13, 시연 4단계 실측) | 완료 |

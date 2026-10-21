@@ -2,3 +2,7 @@ pytest>=8.0
 httpx>=0.27
 python-pptx>=1.0
 pypdf>=5.0          # 과제 안내 PDF 텍스트 추출(요구사항 대조용)
+playwright>=1.40        # html2pptx 스킬(HTML→편집가능 PPTX)용 DOM 측정
+lxml>=4.9              # OOXML 직접 조작(그라디언트·그림자·불릿)
+cairosvg>=2.7           # SVG <img> 래스터화
+pyphen>=0.14            # CSS hyphens:auto → 소프트 하이픈

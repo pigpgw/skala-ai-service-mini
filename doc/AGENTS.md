@@ -24,7 +24,8 @@
 | `reports/images/*.png` | 보고서에 넣는 시연 캡처 | 커밋 대상(원본은 `artifacts/captures/`) |
 | `design/architecture.html` | 개선 시스템 아키텍처 다이어그램 (archify) | 제출용 |
 | `tools/md2html.py` | Markdown → HTML (보고서 PDF 생성) | 도구 |
-| `tools/build_pptx.py` | 발표 HTML → PPTX | 도구 |
+| `tools/build_deck.py` | 발표 덱 생성(슬라이드 정의 1곳 → HTML 덱·슬라이드별 HTML·PDF) | 도구 |
+| `tools/html2pptx_deck.py` | 슬라이드별 HTML → 편집 가능한 PPTX (Microsoft html2pptx 스킬 래퍼) | 도구 |
 | `tools/capture_ui.mjs` | 실제 브라우저로 시연 화면 캡처 | 도구 |
 | `image_usecase/`, `image_usecase_openai/` | 매뉴얼 캡처 이미지(JPEG, 2026-10-20 압축) | 경로 유지 — `doc/README.md` 트리를 건드리지 않기 위해 |
 
@@ -42,6 +43,14 @@
 `doc/reports/result_report.html`은 PDF 생성 중간물이라 **커밋하지 않는다**
 (`doc/tools/md2html.py`로 언제든 재생성). 이미지 상대경로를 유지하려고 `doc/reports/`에
 남겨 두는 것이고, `.gitignore`으로 추적만 뺀다.
+
+## 외부 스킬 사용
+
+| 스킬 | 설치 | 쓰임 |
+|---|---|---|
+| `html2pptx` (Microsoft) | `npx skills add https://github.com/microsoft/researchstudio --skill html2pptx`<br>의존성: `pip install playwright lxml cairosvg pyphen` + `playwright install chromium` | `doc/tools/build_deck.py`가 만든 슬라이드 HTML을 **편집 가능한 네이티브 도형** PPTX로 변환 |
+
+`doc/reports/slides/`는 `build_deck.py`가 생성하는 중간 산출물이다(덱 HTML과 같은 내용).
 
 ## 수치 인용 규칙
 

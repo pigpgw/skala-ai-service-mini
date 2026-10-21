@@ -19,7 +19,7 @@
 | 코드 | `main` = `origin/main`, 작업 트리 clean, 커밋 파일 141개 / 5.5MB |
 | 측정 | 40문항 0.3250 → 0.8500, macro-F1 0.2836 → 0.8521, E2E 1/5 → 5/5, 회귀 질의 3/10 → 10/10, 재현성 identical |
 | 검증 | 테스트 65개 통과 · 수치 일치 검사 **15/15** · E2E 5건 PASS · 프로파일 3건 PASS · 회귀 10/10 PASS |
-| 산출물 | 보고서(MD·PDF, 교수님 지정 5개 절) · 발표자료(HTML·PDF·PPTX, **7장 5분 구성**) · 스프레드시트 본문 · 아키텍처 · 리허설 기록 · **캡처 5장**(최종 실행·기능 개선·Before/After 수치 필수 포함) (색인: `doc/reports/index.md`) |
+| 산출물 | 보고서(MD·PDF, 교수님 지정 5개 절) · 발표자료(HTML·PDF·PPTX, **8장 5분=2분+3분 구성**, PPTX는 편집 가능한 네이티브 도형) · 스프레드시트 본문 · 아키텍처 · 리허설 기록 · **캡처 5장**(최종 실행·기능 개선·Before/After 수치 필수 포함) (색인: `doc/reports/index.md`) |
 | 남은 일 (사용자 몫) | ① 스프레드시트 붙여넣기 + 보고서 주소 등록 ② 말하기 리허설 1회 |
 | 회귀 질의 | PDF 9쪽 예시 10개 — **3/10 → 10/10** (라우팅 정규식 확대, `eval/run_regression_queries.py`) |
 
@@ -198,7 +198,7 @@ PDF 11–12쪽에 제시된 개선 예시(채택 여부 미정, 후보 풀):
 |---|---|---|---|
 | G1 | Git 주소 등록(S5) | `https://github.com/pigpgw/skala-ai-service-mini` — `origin` 설정, `main` = `origin/main` (2026-10-20 확인) | [x] |
 | G2 | 제출 코드가 현재 작업 트리와 일치 | 2026-10-20 커밋·푸시 완료(0~4단계 + 산출물 + 정리), `main` = `origin/main`, 작업 트리 clean | [x] |
-| G3 | 결과 보고서(Google Spread) | 보고서 `doc/reports/result_report.md`(+PDF, 교수님 지정 4개 절, 캡처 5장), **스프레드시트 입력용 본문 `doc/reports/spreadsheet_input.md`**, 발표자료 PDF·PPTX(7장). 제출 폴더 `skala-tasks/w15-ai-service-mini/`에 **필수 산출물만**(보고서 MD·PDF / 발표자료 PDF·PPTX / 스프레드시트 본문 / images 5장). **스프레드시트 붙여넣기·주소 등록은 사용자 몫(구글 시트에는 접근하지 않음)** | [~] |
+| G3 | 결과 보고서(Google Spread) | 보고서 `doc/reports/result_report.md`(+PDF, 교수님 지정 4개 절, 캡처 5장), **스프레드시트 입력용 본문 `doc/reports/spreadsheet_input.md`**, 발표자료 PDF·PPTX(**8장**, 5분=2분+3분, 편집 가능한 네이티브 도형). 제출 폴더 `skala-tasks/w15-ai-service-mini/`에 **필수 산출물만**(보고서 MD·PDF / 발표자료 PDF·PPTX / 스프레드시트 본문 / images 5장). **스프레드시트 붙여넣기·주소 등록은 사용자 몫(구글 시트에는 접근하지 않음)** | [~] |
 | G4 | `.env`·`.venv`·`session.db` 미커밋 | `.gitignore`에 포함됨 | [x] |
 | G5 | 생성물(원본 측정·런타임 상태) 미커밋 | `artifacts/`·`var/` 제외됨, `artifacts/README.md`만 예외 커밋 | [x] |
 
