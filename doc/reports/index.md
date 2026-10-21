@@ -28,7 +28,8 @@
 | `evidence/before_after.md` | Before/After 비교표 (원본에서 자동 생성) | 완료 |
 | `evidence/metrics/*.json` | 인용한 6개 실행의 요약 수치 | 완료 |
 
-같은 파일은 `skala-tasks/w14-ai-agent/`에 동일 내용으로 사본이 있다(9개 파일 + images/ 3장, 해시 동일 확인).
+같은 파일은 **`skala-tasks/w15-ai-service-mini/`**(스케일 과제 폴더, INDEX 기준 `w15-ai-service-mini = AI 서비스 개발 Mini-project`)에
+동일 내용으로 사본이 있고, 최종 코드도 `all_total_vue_student/`에 함께 있다(.git·.venv·생성물 제외).
 이 색인 자체도 `AI서비스_Mini_산출물_색인.md`로 사본이 있다.
 
 ## 2. 코드·측정
