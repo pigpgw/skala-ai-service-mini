@@ -136,7 +136,7 @@ else                     → rag     (reason=ok)
 | `RAG_MIN_SCORE` | `0.50` | 정확도가 0.40~0.55 구간에서 동일(12/12) → 구간 중앙값. 0.60에서 9/12로 떨어짐 |
 | `RAG_MIN_MARGIN` | `0.03` | 0.01~0.03 구간 동일 정확도(12/12). 0.02는 관측 경계값 0.0200에 붙어 있어 재현 시 뒤집힘 위험 → 한 단계 위 채택 |
 
-민감도(12문항 개발셋, `eval/rag_threshold_sweep.json`)
+민감도(12문항 개발셋, `artifacts/eval/rag_threshold_sweep.json`)
 
 | `RAG_MIN_MARGIN` | 정확도 | RAG 판정 | 폴백 |
 |---|---|---|---|
@@ -220,7 +220,7 @@ else                     → rag     (reason=ok)
 
 ### 9.1 1단계 측정 결과 (2026-10-20)
 
-측정 원본: `eval/rag_probe.json`, `eval/rag_probe.run2.json`, `eval/rag_threshold_sweep.json`
+측정 원본: `artifacts/eval/rag_probe.json`, `artifacts/eval/rag_probe.run2.json`, `artifacts/eval/rag_threshold_sweep.json`
 
 | 항목 | 값 |
 |---|---|
@@ -237,7 +237,7 @@ else                     → rag     (reason=ok)
 
 ### 9.2 2단계 E2E 결과 (2026-10-20)
 
-측정 원본: `eval/e2e_probe.json`(RAG on), `eval/e2e_probe_rag_off.json`(RAG off), 스크립트 `eval/run_e2e_probe.py`
+측정 원본: `artifacts/eval/e2e_probe.json`(RAG on), `artifacts/eval/e2e_probe_rag_off.json`(RAG off), 스크립트 `eval/run_e2e_probe.py`
 
 서버: `LLM_BACKEND=fake`, `SUPERVISOR_VERSION=v2`, `LANGCHAIN_TRACING_V2=false`, 포트 8100.
 `/health.rag` = `{enabled: true, embedder: "ollama:qwen3-embedding:0.6b", dim: 1024, docs: 6, cache_hit: true, min_score: 0.5, min_margin: 0.03, error: null}` — 1단계 인덱스(`index_sha256=3acb3580…`)를 재사용했다.
@@ -253,11 +253,11 @@ else                     → rag     (reason=ok)
 - SSE `/chat/stream`: `ReplanCheck` 이벤트에 `target`, `classifier_source`, `classifier_reason`, `rag_score`, `rag_margin`이 실려 나오고 `FinalAnswer`에도 `incident_type`·`classifier_source`가 포함된다.
 - `SUPERVISOR_VERSION=v1` 스모크: 서버는 뜨고 `/health.rag`도 노출되지만 legacy 경로는 분류를 쓰지 않으므로 metadata는 `null`이다(의도).
 
-**측정 조건 주의**: E2E 입력에는 `, 원인 진단해주세요`를 덧붙였다. 기존 `fake` 라우터가 `장애|진단|다운|지연|급증|incident|티켓` 키워드로만 incident 경로를 타기 때문이며, RAG와 무관한 기존 동작이다. 그래서 **분류 정확도 주장은 동결 12문항(`eval/rag_probe.json`)으로만** 하고, E2E는 배선 증거로만 쓴다.
+**측정 조건 주의**: E2E 입력에는 `, 원인 진단해주세요`를 덧붙였다. 기존 `fake` 라우터가 `장애|진단|다운|지연|급증|incident|티켓` 키워드로만 incident 경로를 타기 때문이며, RAG와 무관한 기존 동작이다. 그래서 **분류 정확도 주장은 동결 12문항(`artifacts/eval/rag_probe.json`)으로만** 하고, E2E는 배선 증거로만 쓴다.
 
 ### 9.3 3단계 결과 — 데이터 확장과 ablation (2026-10-20)
 
-측정 원본: `eval/ablation.json`, `eval/baseline_extended_keyword.json`, `eval/rag_probe_extended.json`, `eval/rag_probe_extended_on_base.json`, `eval/profile_probe.json`, `eval/e2e_probe_extended.json`
+측정 원본: `artifacts/eval/ablation.json`, `eval/baseline_extended_keyword.json`, `artifacts/eval/rag_probe_extended.json`, `artifacts/eval/rag_probe_extended_on_base.json`, `artifacts/eval/profile_probe.json`, `artifacts/eval/e2e_probe_extended.json`
 
 데이터: `data/monitoring.json`(base 6) 그대로 + `data/monitoring_extended.json`(12) 신규. 런북 6 + 신규 4 = 10종. 라벨 `eval/labels_extended.json` 40문항(10유형 × 4카테고리) **측정 전 동결**. 인덱스는 10문서 `index_sha256=bfdc27ec…`.
 
@@ -280,7 +280,7 @@ else                     → rag     (reason=ok)
 | base | 6 | 80 | 15 | **18.75%** |
 | extended | 12 | 80 | 0 | **0.00%** |
 
-E2E 확인(`eval/e2e_probe_base_profile.json`, `eval/e2e_probe_extended.json`):
+E2E 확인(`artifacts/eval/e2e_probe_base_profile.json`, `artifacts/eval/e2e_probe_extended.json`):
 - `DATA_PROFILE=base` + `search-service` 질의 → 분류는 `queue-backlog`(질의 텍스트로 맞힘)이지만 `systems_unknown=["search-service"]` — **모니터링 근거 없이** 답한 것이다.
 - `DATA_PROFILE=extended` → 같은 질의에서 `systems_unknown=[]`, `/health.rag.docs=10`.
 
@@ -288,7 +288,7 @@ E2E 확인(`eval/e2e_probe_base_profile.json`, `eval/e2e_probe_extended.json`):
 
 #### (3) 12문항 재측정 (10문서 인덱스)
 
-`eval/rag_probe_after_expand.json` = **12/12 유지**(RAG 10, 폴백 2). 확장 전 `3acb3580…`(6문서)와 확장 후 `bfdc27ec…`(10문서)는 서로 다른 인덱스이며, 확장 전 수치는 이력으로만 남긴다.
+`artifacts/eval/rag_probe_after_expand.json` = **12/12 유지**(RAG 10, 폴백 2). 확장 전 `3acb3580…`(6문서)와 확장 후 `bfdc27ec…`(10문서)는 서로 다른 인덱스이며, 확장 전 수치는 이력으로만 남긴다.
 
 #### (4) 임계값 재검증 — 유지 결정
 
@@ -301,7 +301,7 @@ E2E 확인(`eval/e2e_probe_base_profile.json`, `eval/e2e_probe_extended.json`):
 | 0.04 | 34/40 = 0.8500 | 34 | 6 |
 | 0.05 | 31/40 = 0.7750 | 31 | 9 |
 
-`min_score`는 0.40~0.50에서 34/40으로 평탄, 0.55에서 32/40, 0.60에서 27/40이었다(`eval/rag_threshold_sweep_extended.json`).
+`min_score`는 0.40~0.50에서 34/40으로 평탄, 0.55에서 32/40, 0.60에서 27/40이었다(`artifacts/eval/rag_threshold_sweep_extended.json`).
 
 **0.03을 유지한 이유**: 0.00으로 풀면 같은 40문항에서 2문항이 더 맞지만, 그 2문항(X24·X32)은 top1·top2가 0.0155·0.0000 차이인 **사실상 동점**이다. 1단계에서 B01이 바로 이런 동점에서 오답이었고 margin 게이트가 막았다. 이 데이터에서 최댓값을 좇으면 과적합이므로 0.03을 유지하고, **보수적 폴백 비용 2문항을 트레이드오프로 기록**한다.
 

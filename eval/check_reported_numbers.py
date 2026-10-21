@@ -93,6 +93,7 @@ def _load(source: str) -> dict | None:
     candidates = [
         SUMMARY_DIR / f"{source}.json",
         REPO_ROOT / "eval" / f"{source}.json",
+        REPO_ROOT / "artifacts" / "eval" / f"{source}.json",
         RUNS_DIR / source / "manifest.json",
     ]
     for candidate in candidates:
@@ -122,7 +123,7 @@ def _normalise(value: str) -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="문서에 적힌 수치 ↔ 측정 원본 일치 검사")
-    parser.add_argument("--out", default=str(HERE / "reported_numbers_check.json"))
+    parser.add_argument("--out", default=str(HERE.parent / "artifacts" / "eval" / "reported_numbers_check.json"))
     args = parser.parse_args()
 
     texts = {name: path.read_text(encoding="utf-8") for name, path in DOCS.items()

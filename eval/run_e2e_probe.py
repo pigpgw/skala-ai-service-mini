@@ -92,7 +92,7 @@ def _stream_case(case: dict) -> dict:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="2단계 E2E 검증")
-    parser.add_argument("--out", default=str(HERE / "e2e_probe.json"))
+    parser.add_argument("--out", default=str(HERE.parent / "artifacts" / "eval" / "e2e_probe.json"))
     parser.add_argument("--tag", default="rag-on")
     args = parser.parse_args()
 

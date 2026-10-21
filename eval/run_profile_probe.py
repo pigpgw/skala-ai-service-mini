@@ -77,7 +77,7 @@ async def main() -> int:
         "checks": checks,
         "results": results,
     }
-    out = HERE / "profile_probe.json"
+    out = HERE.parent / "artifacts" / "eval" / "profile_probe.json"
     out.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     for result in results:

@@ -61,7 +61,7 @@
 # 3) E2E (서버를 먼저 띄우고)
 LANGCHAIN_TRACING_V2=false LLM_BACKEND=fake DATA_PROFILE=extended \
   .venv/bin/python server.py &
-.venv/bin/python eval/run_e2e_probe.py --tag final --out eval/e2e_probe_final.json
+.venv/bin/python eval/run_e2e_probe.py --tag final --out artifacts/eval/e2e_probe_final.json
 
 # 4) 문서 수치 ↔ 원본 일치 검사
 .venv/bin/python eval/check_reported_numbers.py               # 15/15 PASS

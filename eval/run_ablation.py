@@ -28,8 +28,8 @@ from common import build_collected, load_labels, load_monitoring   # noqa: E402
 
 ARMS = [
     ("A", "keyword + base", "eval/baseline_extended_keyword_base.json"),
-    ("B", "RAG + base", "eval/rag_probe_extended_on_base.json"),
-    ("C", "RAG + extended", "eval/rag_probe_extended.json"),
+    ("B", "RAG + base", "artifacts/eval/rag_probe_extended_on_base.json"),
+    ("C", "RAG + extended", "artifacts/eval/rag_probe_extended.json"),
     ("-", "keyword + extended (참고)", "eval/baseline_extended_keyword.json"),
 ]
 
@@ -95,7 +95,7 @@ def main() -> int:
             "A-B 차이는 RAG 도입 효과다.",
         ],
     }
-    out = HERE / "ablation.json"
+    out = HERE.parent / "artifacts" / "eval" / "ablation.json"
     out.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     print(f"{'군':<3} {'조건':<26} {'정확도':>10}  카테고리별")

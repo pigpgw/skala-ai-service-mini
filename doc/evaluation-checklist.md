@@ -102,7 +102,7 @@ PDF 11–12쪽에 제시된 개선 예시(채택 여부 미정, 후보 풀):
 
 | 평가 항목 | 배점 | 평가 기준 | 완료 판정(증거) | 검증 명령 | 상태 |
 |---|---|---|---|---|---|
-| 기능 구현 완성도 | 30 | 선택한 개선안이 실제로 동작하는가 | 개선 후 실제 요청·응답 기록 1건 이상 | `curl :8100/health`, `curl :8100/version`, `:8600` 채팅 1회 | [x] `eval/e2e_probe_final.json` 5개 체크 PASS, 시연 캡처 3장 |
+| 기능 구현 완성도 | 30 | 선택한 개선안이 실제로 동작하는가 | 개선 후 실제 요청·응답 기록 1건 이상 | `curl :8100/health`, `curl :8100/version`, `:8600` 채팅 1회 | [x] `artifacts/eval/e2e_probe_final.json` 5개 체크 PASS, 시연 캡처 3장 |
 | Before/After 실측 비교 | 10 (보너스) | 같은 입력으로 개선 전/후를 돌려 수치로 차이 제시 | before/after 결과 2개 + 비교표 | 두 실행의 결과 파일 대조 | [x] `artifacts/runs/` 4개(분류 2 + E2E 2), `doc/reports/evidence/before_after.md` |
 | 기술 요소 반영 | 30 | Multi-Agent, MCP, RAG, 의존성 주입, LangSmith, 모듈화, 단위 테스트 | 항목별 코드 위치 1줄 + 테스트 실행 결과 | `pytest -q` | [x] `agent/rag/`, `agent/deps.py`, `agent/graph.py`, `tests/` 50개 통과 |
 | 한계·트레이드오프 설명 | 20 | 개선이 새로 만든 약점을 스스로 짚었는가 | 부작용 + 그 부작용의 수치 | 보고서 수치 = 측정 원본 | [x] 6장 4행(커버리지 비용·margin 2문항·자기평가 라벨 등) |
@@ -117,7 +117,7 @@ PDF 11–12쪽에 제시된 개선 예시(채택 여부 미정, 후보 풀):
 | 의존성 주입 | `agent/deps.py`, `server.py:63` lifespan에서 번들 1회 생성 | [x] 코드 있음 |
 | 모듈화 | `agent/` 하위 llm·graph·mcp·retry 분리 | [x] 코드 있음 |
 | LangSmith | `.env.example`의 `LANGCHAIN_TRACING_V2`·`LANGCHAIN_PROJECT`, `agent/graph.py` 노드에 `@traceable` | [~] 실 API 키 없는 환경이라 trace 캡처는 미수행(연결만 확인) |
-| RAG | `agent/rag/` — `embedder.py`(Ollama/Hashing), `index.py`(JSON 캐시·무효화), `classifier.py`(5분기+폴백). `deps.rag`로 주입, `graph.py::_select_incident_type`에서 호출 | [x] 2단계 E2E 검증 (`eval/e2e_probe.json`) |
+| RAG | `agent/rag/` — `embedder.py`(Ollama/Hashing), `index.py`(JSON 캐시·무효화), `classifier.py`(5분기+폴백). `deps.rag`로 주입, `graph.py::_select_incident_type`에서 호출 | [x] 2단계 E2E 검증 (`artifacts/eval/e2e_probe.json`) |
 | 단위 테스트 | `tests/unit/` 6종(지표·프로파일·데이터·게이트·keyword·라우터) + `tests/integration/` 2종, `pytest.ini`, `requirements-dev.txt` | [x] 65개 통과 |
 
 ---
@@ -129,26 +129,26 @@ PDF 11–12쪽에 제시된 개선 예시(채택 여부 미정, 후보 풀):
 | 구분 | 실행 일시 | 백엔드 | 입력 | 결과 경로 | 지표 요약 |
 |---|---|---|---|---|---|
 | before | 2026-10-20 | `fake` | 분류 12문항 (`eval/baseline_labels.json`) | `eval/baseline_keyword.json` | 8/12 = 0.6667 |
-| after | 2026-10-20 | `fake` + `ollama:qwen3-embedding:0.6b` | 분류 12문항 (동일) | `eval/rag_probe.json` | 12/12 = 1.0000 (RAG 10, 폴백 2) |
-| E2E before | 2026-10-20 | `fake`, `RAG_ENABLED=false` | E2E 3문항 (`eval/run_e2e_probe.py`) | `eval/e2e_probe_rag_off.json` | 1/3 (E01·E02 오분류) |
-| E2E after | 2026-10-20 | `fake`, `RAG_ENABLED=true` | E2E 3문항 (동일) | `eval/e2e_probe.json` | 3/3, SSE ReplanCheck에 근거 노출 |
+| after | 2026-10-20 | `fake` + `ollama:qwen3-embedding:0.6b` | 분류 12문항 (동일) | `artifacts/eval/rag_probe.json` | 12/12 = 1.0000 (RAG 10, 폴백 2) |
+| E2E before | 2026-10-20 | `fake`, `RAG_ENABLED=false` | E2E 3문항 (`eval/run_e2e_probe.py`) | `artifacts/eval/e2e_probe_rag_off.json` | 1/3 (E01·E02 오분류) |
+| E2E after | 2026-10-20 | `fake`, `RAG_ENABLED=true` | E2E 3문항 (동일) | `artifacts/eval/e2e_probe.json` | 3/3, SSE ReplanCheck에 근거 노출 |
 | 40문항 before | 2026-10-20 | `fake`, `DATA_PROFILE=extended` | 분류 40문항 (`eval/labels_extended.json`) | `eval/baseline_extended_keyword.json` | 13/40 = 0.3250 |
-| 40문항 after | 2026-10-20 | `fake` + qwen3-embedding, `DATA_PROFILE=extended` | 분류 40문항 (동일) | `eval/rag_probe_extended.json` | 34/40 = 0.8500 |
-| ablation | 2026-10-20 | 위 3군 + base | 40문항 (동일) | `eval/ablation.json` | RAG +0.5250, 데이터 확장 정확도 0 / coverage 18.75%→0% |
-| E2E 확장 | 2026-10-20 | `fake`, `DATA_PROFILE=extended` | E2E 4문항 (신규 시스템 포함) | `eval/e2e_probe_extended.json` | 4/4, `search-service` unknown 0 |
+| 40문항 after | 2026-10-20 | `fake` + qwen3-embedding, `DATA_PROFILE=extended` | 분류 40문항 (동일) | `artifacts/eval/rag_probe_extended.json` | 34/40 = 0.8500 |
+| ablation | 2026-10-20 | 위 3군 + base | 40문항 (동일) | `artifacts/eval/ablation.json` | RAG +0.5250, 데이터 확장 정확도 0 / coverage 18.75%→0% |
+| E2E 확장 | 2026-10-20 | `fake`, `DATA_PROFILE=extended` | E2E 4문항 (신규 시스템 포함) | `artifacts/eval/e2e_probe_extended.json` | 4/4, `search-service` unknown 0 |
 | 하네스 before | 2026-10-20 15:28 | `fake`, `DATA_PROFILE=extended` | 분류 40문항 (`eval/run_eval.py --variant before-rag`) | `artifacts/runs/20261020-152756_fake_before-rag/` | 13/40 = 0.3250, macro-F1 0.2836 |
 | 하네스 after | 2026-10-20 15:28 | `fake` + qwen3-embedding, `DATA_PROFILE=extended` | 분류 40문항 (동일, `--repeat 2`) | `artifacts/runs/20261020-152756_fake_after-rag/` | 34/40 = 0.8500, macro-F1 0.8521, 재현성 identical |
 | 하네스 E2E before | 2026-10-20 15:32 | `fake`, `RAG_ENABLED=false` | E2E 5문항 (`--mode e2e`) | `artifacts/runs/20261020-153204_fake_before-rag/` | 1/5 = 0.2000, p50 750.76ms |
 | 하네스 E2E after | 2026-10-20 15:32 | `fake`, `RAG_ENABLED=true` | E2E 5문항 (동일) | `artifacts/runs/20261020-153211_fake_after-rag/` | 5/5 = 1.0000, p50 819.73ms |
-| 회귀 before | 2026-10-20 | `fake`, 라우팅 정규식 수정 전 | 회귀 질의 10문항 (`eval/run_regression_queries.py`) | `eval/regression_queries_before.json` | 3/10 |
-| 회귀 after | 2026-10-20 | `fake`, 라우팅 수정 후 | 회귀 질의 10문항 (동일) | `eval/regression_queries.json` | 10/10 (keyword 경로만 9/10) |
+| 회귀 before | 2026-10-20 | `fake`, 라우팅 정규식 수정 전 | 회귀 질의 10문항 (`eval/run_regression_queries.py`) | `artifacts/eval/regression_queries_before.json` | 3/10 |
+| 회귀 after | 2026-10-20 | `fake`, 라우팅 수정 후 | 회귀 질의 10문항 (동일) | `artifacts/eval/regression_queries.json` | 10/10 (keyword 경로만 9/10) |
 
 | 지표 | before | after | 차이 | 측정 조건 |
 |---|---|---|---|---|
-| 정확도 | 8/12 = 0.6667 | 12/12 = 1.0000 (RAG 10/12, 폴백 2/12) | +0.3333 | 12문항 동결, `RAG_MIN_SCORE=0.50`, `RAG_MIN_MARGIN=0.03`, `ollama:qwen3-embedding:0.6b` (`eval/rag_probe.json`) |
-| 정확도(확장) | 13/40 = 0.3250 | 34/40 = 0.8500 | +0.5250 | 40문항 동결, `DATA_PROFILE=extended`, 10문서 인덱스 `bfdc27ec…` (`eval/ablation.json`) |
+| 정확도 | 8/12 = 0.6667 | 12/12 = 1.0000 (RAG 10/12, 폴백 2/12) | +0.3333 | 12문항 동결, `RAG_MIN_SCORE=0.50`, `RAG_MIN_MARGIN=0.03`, `ollama:qwen3-embedding:0.6b` (`artifacts/eval/rag_probe.json`) |
+| 정확도(확장) | 13/40 = 0.3250 | 34/40 = 0.8500 | +0.5250 | 40문항 동결, `DATA_PROFILE=extended`, 10문서 인덱스 `bfdc27ec…` (`artifacts/eval/ablation.json`) |
 | macro-F1(40문항) | 0.2836 | 0.8521 | +0.5685 | 하네스 4단계, `artifacts/runs/20261020-152756_fake_{before,after}-rag/metrics.json` |
-| 조사 커버리지 | unknown 18.75% (base 6) | unknown 0% (extended 12) | −18.75%p | 같은 40문항이 조회한 80회 기준 (`eval/ablation.json` coverage) |
+| 조사 커버리지 | unknown 18.75% (base 6) | unknown 0% (extended 12) | −18.75%p | 같은 40문항이 조회한 80회 기준 (`artifacts/eval/ablation.json` coverage) |
 | 폴백률(keyword로 내려간 비율) | 100.00% | 15.00% | −85.00%p | 하네스 4단계, 동일 40문항 (`metrics.json`의 `fallback`) |
 | 분류 지연 p50 | 0.0ms (keyword — 0.01ms 미만이라 반올림 0) | 32.43ms (RAG 임베딩 1회) | +32.43ms | 하네스 4단계, 동일 40문항 (`metrics.json`의 `latency`) |
 | E2E 요청 지연 p50 | 750.76ms | 819.73ms | +68.97ms | 실서버 :8100, `fake`, E2E 5문항 (`metrics.json`의 `latency`) |
@@ -168,12 +168,12 @@ PDF 11–12쪽에 제시된 개선 예시(채택 여부 미정, 후보 풀):
 
 | 개선 | 새로 생긴 약점 | 근거(수치·코드) | 완화책 |
 |---|---|---|---|
-| RAG 분류 도입 | 질의 1회 임베딩이 분류 단계에 추가된다 | `eval/rag_probe.json` items `elapsed_ms` (B01 616ms 최초 호출, 이후 32~55ms) | 인덱스는 기동 시 1회, 질의 임베딩만 요청당 1회. p50/p95는 4단계에서 정식 측정 |
-| RAG 분류 도입 | 작은 코퍼스(6~10종)라 top1·top2 차이가 좁아 margin 판정이 흔들린다 | `eval/rag_threshold_sweep.json` — margin 0.01~0.03 구간에서 RAG 판정 11→10건으로 바뀜 | margin 미달 시 keyword 폴백, 폴백률을 지표로 감시 |
+| RAG 분류 도입 | 질의 1회 임베딩이 분류 단계에 추가된다 | `artifacts/eval/rag_probe.json` items `elapsed_ms` (B01 616ms 최초 호출, 이후 32~55ms) | 인덱스는 기동 시 1회, 질의 임베딩만 요청당 1회. p50/p95는 4단계에서 정식 측정 |
+| RAG 분류 도입 | 작은 코퍼스(6~10종)라 top1·top2 차이가 좁아 margin 판정이 흔들린다 | `artifacts/eval/rag_threshold_sweep.json` — margin 0.01~0.03 구간에서 RAG 판정 11→10건으로 바뀜 | margin 미달 시 keyword 폴백, 폴백률을 지표로 감시 |
 | RAG 분류 도입 | 임베딩 모델이 없으면 `HashingEmbedder`로 떨어져 품질이 급락한다 | `agent/rag/embedder.py::build_embedder` — auto 모드에서 조용히 대체 | `/health.rag.embedder`·인덱스 `embedder.name`에 실제 사용값 기록, 폴백 시 `offline` 표시 |
-| RAG 분류 도입 | 12문항 100%는 개발셋 수치다 | `eval/rag_probe.json` — 라벨을 먼저 동결한 뒤 meta를 작성했지만 표본이 작다 | 확장 40문항(3단계)으로 재측정, 일반화 주장 금지 |
-| 데이터 확장 | 확장이 **분류 정확도는 올리지 못했다** | `eval/ablation.json` B=C=34/40 (문항 단위 동일). RAG가 질의 텍스트로 증상을 읽기 때문에 시스템 알림이 중복 신호였다 | 효과를 coverage(unknown 18.75%→0%)와 신규 4유형 지원으로 서술. "확장으로 정확도 상승"이라고 쓰지 않는다 |
-| margin 게이트 | 보수적 폴백 비용 2문항 (40문항 기준 34 vs 36) | `eval/rag_threshold_sweep_extended.json` — margin 0.00에서 X24·X32가 RAG로 넘어가 정답. 두 문항 차이는 0.0155·0.0000 | 게이트를 없애면 1단계 B01형 오답이 재발. 0.03 유지하고 비용을 기록 |
+| RAG 분류 도입 | 12문항 100%는 개발셋 수치다 | `artifacts/eval/rag_probe.json` — 라벨을 먼저 동결한 뒤 meta를 작성했지만 표본이 작다 | 확장 40문항(3단계)으로 재측정, 일반화 주장 금지 |
+| 데이터 확장 | 확장이 **분류 정확도는 올리지 못했다** | `artifacts/eval/ablation.json` B=C=34/40 (문항 단위 동일). RAG가 질의 텍스트로 증상을 읽기 때문에 시스템 알림이 중복 신호였다 | 효과를 coverage(unknown 18.75%→0%)와 신규 4유형 지원으로 서술. "확장으로 정확도 상승"이라고 쓰지 않는다 |
+| margin 게이트 | 보수적 폴백 비용 2문항 (40문항 기준 34 vs 36) | `artifacts/eval/rag_threshold_sweep_extended.json` — margin 0.00에서 X24·X32가 RAG로 넘어가 정답. 두 문항 차이는 0.0155·0.0000 | 게이트를 없애면 1단계 B01형 오답이 재발. 0.03 유지하고 비용을 기록 |
 | 40문항 라벨 | 20/40이 ambiguous·no_system = 질의 텍스트 의존 | `eval/labels_extended.json` design_notes — 두 카테고리의 정답은 "사용자 신고 증상" 기준 | 카테고리별 정확도를 따로 보고, 전체 수치로 일반화하지 않는다 |
 
 ---
@@ -211,14 +211,14 @@ PDF 11–12쪽에 제시된 개선 예시(채택 여부 미정, 후보 풀):
 | 2026-10-20 | PDF 14쪽 재확인, 평가표·일정·제출 요건을 체크리스트로 통합 | PDF 3쪽 일정, 11–12쪽 계획 양식, `tests/`·`eval/`·`artifacts/` 없음, 원격 없음 | P1 병목 확정 → S2·S3 등록(17:00) |
 | 2026-10-20 | 계층별 작업 규칙·문서 세팅 (루트 + `agent`·`sh`·`doc`·`data`) | `AGENTS.md` 5개, `README.md` 5개(루트·agent·sh·data 신규, `doc/README.md`는 기존 매뉴얼 유지) | 저장소 푸시 후 P1 병목 확정 |
 | 2026-10-20 | **0단계 완료** — 과제 범위 확정(RAG + 데이터 보강 + 평가 하네스), 12문항 라벨 동결, keyword 기준선 측정 | `eval/common.py`, `eval/baseline_labels.json`, `eval/run_baseline.py`, `eval/baseline_keyword.json`(8/12), `eval/baseline_keyword.run2.json`(2회 실행 동일) | 1단계 RAG 부품(`agent/rag/embedder.py`→`index.py`→`classifier.py`) |
-| 2026-10-20 | **1단계 완료** — RAG 부품 3종 + `meta.json` 6종. 12문항 8/12 → **12/12**(RAG 10, 폴백 2). 임계값 확정 0.50/0.03 | `agent/rag/{embedder,index,classifier}.py`, `data/runbooks/meta.json`(신규, 기존 파일 무변경), `eval/run_rag_probe.py`, `eval/rag_probe.json`, `eval/rag_probe.run2.json`, `eval/rag_threshold_sweep.json`, `doc/rag_design.md` §6.1·§9.1 | 2단계 `agent/graph.py`·`server.py` 연결 |
-| 2026-10-20 | **2단계 완료** — `deps.rag` 주입, `_select_incident_type` 연결, `/health.rag`·`/chat` metadata·SSE `ReplanCheck`에 근거 노출. E2E 3/3, RAG off 시 1/3로 기준선 재현 | `agent/deps.py`, `agent/graph.py`, `server.py`, `eval/run_e2e_probe.py`, `eval/e2e_probe.json`, `eval/e2e_probe_rag_off.json`, `doc/rag_design.md` §9.2 | 3단계 데이터 확장(12시스템·10런북·신규 4타입) |
+| 2026-10-20 | **1단계 완료** — RAG 부품 3종 + `meta.json` 6종. 12문항 8/12 → **12/12**(RAG 10, 폴백 2). 임계값 확정 0.50/0.03 | `agent/rag/{embedder,index,classifier}.py`, `data/runbooks/meta.json`(신규, 기존 파일 무변경), `eval/run_rag_probe.py`, `artifacts/eval/rag_probe.json`, `artifacts/eval/rag_probe.run2.json`, `artifacts/eval/rag_threshold_sweep.json`, `doc/rag_design.md` §6.1·§9.1 | 2단계 `agent/graph.py`·`server.py` 연결 |
+| 2026-10-20 | **2단계 완료** — `deps.rag` 주입, `_select_incident_type` 연결, `/health.rag`·`/chat` metadata·SSE `ReplanCheck`에 근거 노출. E2E 3/3, RAG off 시 1/3로 기준선 재현 | `agent/deps.py`, `agent/graph.py`, `server.py`, `eval/run_e2e_probe.py`, `artifacts/eval/e2e_probe.json`, `artifacts/eval/e2e_probe_rag_off.json`, `doc/rag_design.md` §9.2 | 3단계 데이터 확장(12시스템·10런북·신규 4타입) |
 | 2026-10-20 | **3단계 완료** — 시스템 6→12, 런북 6→10, `DATA_PROFILE` 일원화(5곳 하드코딩 제거), 40문항 동결·측정. keyword 13/40 → RAG 34/40. 데이터 확장은 정확도 0·coverage 18.75%→0% | `agent/data_profile.py`, `data/monitoring_extended.json`, `data/runbooks/{connection-pool,cert-expiry,replication-lag,queue-backlog}.md`, `eval/labels_extended.json`, `eval/{baseline_extended_keyword,rag_probe_extended,rag_probe_extended_on_base,ablation,profile_probe}.json`, `doc/rag_design.md` §9.3 | 4단계 평가 하네스 정식화(`eval/run_eval.py`, macro-F1, 지연 p50/p95, 재현성) |
 | 2026-10-20 | **4단계 완료** — 통합 하네스(`eval/run_eval.py`: manifest·metrics·requests/responses jsonl, 실행 1회=`artifacts/runs/<run_id>/`), 지표 모듈(`eval/metrics.py`), 테스트 50개(`tests/`), Before/After 표 자동 생성(`eval/make_before_after.py`) → `doc/reports/evidence/`. 40문항 0.3250→0.8500, macro-F1 0.2836→0.8521, E2E 1/5→5/5, 재현성 identical, 분류 지연 +32.43ms | `eval/run_eval.py`, `eval/metrics.py`, `eval/make_before_after.py`, `eval/e2e_cases.json`, `tests/{unit,integration}/`, `pytest.ini`, `requirements-dev.txt`, `artifacts/runs/20261020-1527*`, `artifacts/runs/20261020-1532*`, `doc/reports/evidence/{index.md,before_after.md,metrics/}`, `doc/rag_design.md` §9.4 | 0~4단계 변경 커밋·푸시 → S6 보고서 작성 |
 | 2026-10-20 | **S2·S3·S5 확인** — 소원 G079 박건우, 과제 1번, 등록 문구 "RAG 기반 RunBook 선택 · 데이터 확장 · 평가 하네스 구축", Git 주소 `https://github.com/pigpgw/skala-ai-service-mini` | 사용자 등록 보고, `git remote -v`·`git ls-remote` 확인(origin = 해당 주소, `main` = `origin/main`) | 0~4단계 변경 커밋·푸시 → S6 보고서 |
 | 2026-10-20 | **커밋·푸시 완료** — 0~4단계 6커밋(`923514e..4e7d752`), `main` = `origin/main`, 작업 트리 clean. 비밀·상태 파일 미포함 확인(`.env`·`session.db`·`.venv`·`artifacts/`·`var/` 전부 제외, `.env.example`만 존재) | `git push origin main` → `923514e..4e7d752 main -> main`, `git ls-remote origin` = `4e7d752` | S6 결과 보고서 작성(증거 대조표 `doc/reports/evidence/index.md` 인용) |
 | 2026-10-20 | **제출 산출물 작성** — 결과 보고서(MD+PDF), 발표자료(슬라이드 10장 HTML·PDF·PPTX + 구성안), 아키텍처 다이어그램, 시연 캡처 3장. 스프레드시트 입력용으로 `skala-tasks/w15-web-service-mini/`에 복사 | `doc/reports/{result_report.md,result_report.pdf,presentation*,images/}`, `doc/design/architecture.html`, `doc/tools/{md2html.py,build_pptx.py,capture_ui.mjs}`, `skala-tasks/w15-web-service-mini/` | 스프레드시트에 보고서 본문·주소 입력 → 발표 리허설 |
 | 2026-10-20 | **산출물·디렉토리 정리** — 조사 후 일괄 정리: 생성물 삭제(`.archify` 3.0M·`__pycache__`·`.pytest_cache`·`artifacts/captures`·중복 PDF·인덱스 캐시), 매뉴얼 이미지 PNG→JPEG 압축(5.2MB→1.6MB), 세션 DB를 `var/session.db`로 이동(P2), 배포 zip 제외 규칙 보강·재생성(5.2MB→1.9MB), 아키텍처 영수증 `artifacts/design/` 분리 | `doc/artifact_management_design.md` v0.3, `git status`, `unzip -l all_total_vue_student.zip`, 세션 저장소 재오픈 이력 확인, pytest 50개 통과 | 스프레드시트에 보고서 본문·주소 입력 → 발표 리허설 |
-| 2026-10-20 | **최종 보완·마무리** — 루트 README를 개선 내용 기준으로 전면 개편, `sh/AGENTS.md`에 세션 DB 경로·zip 제외 규칙 기록, 스프레드시트 입력용 본문(`doc/reports/spreadsheet_input.md`)과 발표 리허설 체크리스트 추가, 제출 폴더 7개 파일 동기화. 정리 후 전 기능 재검증: 테스트 50개 통과·프로파일 검증 3건 PASS·E2E 5개 체크 PASS·분류 측정 동일 수치 재현(0.3250→0.8500, 재현성 identical) | `README.md`, `sh/AGENTS.md`, `doc/reports/spreadsheet_input.md`, `doc/reports/presentation_outline.md`, `eval/e2e_probe_final.json` | 스프레드시트 붙여넣기·주소 등록 → 발표 리허설 |
-| 2026-10-20 | **과제 PDF 재확인 → 회귀 질의 발견·수정** — PDF 9쪽 "아래 예시들로 테스트" 요구를 실제 서버로 수행(`eval/run_regression_queries.py`, 서버 재시작 포함). **10개 중 3개만 통과** → 원인은 결정론 백엔드의 라우팅 정규식(7개 키워드)이었다. 실제 LLM 백엔드와 같은 운영 어휘로 넓히고 시스템명 언급 시 incident로 가게 수정. 단위 테스트로 고정(`tests/unit/test_router.py`) | `eval/run_regression_queries.py`, `eval/regression_queries_before.json`(3/10) → `eval/regression_queries.json`(10/10), `eval/regression_queries_rag_off.json`(keyword 9/10), `agent/fake_llm.py`, `doc/regression_test_queries.md` §실행 결과 | 스프레드시트 붙여넣기·주소 등록 → 말하기 리허설 |
-| 2026-10-20 | **발표 리허설 검증(기계 가능 범위)** — `eval/check_reported_numbers.py`로 슬라이드·보고서·README·체크리스트에 적힌 수치 13개가 측정 원본과 일치하는지 대조(13/13 PASS). 검사 중 **원본 매핑 오류 1건**(extended coverage를 base 실행에서 읽음) 발견·수정, 폴백률 15.00% 표기 추가. 시연 4단계 실측(총 3초: high-latency·queue-backlog·billing-service 폴백) | `eval/check_reported_numbers.py`, `eval/reported_numbers_check.json`, `doc/reports/rehearsal_log.md`, `doc/reports/presentation.html`(슬라이드 8 수정) | 스프레드시트 붙여넣기·주소 등록 → 말하기 리허설 1회 |
+| 2026-10-20 | **최종 보완·마무리** — 루트 README를 개선 내용 기준으로 전면 개편, `sh/AGENTS.md`에 세션 DB 경로·zip 제외 규칙 기록, 스프레드시트 입력용 본문(`doc/reports/spreadsheet_input.md`)과 발표 리허설 체크리스트 추가, 제출 폴더 7개 파일 동기화. 정리 후 전 기능 재검증: 테스트 50개 통과·프로파일 검증 3건 PASS·E2E 5개 체크 PASS·분류 측정 동일 수치 재현(0.3250→0.8500, 재현성 identical) | `README.md`, `sh/AGENTS.md`, `doc/reports/spreadsheet_input.md`, `doc/reports/presentation_outline.md`, `artifacts/eval/e2e_probe_final.json` | 스프레드시트 붙여넣기·주소 등록 → 발표 리허설 |
+| 2026-10-20 | **과제 PDF 재확인 → 회귀 질의 발견·수정** — PDF 9쪽 "아래 예시들로 테스트" 요구를 실제 서버로 수행(`eval/run_regression_queries.py`, 서버 재시작 포함). **10개 중 3개만 통과** → 원인은 결정론 백엔드의 라우팅 정규식(7개 키워드)이었다. 실제 LLM 백엔드와 같은 운영 어휘로 넓히고 시스템명 언급 시 incident로 가게 수정. 단위 테스트로 고정(`tests/unit/test_router.py`) | `eval/run_regression_queries.py`, `artifacts/eval/regression_queries_before.json`(3/10) → `artifacts/eval/regression_queries.json`(10/10), `artifacts/eval/regression_queries_rag_off.json`(keyword 9/10), `agent/fake_llm.py`, `doc/regression_test_queries.md` §실행 결과 | 스프레드시트 붙여넣기·주소 등록 → 말하기 리허설 |
+| 2026-10-20 | **발표 리허설 검증(기계 가능 범위)** — `eval/check_reported_numbers.py`로 슬라이드·보고서·README·체크리스트에 적힌 수치 13개가 측정 원본과 일치하는지 대조(13/13 PASS). 검사 중 **원본 매핑 오류 1건**(extended coverage를 base 실행에서 읽음) 발견·수정, 폴백률 15.00% 표기 추가. 시연 4단계 실측(총 3초: high-latency·queue-backlog·billing-service 폴백) | `eval/check_reported_numbers.py`, `artifacts/eval/reported_numbers_check.json`, `doc/reports/rehearsal_log.md`, `doc/reports/presentation.html`(슬라이드 8 수정) | 스프레드시트 붙여넣기·주소 등록 → 말하기 리허설 1회 |

@@ -82,7 +82,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="RAG 분류 1단계 측정")
     parser.add_argument("--labels", default=str(HERE / "baseline_labels.json"))
     parser.add_argument("--baseline", default=str(HERE / "baseline_keyword.json"))
-    parser.add_argument("--out", default=str(HERE / "rag_probe.json"))
+    parser.add_argument("--out", default=str(HERE.parent / "artifacts" / "eval" / "rag_probe.json"))
     parser.add_argument("--embedder", default=None,
                         help="auto|ollama|hashing (기본: RAG_EMBEDDER 또는 auto)")
     parser.add_argument("--profile", default="base",

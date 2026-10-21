@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "stage": "3단계 데이터 프로파일 검증",
-  "generated_at": "2026-10-20T16:50:54+09:00",
+  "generated_at": "2026-10-21T20:51:22+09:00",
   "checks": {
     "base_excludes_extended_system": {
       "pass": true

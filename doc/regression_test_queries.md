@@ -39,11 +39,11 @@
 | 9 | 안녕, 너는 누구야? | chat | - | - | - | O |
 | 10 | 제 이름은 민수입니다 → (재시작 후) 제 이름이 뭐였죠? | chat | - | - | - | O (기억 유지) |
 
-**RAG on 10/10 통과** (`eval/regression_queries.json`).
+**RAG on 10/10 통과** (`artifacts/eval/regression_queries.json`).
 
 ### 라우팅 수정 — 이 실행에서 처음 발견한 것
 
-처음 돌렸을 때 **10개 중 3개만 통과**했다(`eval/regression_queries_before.json`).
+처음 돌렸을 때 **10개 중 3개만 통과**했다(`artifacts/eval/regression_queries_before.json`).
 원인은 라우터가 아니라 결정론 백엔드(`agent/fake_llm.py`)의 라우팅 정규식이
 `장애|진단|다운|지연|급증|incident|티켓` 7개짜리였기 때문이다.
 그 정규식에 걸리지 않는 질의는 전부 `chat`으로 떨어져 **장애 파이프라인이 아예 돌지 않았다**
@@ -59,9 +59,9 @@
 
 | 조건 | 통과 | 근거 |
 |---|---|---|
-| 수정 전 (router) | **3/10** | `eval/regression_queries_before.json` |
-| 수정 후 (router, RAG on) | **10/10** | `eval/regression_queries.json` |
-| 수정 후 (router, RAG off = keyword 경로) | **9/10** | `eval/regression_queries_rag_off.json` |
+| 수정 전 (router) | **3/10** | `artifacts/eval/regression_queries_before.json` |
+| 수정 후 (router, RAG on) | **10/10** | `artifacts/eval/regression_queries.json` |
+| 수정 후 (router, RAG off = keyword 경로) | **9/10** | `artifacts/eval/regression_queries_rag_off.json` |
 
 ### keyword 경로에서 남는 1건 (#4)
 

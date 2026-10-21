@@ -152,7 +152,7 @@ def _check(row: dict, expectations: tuple) -> list[str]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="회귀 질의 세트 실행")
-    parser.add_argument("--out", default=str(HERE / "regression_queries.json"))
+    parser.add_argument("--out", default=str(HERE.parent / "artifacts" / "eval" / "regression_queries.json"))
     parser.add_argument("--profile", default="extended", choices=["base", "extended"])
     parser.add_argument("--rag", default="on", choices=["on", "off"],
                         help="RAG on/off — off로 돌리면 keyword 기준선 경로가 그대로인지 확인된다")

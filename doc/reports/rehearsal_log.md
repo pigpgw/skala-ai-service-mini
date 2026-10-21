@@ -30,9 +30,9 @@
 
 | 조건 | 통과 | 근거 |
 |---|---|---|
-| 라우팅 수정 전 | 3/10 | `eval/regression_queries_before.json` |
-| 라우팅 수정 후 (RAG on) | **10/10** | `eval/regression_queries.json` |
-| 라우팅 수정 후 (RAG off = keyword) | 9/10 | `eval/regression_queries_rag_off.json` |
+| 라우팅 수정 전 | 3/10 | `artifacts/eval/regression_queries_before.json` |
+| 라우팅 수정 후 (RAG on) | **10/10** | `artifacts/eval/regression_queries.json` |
+| 라우팅 수정 후 (RAG off = keyword) | 9/10 | `artifacts/eval/regression_queries_rag_off.json` |
 
 keyword 경로가 남기는 1건(#4 타임아웃 → cpu-spike)은 규칙 순서 결함이고,
 RAG를 켜면 network-timeout으로 고쳐진다. 이건 개선된 지점이다.
@@ -72,5 +72,5 @@ RAG를 켜면 network-timeout으로 고쳐진다. 이건 개선된 지점이다.
 
 ## 6. 되돌릴 수 있는 것
 
-- 이 문서와 `eval/check_reported_numbers.py`, `eval/reported_numbers_check.json`은 커밋 대상이다.
+- 이 문서와 `eval/check_reported_numbers.py`, `artifacts/eval/reported_numbers_check.json`은 커밋 대상이다.
 - 서버·프론트엔드는 리허설 측정 뒤 종료했다(포트 8100·8600 정리 완료).

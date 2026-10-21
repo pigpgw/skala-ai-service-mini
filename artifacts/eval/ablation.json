@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "stage": "3단계 ablation (RAG 효과 vs 데이터 확장 효과)",
-  "generated_at": "2026-10-20T14:39:53+09:00",
+  "generated_at": "2026-10-21T20:51:45+09:00",
   "dataset": "eval/labels_extended.json (40문항, 동결)",
   "arms": [
     {
@@ -34,7 +34,7 @@
     {
       "arm": "B",
       "variant": "RAG + base",
-      "file": "eval/rag_probe_extended_on_base.json",
+      "file": "artifacts/eval/rag_probe_extended_on_base.json",
       "correct": 34,
       "total": 40,
       "accuracy": 0.85,
@@ -61,7 +61,7 @@
     {
       "arm": "C",
       "variant": "RAG + extended",
-      "file": "eval/rag_probe_extended.json",
+      "file": "artifacts/eval/rag_probe_extended.json",
       "correct": 34,
       "total": 40,
       "accuracy": 0.85,

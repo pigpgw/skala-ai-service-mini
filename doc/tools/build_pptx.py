@@ -1,18 +1,27 @@
-"""발표 슬라이드 HTML → PPTX 변환기.
+"""발표 HTML → PPTX 변환기 (레이아웃 경계 보장).
 
-왜 HTML을 읽는가
-    슬라이드 본체를 HTML 한 벌로 두고, PDF(Chrome)와 PPTX(여기) 두 형식을
-    같은 내용에서 뽑습니다. 내용을 두 곳에 적으면 나중에 어긋납니다.
+왜 이 파일이 복잡한가
+    PPTX는 좌표를 직접 지정해야 한다. 좌표를 고정한 채로 이미지를 붙이면
+    슬라이드 밖으로 나가 PPT가 깨진다(실제로 3·5번 슬라이드가 넘쳤다).
+    그래서 **남은 공간을 계산하고 그 안에서만** 그림을 배치한다.
+
+레이아웃 규칙 (EMU, 1in = 914400)
+    슬라이드 13.33in x 7.5in = 12192000 x 6858000
+    좌우 여백 600000 · 제목 380000~1280000 · 본문 시작 1400000 · 하단 한계 6480000
+
+검사
+    생성 직후 모든 도형의 우·하단 좌표를 확인해 슬라이드를 넘으면 실패로 알린다
+    (조용히 잘라내지 않는다 — 잘린 PPT는 "내용이 사라진 PPT"가 되므로).
 
 사용
-    .venv/bin/python doc/tools/build_pptx.py \
-        --source doc/reports/presentation.html \
-        --out artifacts/exports/presentation.pptx
+    .venv/bin/python doc/tools/build_pptx.py --source doc/reports/presentation.html \
+        --out doc/reports/presentation.pptx
 """
 from __future__ import annotations
 
 import argparse
 import html
+import math
 import re
 from html.parser import HTMLParser
 from pathlib import Path
@@ -26,12 +35,23 @@ INK = RGBColor(0x16, 0x19, 0x1D)
 MUTED = RGBColor(0x5B, 0x64, 0x70)
 ACCENT = RGBColor(0x2F, 0x5F, 0xD0)
 GOOD = RGBColor(0x1F, 0x7A, 0x4D)
-LINE = RGBColor(0xD9, 0xDE, 0xE5)
 FONT = "Apple SD Gothic Neo"
+
+# ── 레이아웃 상수 (EMU) ──────────────────────────────────────────────
+SLIDE_W, SLIDE_H = 12_192_000, 6_858_000
+MARGIN_X = 600_000
+TITLE_Y, TITLE_H = 380_000, 900_000
+CONTENT_TOP = 1_400_000
+BOTTOM_LIMIT = 6_480_000          # 하단 안전 여백 포함
+CONTENT_W = SLIDE_W - 2 * MARGIN_X
+LINE_H = 330_000                  # 16pt 한 줄 높이
+GAP = 140_000
+ROW_H = 420_000                  # 표 한 행 높이
+CAPTION_H = 300_000
 
 
 class SlideParser(HTMLParser):
-    """발표용 HTML에서 슬라이드별 (kicker, title, lead, bullets, table)를 뽑는다."""
+    """발표용 HTML에서 슬라이드별 (제목, 불릿, 표, 이미지, 캡션)를 뽑는다."""
 
     def __init__(self) -> None:
         super().__init__()
@@ -42,8 +62,8 @@ class SlideParser(HTMLParser):
         self._in_table = False
         self._table_rows: list[list[str]] = []
         self._row: list[str] = []
+        self._in_caption = False
 
-    # --- 헬퍼
     def _text(self) -> str:
         return html.unescape(re.sub(r"\s+", " ", "".join(self._buffer)).strip())
 
@@ -53,22 +73,25 @@ class SlideParser(HTMLParser):
             self._current["lead"] = (self._current["lead"] + " " + self._text()).strip()
         self._buffer = []
 
-    # --- 파싱
     def handle_starttag(self, tag: str, attrs: list) -> None:
         self._stack.append(tag)
         classes = dict(attrs).get("class", "")
         if tag == "br" and self._current is not None:
-            self._buffer.append(" · ")   # 줄바꿈을 구분자로 보존
+            self._buffer.append(" · ")
         if tag == "img" and self._current is not None:
             src = dict(attrs).get("src")
             if src:
                 self._current.setdefault("images", []).append(src)
+        if tag == "div" and "cap" in classes and self._current is not None:
+            self._in_caption = True
+            self._buffer = []
         if tag == "section" and "slide" in classes:
-            self._current = {"kicker": "", "title": "", "lead": "", "bullets": [], "table": []}
+            self._current = {"kicker": "", "title": "", "lead": "", "bullets": [],
+                             "table": [], "images": [], "caption": ""}
             self.slides.append(self._current)
         elif tag in {"h1", "h2"} and self._current is not None:
             self._buffer = []
-        elif tag == "p" and self._current is not None:
+        elif tag == "p" and self._current is not None and not self._in_caption:
             self._buffer = []
         elif tag == "li" and self._current is not None:
             self._buffer = []
@@ -83,12 +106,14 @@ class SlideParser(HTMLParser):
     def handle_endtag(self, tag: str) -> None:
         if self._stack:
             self._stack.pop()
-        if tag == "strong" and self._current is not None:
-            self._buffer.append(" ")
+        if tag == "div" and self._in_caption:
+            self._current["caption"] = self._text()
+            self._in_caption = False
+            self._buffer = []
         elif tag in {"h1", "h2"} and self._current is not None:
             self._current["title"] = self._text()
             self._buffer = []
-        elif tag == "p" and self._current is not None:
+        elif tag == "p" and self._current is not None and not self._in_caption:
             self._flush()
         elif tag == "li" and self._current is not None:
             text = self._text()
@@ -104,8 +129,6 @@ class SlideParser(HTMLParser):
         elif tag == "table" and self._current is not None:
             self._current["table"] = self._table_rows
             self._in_table = False
-        elif tag == "div" and self._current is not None:
-            self._flush()
 
     def handle_data(self, data: str) -> None:
         if self._current is not None:
@@ -125,22 +148,8 @@ def _strip_markup(text: str) -> str:
     return html.unescape(text).strip()
 
 
-def _add_text(slide, text: str, size: int, color=INK, bold: bool = False,
-              space_after: int = 6, mono: bool = False, x: int = 800000, y: int = 0,
-              width: int = 10600000):
-    box = slide.shapes.add_textbox(Emu(x), Emu(y), Emu(width), Emu(500000))
-    frame = box.text_frame
-    frame.word_wrap = True
-    paragraph = frame.paragraphs[0]
-    run = paragraph.add_run()
-    run.text = text
-    run.font.size = Pt(size)
-    run.font.bold = bold
-    run.font.color.rgb = color
-    run.font.name = "JetBrains Mono" if mono else FONT
-    paragraph.space_after = Pt(space_after)
-    box.height = Emu(int(size * 12700 * 2))
-    return box
+def _lines_for(text: str, width_chars: int) -> int:
+    return max(1, math.ceil(len(text) / width_chars))
 
 
 def build(source: Path, out: Path) -> int:
@@ -151,98 +160,133 @@ def build(source: Path, out: Path) -> int:
         raise SystemExit("슬라이드를 찾지 못했습니다")
 
     presentation = Presentation()
-    presentation.slide_width = Emu(12192000)     # 13.333in (16:9)
-    presentation.slide_height = Emu(6858000)     # 7.5in
+    presentation.slide_width = Emu(SLIDE_W)
+    presentation.slide_height = Emu(SLIDE_H)
     blank = presentation.slide_layouts[6]
+    overflows: list[str] = []
 
     for index, data in enumerate(slides):
         slide = presentation.slides.add_slide(blank)
-        title = _strip_markup(data["title"]) or _strip_markup(data.get("lead", ""))
+        title = _strip_markup(data["title"])
         bullets = [_strip_markup(item) for item in data["bullets"]]
-
-        if index == 0:  # 표지
-            y = 1800000
-            _add_text(slide, title, 40, INK, True, 16, y=y)
-            y += 1400000
-            for bullet in bullets:
-                _add_text(slide, bullet, 16, MUTED, False, 4, y=y)
-                y += 400000
-            continue
-
         rows = data.get("table") or []
-        title_text = title
-        y = Emu(420000)
-        title_box = slide.shapes.add_textbox(Emu(600000), y, Emu(11000000), Emu(900000))
-        frame = title_box.text_frame
+        images = data.get("images") or []
+        caption = _strip_markup(data.get("caption", ""))
+
+        # ── 제목 ───────────────────────────────────────────────
+        box = slide.shapes.add_textbox(Emu(MARGIN_X), Emu(TITLE_Y), Emu(CONTENT_W), Emu(TITLE_H))
+        frame = box.text_frame
         frame.word_wrap = True
         paragraph = frame.paragraphs[0]
         run = paragraph.add_run()
-        run.text = title_text
+        run.text = title
         run.font.size = Pt(30)
         run.font.bold = True
         run.font.color.rgb = INK
         run.font.name = FONT
 
-        y = Emu(1350000)
+        y = CONTENT_TOP
+        font_size = 16
+        width_chars = int(CONTENT_W / 210_000)      # 글자당 대략 폭(EMU)
+
+        # ── 본문(표 또는 불릿) ─────────────────────────────────
         if rows:
+            table_h = ROW_H * len(rows)
             table_shape = slide.shapes.add_table(
-                len(rows), len(rows[0]), Emu(600000), y, Emu(11000000),
-                Emu(420000 * len(rows)))
+                len(rows), len(rows[0]), Emu(MARGIN_X), Emu(y), Emu(CONTENT_W), Emu(table_h))
             table = table_shape.table
-            for row_index, row in enumerate(rows):
-                for col_index, value in enumerate(row):
-                    table_cell = table.cell(row_index, col_index)
-                    table_cell.text = _strip_markup(value)
-                    paragraph = table_cell.text_frame.paragraphs[0]
-                    paragraph.font.size = Pt(14 if row_index else 12)
-                    paragraph.font.bold = row_index == 0
-                    paragraph.font.color.rgb = MUTED if row_index == 0 else INK
-                    paragraph.font.name = FONT
-                    if col_index and row_index:
-                        paragraph.alignment = PP_ALIGN.RIGHT
-            y = Emu(1350000 + 420000 * len(rows) + 120000)
+            for r, row in enumerate(rows):
+                for c, value in enumerate(row):
+                    cell = table.cell(r, c)
+                    cell.text = _strip_markup(value)
+                    para = cell.text_frame.paragraphs[0]
+                    para.font.size = Pt(13 if r == 0 else 14)
+                    para.font.bold = r == 0
+                    para.font.color.rgb = MUTED if r == 0 else INK
+                    para.font.name = FONT
+                    if c and r:
+                        para.alignment = PP_ALIGN.RIGHT
+            y += table_h + GAP
         else:
             for bullet in bullets:
-                box = slide.shapes.add_textbox(Emu(700000), y, Emu(10500000), Emu(500000))
-                frame = box.text_frame
-                frame.word_wrap = True
-                paragraph = frame.paragraphs[0]
-                run = paragraph.add_run()
+                lines = _lines_for(bullet, width_chars)
+                h = lines * LINE_H + GAP
+                tb = slide.shapes.add_textbox(Emu(MARGIN_X), Emu(y), Emu(CONTENT_W), Emu(h))
+                tf = tb.text_frame
+                tf.word_wrap = True
+                para = tf.paragraphs[0]
+                run = para.add_run()
                 run.text = "• " + bullet
-                run.font.size = Pt(16)
+                run.font.size = Pt(font_size)
                 run.font.color.rgb = INK
                 run.font.name = FONT
-                paragraph.space_after = Pt(10)
-                y = Emu(y + 520000)
+                para.space_after = Pt(6)
+                y += h
 
-        # 화면 캡처(과제 요구: 캡처 필수) — 이미지가 있으면 아래에 배치한다.
-        for src in data.get("images", []):
-            image_path = (source.parent / src).resolve()
-            if not image_path.is_file():
-                print(f"  ! 이미지 없음: {src}")
+        # ── 이미지: 남은 공간 안에서만 배치 ────────────────────
+        if images:
+            try:
+                from PIL import Image
+            except ImportError:
+                Image = None
+            for src in images:
+                path = (source.parent / src).resolve()
+                if not path.is_file():
+                    print(f"  ! 이미지 없음: {src}")
+                    continue
+                if Image is not None:
+                    with Image.open(path) as probe:
+                        iw, ih = probe.size
+                else:
+                    iw, ih = 1600, 1000
+                avail_h = BOTTOM_LIMIT - y - (CAPTION_H if caption else 0)
+                if avail_h <= 400_000:
+                    print(f"  ! 공간 부족으로 이미지 생략: {src}")
+                    continue
+                scale = min(CONTENT_W / iw, avail_h / ih)
+                w, h = int(iw * scale), int(ih * scale)
+                slide.shapes.add_picture(str(path), Emu(MARGIN_X), Emu(y), Emu(w), Emu(h))
+                y += h + 60_000
+                if caption:
+                    tb = slide.shapes.add_textbox(Emu(MARGIN_X), Emu(y), Emu(CONTENT_W), Emu(CAPTION_H))
+                    para = tb.text_frame.paragraphs[0]
+                    run = para.add_run()
+                    run.text = caption
+                    run.font.size = Pt(12)
+                    run.font.color.rgb = MUTED
+                    run.font.name = FONT
+                    y += CAPTION_H
+
+        # ── 경계 검사 ──────────────────────────────────────────
+        for shape in slide.shapes:
+            try:
+                bottom = shape.top + shape.height
+                right = shape.left + shape.width
+            except TypeError:
                 continue
-            from PIL import Image  # Pillow가 없으면 건너뛴다
-            with Image.open(image_path) as probe:
-                width, height = probe.size
-            max_w, max_h = 11_000_000, 4_400_000
-            scale = min(max_w / width, max_h / height)
-            pic = slide.shapes.add_picture(str(image_path), Emu(600000), y,
-                                          Emu(int(width * scale)), Emu(int(height * scale)))
-            y = Emu(y + int(height * scale) + 100000)
+            if bottom > SLIDE_H or right > SLIDE_W:
+                overflows.append(
+                    f"슬라이드 {index + 1}: {shape.shape_type} 하단 {bottom} 우측 {right}")
+                break
 
     out.parent.mkdir(parents=True, exist_ok=True)
     presentation.save(out)
     print(f"saved: {out} ({len(slides)} slides)")
-    return len(slides)
+    if overflows:
+        print("★ 슬라이드 범위를 벗어난 도형:")
+        for item in overflows:
+            print(f"   {item}")
+        return 1
+    print("경계 검사: 모든 도형이 슬라이드 안 ✓")
+    return 0
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="발표 HTML → PPTX")
+    parser = argparse.ArgumentParser(description="발표 HTML → PPTX (경계 보장)")
     parser.add_argument("--source", default="doc/reports/presentation.html")
-    parser.add_argument("--out", default="artifacts/exports/presentation.pptx")
+    parser.add_argument("--out", default="doc/reports/presentation.pptx")
     args = parser.parse_args()
-    build(Path(args.source), Path(args.out))
-    return 0
+    return build(Path(args.source), Path(args.out))
 
 
 if __name__ == "__main__":
